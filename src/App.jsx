@@ -1162,7 +1162,7 @@ export default function App() {
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center space-x-3 space-x-reverse">
             <BookOpen className="w-6 h-6 md:w-8 md:h-8" />
-            <h1 className="text-xl md:text-2xl font-bold tracking-wide">أذكار المسلم</h1>
+            <h1 className="text-xl md:text-2xl font-bold tracking-wide">الأذكار</h1>
           </div>
           <div className="flex items-center space-x-2 space-x-reverse md:space-x-4">
             

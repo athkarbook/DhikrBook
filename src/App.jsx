@@ -647,30 +647,22 @@ export default function App() {
         if (uncompletedCards.length > 0) {
           let targetCard = null;
 
-          // 1. محاولة إيجاد تطابق دقيق مع ذكر معين (نبحث عن كلمات مميزة غير شائعة جداً)
-          const ignoreWords = [...dhikrKeywords, 'على', 'في', 'من', 'إلى', 'عن', 'ما', 'هو', 'لا'];
-          const uniqueSpokenWords = transcriptWords.filter(tw => tw.length >= 3 && !ignoreWords.some(k => tw.includes(k)));
-          
-          if (uniqueSpokenWords.length > 0) {
-            for (const card of uncompletedCards) {
-               const cardText = card.innerText || '';
-               if (uniqueSpokenWords.some(tw => cardText.includes(tw))) {
-                   targetCard = card;
-                   break;
-               }
-            }
-          }
+          // نكتشف البطاقات المرئية حالياً في الشاشة أمامه
+          const visibleCards = uncompletedCards.filter(card => {
+             const rect = card.getBoundingClientRect();
+             // نعتبرها مرئية إذا كان جزء منها داخل الشاشة بوضوح
+             return rect.top < window.innerHeight - 100 && rect.bottom > 100;
+          });
 
-          // 2. إذا لم يجد تطابقاً مخصصاً وكان الكلام مجرد ذكر عام، نختار أول بطاقة ظاهرة أمامه في الشاشة
-          if (!targetCard && containsDhikr) {
-             targetCard = uncompletedCards.find(card => {
-                const rect = card.getBoundingClientRect();
-                // نعتبرها البطاقة المقصودة إذا كانت مرئية للمستخدم
-                return rect.top < window.innerHeight - 150 && rect.bottom > 120;
-             });
-             
-             // إن لم تكن أي بطاقة ظاهرة، نأخذ أول ذكر غير مكتمل كخيار احتياطي
-             if (!targetCard) {
+          // هل الكلام المنطوق يعتبر قراءة لذكر؟ (يحتوي كلمات مفتاحية، أو جملة طويلة من 3 كلمات فأكثر)
+          const isReadingDhikr = containsDhikr || transcriptWords.length >= 3;
+
+          if (isReadingDhikr) {
+             // الأولوية القصوى والوحيدة: أول بطاقة غير مكتملة ظاهرة أمامه على الشاشة حالياً
+             if (visibleCards.length > 0) {
+                 targetCard = visibleCards[0];
+             } else {
+                 // إذا لم تكن هناك بطاقات ظاهرة (مثلاً الشاشة في المنتصف والأذكار المتبقية تحت)، نأخذ أول ذكر متبقي
                  targetCard = uncompletedCards[0];
              }
           }

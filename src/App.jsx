@@ -641,24 +641,49 @@ export default function App() {
            return;
         }
         
-        // Find first uncompleted dhikr
-        const uncompletedCards = document.querySelectorAll('.dhikr-card:not(.completed)');
+        // جميع الأذكار غير المكتملة
+        const uncompletedCards = Array.from(document.querySelectorAll('.dhikr-card:not(.completed)'));
+        
         if (uncompletedCards.length > 0) {
-          const firstCard = uncompletedCards[0];
-          
-          // تحقق أذكى: هل الكلمات المنطوقة موجودة في نص الذكر الفعلي؟
-          const cardText = firstCard.innerText || '';
-          const isMatchWithCard = transcriptWords.some(tw => tw.length >= 3 && cardText.includes(tw));
+          let targetCard = null;
 
-          if (containsDhikr || isMatchWithCard) {
-            const btn = firstCard.querySelector('button.dhikr-increment-btn');
+          // 1. محاولة إيجاد تطابق دقيق مع ذكر معين (نبحث عن كلمات مميزة غير شائعة جداً)
+          const ignoreWords = [...dhikrKeywords, 'على', 'في', 'من', 'إلى', 'عن', 'ما', 'هو', 'لا'];
+          const uniqueSpokenWords = transcriptWords.filter(tw => tw.length >= 3 && !ignoreWords.some(k => tw.includes(k)));
+          
+          if (uniqueSpokenWords.length > 0) {
+            for (const card of uncompletedCards) {
+               const cardText = card.innerText || '';
+               if (uniqueSpokenWords.some(tw => cardText.includes(tw))) {
+                   targetCard = card;
+                   break;
+               }
+            }
+          }
+
+          // 2. إذا لم يجد تطابقاً مخصصاً وكان الكلام مجرد ذكر عام، نختار أول بطاقة ظاهرة أمامه في الشاشة
+          if (!targetCard && containsDhikr) {
+             targetCard = uncompletedCards.find(card => {
+                const rect = card.getBoundingClientRect();
+                // نعتبرها البطاقة المقصودة إذا كانت مرئية للمستخدم
+                return rect.top < window.innerHeight - 150 && rect.bottom > 120;
+             });
+             
+             // إن لم تكن أي بطاقة ظاهرة، نأخذ أول ذكر غير مكتمل كخيار احتياطي
+             if (!targetCard) {
+                 targetCard = uncompletedCards[0];
+             }
+          }
+
+          if (targetCard) {
+            const btn = targetCard.querySelector('button.dhikr-increment-btn');
             if (btn) {
               btn.click();
               // تمرير سلس وذكي فقط إذا لم تكن البطاقة ظاهرة بوضوح
-              const rect = firstCard.getBoundingClientRect();
-              const isFullyVisible = (rect.top >= 120) && (rect.bottom <= window.innerHeight - 50);
+              const rect = targetCard.getBoundingClientRect();
+              const isFullyVisible = (rect.top >= 100) && (rect.bottom <= window.innerHeight - 50);
               if (!isFullyVisible) {
-                firstCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
               }
             }
           }

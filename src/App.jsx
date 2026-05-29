@@ -1258,9 +1258,16 @@ export default function App() {
 
             {/* شعلة المواظبة اليومية */}
             {streak > 0 && (
-              <div className="flex items-center gap-1 bg-yellow-400/20 text-yellow-100 px-2.5 py-1 rounded-full text-sm md:text-base font-bold border border-yellow-400/30" title="أيام المواظبة المتتالية">
+              <div 
+                className="flex items-center gap-1 bg-yellow-400/20 text-yellow-100 px-2.5 py-1 rounded-full text-sm md:text-base font-bold border border-yellow-400/30 relative cursor-pointer hover:bg-yellow-400/30 transition" 
+                title="أيام المواظبة المتتالية (اضغط لرؤية خريطة التحدي)" 
+                onClick={() => setShowStatsModal(true)}
+              >
                 <Flame className="w-4 h-4 md:w-5 md:h-5 text-yellow-400" />
                 <span>{streak}</span>
+                {/* نقطة التنبيه لجذب الانتباه للخريطة الجديدة */}
+                <div className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full animate-ping"></div>
+                <div className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full"></div>
               </div>
             )}
 
@@ -1273,17 +1280,6 @@ export default function App() {
               <Crown className="w-3.5 h-3.5 md:w-4 md:h-4 text-amber-300" />
               <span>{currentLevel}</span>
             </div>
-
-            {/* خريطة التحدي */}
-            <button 
-              onClick={() => setShowRoadmapModal(true)} 
-              className="p-2 rounded-full bg-black/20 hover:bg-black/30 dark:bg-slate-700/50 dark:hover:bg-slate-700 transition relative group" 
-              title="خريطة الـ 40 يوماً"
-            >
-              <Map className="w-5 h-5 md:w-6 md:h-6 text-amber-200" />
-              <div className="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full animate-ping"></div>
-              <div className="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full"></div>
-            </button>
 
             {/* زر المسبحة الحرة */}
             <button 

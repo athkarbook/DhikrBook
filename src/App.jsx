@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useRegisterSW } from 'virtual:pwa-register/react';
-import { Sun, Moon, Settings, Info, BookOpen, CheckCircle, RotateCcw, Clock, Star, X, Plus, Minus, Type, Flame, Volume2, VolumeX, Vibrate, VibrateOff, Target, Sunrise, Sunset, MoonStar, ChevronDown, ChevronUp, Palette, Fingerprint, BarChart2, Edit3, Trash2, Award, Trophy, Bell, BellRing, Shield, Crown, RefreshCw, Share2, Map } from 'lucide-react';
+import { Sun, Moon, Settings, Info, BookOpen, CheckCircle, RotateCcw, Clock, Star, X, Plus, Minus, Type, Flame, Volume2, VolumeX, Vibrate, VibrateOff, Target, Sunrise, Sunset, MoonStar, ChevronDown, ChevronUp, Palette, Fingerprint, BarChart2, Edit3, Trash2, Award, Trophy, Bell, BellRing, Shield, Crown, RefreshCw, Share2, Map, Mic, MicOff } from 'lucide-react';
 import html2canvas from 'html2canvas';
 
 // مكون أيقونة المسبحة الإسلامية المخصصة والجميلة
@@ -580,6 +580,76 @@ export default function App() {
 
   // -- حالة إظهار قسم التعار --
   const [showTaarSection, setShowTaarSection] = useState(false);
+
+  // -- المسبحة الصوتية --
+  const [isListening, setIsListening] = useState(false);
+  const [speechSupported, setSpeechSupported] = useState(false);
+  
+  useEffect(() => {
+    if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
+      setSpeechSupported(true);
+    }
+    
+    return () => {
+      window.isIntentionallyListening = false;
+      if (window.recognition) {
+        window.recognition.stop();
+      }
+    };
+  }, []);
+
+  const toggleVoiceTasbeeh = () => {
+    if (!speechSupported) return;
+    
+    if (isListening) {
+      window.isIntentionallyListening = false;
+      setIsListening(false);
+      if (window.recognition) window.recognition.stop();
+      return;
+    }
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!window.recognition) {
+      window.recognition = new SpeechRecognition();
+      window.recognition.lang = 'ar-SA';
+      window.recognition.continuous = true;
+      window.recognition.interimResults = false;
+
+      window.recognition.onstart = () => setIsListening(true);
+      
+      window.recognition.onresult = (event) => {
+        const current = event.resultIndex;
+        const transcript = event.results[current][0].transcript.trim();
+        if (transcript.length > 0) {
+           // Any spoken word will be counted as a tasbeeh
+           document.getElementById('hidden-tasbeeh-btn')?.click();
+        }
+      };
+      
+      window.recognition.onerror = (event) => {
+        if (event.error !== 'no-speech') {
+          setIsListening(false);
+          window.isIntentionallyListening = false;
+        }
+      };
+
+      window.recognition.onend = () => {
+        if (window.isIntentionallyListening) {
+          try { window.recognition.start(); } catch(e){}
+        } else {
+          setIsListening(false);
+        }
+      };
+    }
+    
+    window.isIntentionallyListening = true;
+    try {
+      window.recognition.start();
+    } catch(e) {
+      console.error(e);
+      setIsListening(false);
+    }
+  };
 
   // -- خريطة التحدي --
   const [showRoadmapModal, setShowRoadmapModal] = useState(false);
@@ -1337,15 +1407,33 @@ export default function App() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
           <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl w-full max-w-sm p-8 relative border border-slate-200 dark:border-slate-700 flex flex-col items-center">
             <button 
-              onClick={() => setShowTasbeehModal(false)}
+              onClick={() => {
+                setShowTasbeehModal(false);
+                if (isListening) toggleVoiceTasbeeh();
+              }}
               className="absolute top-4 left-4 p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 bg-slate-100 dark:bg-slate-700 rounded-full transition"
             >
               <X className="w-6 h-6" />
             </button>
-            <h3 className="text-2xl font-bold mb-8 text-teal-700 dark:text-teal-400 flex items-center gap-2">
+
+            {/* المسبحة الصوتية */}
+            {speechSupported && (
+              <button 
+                onClick={toggleVoiceTasbeeh}
+                className={`absolute top-4 right-4 p-2.5 rounded-full transition flex items-center justify-center ${isListening ? 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400 animate-pulse border border-red-200 dark:border-red-800' : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 bg-slate-100 dark:bg-slate-700'}`}
+                title="المسبحة الصوتية (تحدث ليتم العد تلقائياً)"
+              >
+                {isListening ? <Mic className="w-6 h-6" /> : <MicOff className="w-6 h-6" />}
+              </button>
+            )}
+
+            <h3 className="text-2xl font-bold mb-8 text-teal-700 dark:text-teal-400 flex items-center gap-2 mt-4">
               <TasbeehIcon className="w-7 h-7" />
               المسبحة الحرة
             </h3>
+
+            {/* زر خفي للمسبحة الصوتية لاستدعاء الدالة */}
+            <button id="hidden-tasbeeh-btn" onClick={handleTasbeehClick} className="hidden"></button>
 
             {/* زر العداد الضخم مع تأثير النبض */}
             <div className="relative mb-8">

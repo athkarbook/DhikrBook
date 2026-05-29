@@ -677,9 +677,10 @@ export default function App() {
         });
         const targetCard = visibleCards.length > 0 ? visibleCards[0] : uncompletedCards[0];
         
-        // تهيئة أو إعادة ضبط المتغيرات التراكمية إذا انتقل المستخدم لذكر جديد
-        if (!window.voiceState || window.voiceState.targetId !== targetCard.id) {
-            window.voiceState = { targetId: targetCard.id, accumulated: [] };
+        // تهيئة أو استعادة السجل التراكمي للبطاقة الحالية لمنع المسح العشوائي عند التمرير
+        window.voiceState = window.voiceState || {};
+        if (!window.voiceState[targetCard.id]) {
+            window.voiceState[targetCard.id] = [];
         }
 
         // دالة لتنظيف النصوص العربية (إزالة التشكيل وتوحيد الهمزات والتاء) لتصبح المطابقة دقيقة
@@ -694,7 +695,7 @@ export default function App() {
         };
 
         const spokenWords = normalizeArabic(transcript).split(/\s+/).filter(w => w.length >= 2);
-        window.voiceState.accumulated.push(...spokenWords);
+        window.voiceState[targetCard.id].push(...spokenWords);
 
         // جلب نص الذكر الفعلي (من داخل الـ paragraph لتجنب قراءة نصوص التخريج والفوائد)
         const pElem = targetCard.querySelector('p.font-bold');
@@ -705,7 +706,10 @@ export default function App() {
 
         let shouldIncrement = false;
 
-        // إذا كان الذكر قصيراً جداً (مثل: سبحان الله، الحمد لله)
+        // قائمة بالكلمات العامة التي قد تتكرر في أي كلام، نتجاهلها في التطابق الدقيق للأذكار الطويلة
+        const stopWords = ['الله', 'اللهم', 'لا', 'الا', 'هو', 'في', 'من', 'على', 'ما', 'وما', 'له', 'ان', 'انا', 'يا', 'ولا', 'الذي', 'التي', 'بين', 'عنده', 'بما', 'هذا', 'هذه', 'كان', 'كنت', 'وان'];
+
+        // إذا كان الذكر قصيراً (مثل: سبحان الله، الحمد لله)
         if (cardWords.length <= 6) {
            // يكفي أن يتطابق أي جزء منه ليتم الحساب فوراً
            const hasMatch = spokenWords.some(tw => cardWords.includes(tw));
@@ -714,18 +718,24 @@ export default function App() {
            }
         } else {
            // الأذكار الطويلة (مثل آية الكرسي، سيد الاستغفار)
-           // نحسب نسبة تطابق الكلمات المجمعة (accumulated) مع كلمات الذكر الأصلي
+           // الذكاء الاصطناعي يواجه صعوبة كبيرة في اللغة العربية الفصحى
+           // لذا سنبحث فقط عن 3 كلمات فريدة ومميزة (ليست من الكلمات العامة) قالها المستخدم وتوجد في الذكر!
            const uniqueCardWords = [...new Set(cardWords)];
-           const uniqueAccumulated = [...new Set(window.voiceState.accumulated)];
+           const uniqueSpoken = [...new Set(window.voiceState[targetCard.id])];
            
-           let matches = 0;
-           for (const w of uniqueCardWords) {
-               if (uniqueAccumulated.includes(w)) matches++;
+           // تصفية الكلمات العامة
+           const specificCardWords = uniqueCardWords.filter(w => !stopWords.includes(w));
+           
+           let distinctMatches = 0;
+           for (const w of specificCardWords) {
+               if (uniqueSpoken.includes(w)) {
+                   distinctMatches++;
+               }
            }
            
-           // إذا تطابقت 40% من الكلمات (نكتفي بـ 40% لأن الذكاء الاصطناعي قد لا يفهم بعض الكلمات أو الحركات)
-           const matchRatio = matches / uniqueCardWords.length;
-           if (matchRatio >= 0.4) {
+           // إذا استطاع المتصفح التعرف على 3 كلمات مميزة فقط من هذا الذكر، فهو بالتأكيد يقرؤه! (وهذا يتغلب كلياً على أخطاء التعرف الصوتي)
+           const requiredMatches = Math.min(3, specificCardWords.length);
+           if (distinctMatches >= requiredMatches) {
               shouldIncrement = true;
            }
         }
@@ -734,7 +744,7 @@ export default function App() {
             const btn = targetCard.querySelector('button.dhikr-increment-btn');
             if (btn) {
               btn.click();
-              window.voiceState.accumulated = []; // تصفير الذاكرة استعداداً لتكرار الذكر نفسه أو لذكر جديد
+              window.voiceState[targetCard.id] = []; // تصفير الذاكرة لهذا الذكر استعداداً لتكراره
               
               // تمرير سلس بعد زيادة العداد لتجنب القفز المفاجئ
               setTimeout(() => {

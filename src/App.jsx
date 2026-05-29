@@ -1260,25 +1260,6 @@ export default function App() {
               <span className="sm:hidden">{userXP}</span>
             </div>
 
-            {/* زر الإحصاءات */}
-            <button 
-              onClick={() => setShowStatsModal(true)} 
-              className="p-2 rounded-full bg-black/20 hover:bg-black/30 dark:bg-slate-700/50 dark:hover:bg-slate-700 transition" 
-              title="الإحصاءات والمتابعة"
-            >
-              <BarChart2 className="w-5 h-5 md:w-6 md:h-6" />
-            </button>
-
-            {/* زر الأذكار الحرة */}
-            <button 
-              onClick={() => setShowFreeAdhkarModal(true)} 
-              className="flex items-center gap-1 md:gap-2 p-2 px-3 rounded-full md:rounded-xl bg-black/20 hover:bg-black/30 dark:bg-slate-700/50 dark:hover:bg-slate-700 transition text-white font-bold shadow-sm"
-              title="الأذكار الحرة"
-            >
-              <Edit3 className="w-5 h-5 md:w-6 md:h-6" />
-              <span className="hidden md:inline text-sm">أذكار حرة</span>
-            </button>
-
             {/* زر المسبحة الحرة */}
             <button 
               onClick={() => setShowTasbeehModal(true)} 
@@ -1295,13 +1276,6 @@ export default function App() {
               aria-label="إعدادات التطبيق"
             >
               <Settings className="w-5 h-5 md:w-6 md:h-6" />
-            </button>
-            <button 
-              onClick={toggleDarkMode} 
-              className="p-2 rounded-full bg-black/20 hover:bg-black/30 dark:bg-slate-700/50 dark:hover:bg-slate-700 transition" 
-              aria-label="تغيير المظهر"
-            >
-              {isDarkMode ? <Sun className="w-5 h-5 md:w-6 md:h-6" /> : <Moon className="w-5 h-5 md:w-6 md:h-6" />}
             </button>
           </div>
         </div>
@@ -1818,7 +1792,22 @@ export default function App() {
                 </button>
               </div>
 
-              <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-700/50 border border-slate-100 dark:border-slate-700">
+              {/* إعداد المظهر (ليلي / نهاري) */}
+              <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-700/50 border border-slate-100 dark:border-slate-700 mb-2">
+                <div className="flex items-center gap-2">
+                  <Palette className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+                  <span className="font-semibold text-lg text-slate-700 dark:text-slate-200">مظهر التطبيق</span>
+                </div>
+                <button 
+                  onClick={toggleDarkMode}
+                  className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-600 font-bold transition shadow-sm active:scale-95"
+                >
+                  {isDarkMode ? <Moon className="w-5 h-5 text-indigo-400" /> : <Sun className="w-5 h-5 text-amber-500" />}
+                  <span>{isDarkMode ? 'ليلي' : 'نهاري'}</span>
+                </button>
+              </div>
+
+              <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-700/50 border border-slate-100 dark:border-slate-700 mb-2">
                 <div className="flex items-center gap-2">
                   <Type className="w-5 h-5 text-teal-600 dark:text-teal-400" />
                   <span className="font-semibold text-lg text-slate-700 dark:text-slate-200">حجم الخط</span>

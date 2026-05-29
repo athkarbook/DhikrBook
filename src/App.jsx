@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useRegisterSW } from 'virtual:pwa-register/react';
-import { Sun, Moon, Settings, Info, BookOpen, CheckCircle, RotateCcw, Clock, Star, X, Plus, Minus, Type, Flame, Volume2, VolumeX, Vibrate, VibrateOff, Target, Sunrise, Sunset, MoonStar, ChevronDown, ChevronUp, Palette, Fingerprint, BarChart2, Edit3, Trash2, Award, Trophy, Bell, BellRing, Shield, Crown, RefreshCw } from 'lucide-react';
+import { Sun, Moon, Settings, Info, BookOpen, CheckCircle, RotateCcw, Clock, Star, X, Plus, Minus, Type, Flame, Volume2, VolumeX, Vibrate, VibrateOff, Target, Sunrise, Sunset, MoonStar, ChevronDown, ChevronUp, Palette, Fingerprint, BarChart2, Edit3, Trash2, Award, Trophy, Bell, BellRing, Shield, Crown, RefreshCw, Share2 } from 'lucide-react';
+import html2canvas from 'html2canvas';
 
 // مكون أيقونة المسبحة الإسلامية المخصصة والجميلة
 const TasbeehIcon = ({ className = "w-6 h-6" }) => (
@@ -549,6 +550,28 @@ export default function App() {
   const [totalTasbeehsMade, setTotalTasbeehsMade] = useState(0);
   const [bestStreak, setBestStreak] = useState(0);
   
+  // -- نظام التحدي اليومي للتسبيح --
+  const [todayTasbeehs, setTodayTasbeehs] = useState(0);
+  const [dailyTasbeehGoal, setDailyTasbeehGoal] = useState(1000);
+  
+  // -- تصدير الصورة --
+  const [isExporting, setIsExporting] = useState(false);
+
+  // -- حساب نقاط النور (XP) والمستوى (RPG Leveling) --
+  const userXP = (totalTasbeehsMade * 1) + (totalAdhkarRead * 5) + (bestStreak * 100);
+  
+  const getLevelInfo = (xp) => {
+    if (xp < 500) return { title: 'مبتدئ', minXP: 0, maxXP: 500, color: 'text-slate-400', bg: 'bg-slate-400' };
+    if (xp < 2000) return { title: 'طالب علم', minXP: 500, maxXP: 2000, color: 'text-emerald-500', bg: 'bg-emerald-500' };
+    if (xp < 5000) return { title: 'ذاكر', minXP: 2000, maxXP: 5000, color: 'text-blue-500', bg: 'bg-blue-500' };
+    if (xp < 10000) return { title: 'أواب', minXP: 5000, maxXP: 10000, color: 'text-purple-500', bg: 'bg-purple-500' };
+    if (xp < 25000) return { title: 'خاشع', minXP: 10000, maxXP: 25000, color: 'text-rose-500', bg: 'bg-rose-500' };
+    return { title: 'نبراس', minXP: 25000, maxXP: 100000, color: 'text-amber-500', bg: 'bg-amber-500' };
+  };
+  
+  const { title: currentLevel, minXP, maxXP, color: levelColor, bg: levelBg } = getLevelInfo(userXP);
+  const levelProgressPercent = Math.min(100, ((userXP - minXP) / (maxXP - minXP)) * 100);
+
   const [customAdhkar, setCustomAdhkar] = useState([]);
   const [newCustomText, setNewCustomText] = useState('');
   const [newCustomTarget, setNewCustomTarget] = useState(1);
@@ -781,6 +804,8 @@ export default function App() {
       }
       localStorage.setItem('lastActiveDate', todayStr);
       localStorage.setItem('streakCount', currentStreak.toString());
+      localStorage.setItem('todayTasbeehs', '0');
+      setTodayTasbeehs(0);
     }
     setStreak(currentStreak);
 
@@ -795,6 +820,14 @@ export default function App() {
     // استرجاع الإحصاءات والمسبحة والأذكار الحرة
     const savedTasbeehCount = localStorage.getItem('tasbeehCount');
     if (savedTasbeehCount) setTasbeehCount(parseInt(savedTasbeehCount, 10));
+
+    const savedTodayTasbeehs = localStorage.getItem('todayTasbeehs');
+    if (savedTodayTasbeehs && lastActive === todayStr) {
+      setTodayTasbeehs(parseInt(savedTodayTasbeehs, 10));
+    }
+
+    const savedDailyGoal = localStorage.getItem('dailyTasbeehGoal');
+    if (savedDailyGoal) setDailyTasbeehGoal(parseInt(savedDailyGoal, 10));
 
     const savedTotalAdhkar = localStorage.getItem('totalAdhkarRead');
     if (savedTotalAdhkar) setTotalAdhkarRead(parseInt(savedTotalAdhkar, 10));
@@ -835,6 +868,14 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem('tasbeehCount', tasbeehCount.toString());
   }, [tasbeehCount]);
+
+  useEffect(() => {
+    localStorage.setItem('todayTasbeehs', todayTasbeehs.toString());
+  }, [todayTasbeehs]);
+
+  useEffect(() => {
+    localStorage.setItem('dailyTasbeehGoal', dailyTasbeehGoal.toString());
+  }, [dailyTasbeehGoal]);
 
   useEffect(() => {
     localStorage.setItem('totalAdhkarRead', totalAdhkarRead.toString());
@@ -1043,6 +1084,7 @@ export default function App() {
   const handleTasbeehClick = () => {
     setTasbeehCount(prev => prev + 1);
     setTotalTasbeehsMade(prev => prev + 1);
+    setTodayTasbeehs(prev => prev + 1);
     triggerVibration(50);
     playSound('click');
   };
@@ -1094,6 +1136,29 @@ export default function App() {
   };
 
   const TabIcon = activeTab === 'sleep' ? Moon : activeTab === 'wake' ? Sunrise : activeTab === 'morning' ? Sun : Sunset;
+
+  const exportStatsAsImage = async () => {
+    setIsExporting(true);
+    setTimeout(async () => {
+      const element = document.getElementById('stats-export-area');
+      if (!element) return setIsExporting(false);
+      try {
+        const canvas = await html2canvas(element, { 
+          backgroundColor: isDarkMode ? '#0f172a' : '#f8fafc',
+          scale: 2 
+        });
+        const dataURL = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.download = `DhikrBook-Stats-${new Date().toISOString().slice(0,10)}.png`;
+        link.href = dataURL;
+        link.click();
+      } catch (e) {
+        console.error("Export failed:", e);
+      } finally {
+        setIsExporting(false);
+      }
+    }, 200);
+  };
 
   return (
     <div dir="rtl" className={`min-h-screen font-cairo transition-colors duration-300 ${isDarkMode ? 'dark bg-slate-900 text-slate-100' : 'bg-slate-50 text-slate-900'}`}>
@@ -1166,6 +1231,16 @@ export default function App() {
           </div>
           <div className="flex items-center space-x-2 space-x-reverse md:space-x-4">
             
+            {/* مؤشر الهدف اليومي للمسبحة */}
+            <div 
+              className="hidden sm:flex items-center gap-1 bg-white/20 text-white px-2.5 py-1 rounded-full text-sm md:text-base font-bold border border-white/30 cursor-pointer hover:bg-white/30 transition" 
+              title="الهدف اليومي للتسبيح"
+              onClick={() => setShowTasbeehModal(true)}
+            >
+              <Target className="w-4 h-4 md:w-5 md:h-5 text-teal-200" />
+              <span>{Math.min(100, Math.floor((todayTasbeehs / dailyTasbeehGoal) * 100))}%</span>
+            </div>
+
             {/* شعلة المواظبة اليومية */}
             {streak > 0 && (
               <div className="flex items-center gap-1 bg-yellow-400/20 text-yellow-100 px-2.5 py-1 rounded-full text-sm md:text-base font-bold border border-yellow-400/30" title="أيام المواظبة المتتالية">
@@ -1173,6 +1248,17 @@ export default function App() {
                 <span>{streak}</span>
               </div>
             )}
+
+            {/* المستوى الحالي (RPG) */}
+            <div 
+              className="flex items-center gap-1 bg-white/20 text-white px-2.5 py-1 rounded-full text-xs md:text-sm font-bold border border-white/30 cursor-pointer hover:bg-white/30 transition" 
+              title={`المستوى الحالي: ${currentLevel}`}
+              onClick={() => setShowStatsModal(true)}
+            >
+              <Crown className="w-3.5 h-3.5 md:w-4 md:h-4 text-amber-300" />
+              <span className="hidden sm:inline">{currentLevel}</span>
+              <span className="sm:hidden">{userXP}</span>
+            </div>
 
             {/* زر الإحصاءات */}
             <button 
@@ -1277,6 +1363,32 @@ export default function App() {
               <RotateCcw className="w-5 h-5" />
               تصفير المسبحة
             </button>
+
+            {/* التحدي اليومي للتسبيح */}
+            <div className="w-full mt-8 bg-slate-50 dark:bg-slate-700/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-600 w-full max-w-xs">
+              <div className="flex justify-between items-center mb-2">
+                <span className="font-bold text-slate-700 dark:text-slate-200">التحدي اليومي</span>
+                <span className="text-sm font-bold text-teal-600 dark:text-teal-400">{todayTasbeehs} / {dailyTasbeehGoal}</span>
+              </div>
+              <div className="w-full bg-slate-200 dark:bg-slate-600 h-2.5 rounded-full overflow-hidden mb-4">
+                <div 
+                  className="bg-teal-500 h-full transition-all duration-500" 
+                  style={{ width: `${Math.min(100, (todayTasbeehs / dailyTasbeehGoal) * 100)}%` }}
+                ></div>
+              </div>
+              
+              <div className="flex gap-2 items-center">
+                <span className="text-xs text-slate-500 w-16">تعديل الهدف</span>
+                <input 
+                  type="number" 
+                  value={dailyTasbeehGoal} 
+                  onChange={(e) => setDailyTasbeehGoal(Math.max(1, parseInt(e.target.value) || 1000))}
+                  className="flex-1 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-1.5 text-sm text-center outline-none focus:border-teal-500 text-slate-800 dark:text-slate-200"
+                  placeholder="الهدف"
+                />
+              </div>
+            </div>
+
           </div>
         </div>
       )}
@@ -1307,7 +1419,39 @@ export default function App() {
               إحصاءات المتابعة والأوسمة
             </h3>
 
-            <div className="w-full space-y-4">
+            <div id="stats-export-area" className="w-full bg-white dark:bg-slate-800 p-2 rounded-2xl">
+              
+              {/* --- قسم مستوى المستخدم (RPG Leveling) --- */}
+              <div className={`w-full mb-6 relative overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 p-5 ${levelBg} bg-opacity-10 dark:bg-opacity-20`}>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className={`p-2 rounded-xl bg-white dark:bg-slate-800 shadow-sm ${levelColor}`}>
+                      <Crown className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">المستوى الحالي</p>
+                      <h4 className={`text-xl font-black ${levelColor}`}>{currentLevel}</h4>
+                    </div>
+                  </div>
+                  <div className="text-left">
+                    <p className="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">نقاط النور</p>
+                    <p className="text-xl font-black text-slate-800 dark:text-slate-100">{userXP} <span className="text-xs font-normal">XP</span></p>
+                  </div>
+                </div>
+
+                <div className="w-full bg-slate-200 dark:bg-slate-700 h-2.5 rounded-full overflow-hidden shadow-inner">
+                  <div 
+                    className={`h-full ${levelBg} transition-all duration-1000 ease-out`}
+                    style={{ width: `${levelProgressPercent}%` }}
+                  />
+                </div>
+                <div className="flex justify-between mt-2 text-[10px] font-bold text-slate-400">
+                  <span>{minXP} XP</span>
+                  <span>الهدف القادم: {maxXP} XP</span>
+                </div>
+              </div>
+
+              <div className="w-full space-y-4">
               <div className="bg-amber-50 dark:bg-slate-700/50 p-4 rounded-2xl border border-amber-200 dark:border-slate-600 flex items-center gap-4">
                 <div className="bg-amber-100 dark:bg-slate-600 p-3 rounded-full text-amber-600 dark:text-amber-400">
                   <Flame className="w-6 h-6" />
@@ -1377,6 +1521,21 @@ export default function App() {
                   </div>
                 ))}
               </div>
+            </div>
+            
+            {/* إغلاق مساحة التصدير */}
+            </div>
+
+            {/* أزرار الإجراءات */}
+            <div className="w-full mt-6 flex gap-3">
+              <button 
+                onClick={exportStatsAsImage}
+                disabled={isExporting}
+                className="flex-1 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition shadow-md flex items-center justify-center gap-2 disabled:opacity-50"
+              >
+                {isExporting ? <RefreshCw className="w-5 h-5 animate-spin" /> : <Share2 className="w-5 h-5" />}
+                شارك إنجازك
+              </button>
             </div>
           </div>
         </div>

@@ -661,15 +661,24 @@ export default function App() {
             window.voiceState = { targetId: targetCard.id, accumulated: [] };
         }
 
-        // تنظيف الكلمات وتجميعها في السجل التراكمي
-        const cleanStr = (s) => s.replace(/[^\u0600-\u06FF\s]/g, '').trim();
-        const spokenWords = cleanStr(transcript).split(/\s+/).filter(w => w.length >= 2);
+        // دالة لتنظيف النصوص العربية (إزالة التشكيل وتوحيد الهمزات والتاء) لتصبح المطابقة دقيقة
+        const normalizeArabic = (text) => {
+          return text
+            .replace(/[\u064B-\u065F\u0670]/g, '') // إزالة التشكيل
+            .replace(/[أإآ]/g, 'ا') // توحيد الألف
+            .replace(/ة/g, 'ه') // توحيد التاء المربوطة
+            .replace(/ى/g, 'ي') // توحيد الألف المقصورة
+            .replace(/[^\u0621-\u064A\s]/g, '') // الإبقاء على الحروف العربية والمسافات فقط
+            .trim();
+        };
+
+        const spokenWords = normalizeArabic(transcript).split(/\s+/).filter(w => w.length >= 2);
         window.voiceState.accumulated.push(...spokenWords);
 
         // جلب نص الذكر الفعلي (من داخل الـ paragraph لتجنب قراءة نصوص التخريج والفوائد)
         const pElem = targetCard.querySelector('p.font-bold');
         const cardText = pElem ? pElem.innerText : '';
-        const cardWords = cleanStr(cardText).split(/\s+/).filter(w => w.length >= 2);
+        const cardWords = normalizeArabic(cardText).split(/\s+/).filter(w => w.length >= 2);
         
         if (cardWords.length === 0) return;
 

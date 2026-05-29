@@ -514,21 +514,42 @@ export default function App() {
     },
   });
 
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    const saved = localStorage.getItem('darkMode');
+    return saved !== null ? saved === 'true' : true; // الافتراضي ليلي
+  });
   const [activeTab, setActiveTab] = useState('morning');
   const [showTakhreej, setShowTakhreej] = useState(true);
   const [showFadl, setShowFadl] = useState(true);
   const [showFawaid, setShowFawaid] = useState(true);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
-  const [fontSizeIndex, setFontSizeIndex] = useState(2); 
+  const [fontSizeIndex, setFontSizeIndex] = useState(() => {
+    const saved = localStorage.getItem('fontSizeIndex');
+    return saved !== null ? parseInt(saved) : 2;
+  }); 
   const [progress, setProgress] = useState({});
-  const [themeColors, setThemeColors] = useState(defaultThemeColors);
+  const [themeColors, setThemeColors] = useState(() => {
+    const saved = localStorage.getItem('themeColors');
+    return saved !== null ? JSON.parse(saved) : defaultThemeColors;
+  });
   
   // -- الحالات الجديدة للصوت والاهتزاز والمواظبة والاحتفال والإشعارات --
-  const [soundEnabled, setSoundEnabled] = useState(true);
-  const [vibrationEnabled, setVibrationEnabled] = useState(true);
-  const [celebrationEnabled, setCelebrationEnabled] = useState(true);
-  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
+  const [soundEnabled, setSoundEnabled] = useState(() => {
+    const saved = localStorage.getItem('soundEnabled');
+    return saved !== null ? saved === 'true' : true;
+  });
+  const [vibrationEnabled, setVibrationEnabled] = useState(() => {
+    const saved = localStorage.getItem('vibrationEnabled');
+    return saved !== null ? saved === 'true' : true;
+  });
+  const [celebrationEnabled, setCelebrationEnabled] = useState(() => {
+    const saved = localStorage.getItem('celebrationEnabled');
+    return saved !== null ? saved === 'true' : true;
+  });
+  const [notificationsEnabled, setNotificationsEnabled] = useState(() => {
+    const saved = localStorage.getItem('notificationsEnabled');
+    return saved !== null ? saved === 'true' : false;
+  });
   const [streak, setStreak] = useState(0);
   const [prayerTimes, setPrayerTimes] = useState(null);
 
@@ -953,23 +974,7 @@ export default function App() {
 
     fetchAccuratePeriod();
 
-    const savedMode = localStorage.getItem('darkMode');
-    if (savedMode === 'true') setIsDarkMode(true);
-
-    const savedFontSize = localStorage.getItem('fontSizeIndex');
-    if (savedFontSize) setFontSizeIndex(parseInt(savedFontSize));
-
-    // استرجاع إعدادات الصوت والاهتزاز والاحتفال والألوان
-    const savedSound = localStorage.getItem('soundEnabled');
-    if (savedSound !== null) setSoundEnabled(savedSound === 'true');
-    const savedVibration = localStorage.getItem('vibrationEnabled');
-    if (savedVibration !== null) setVibrationEnabled(savedVibration === 'true');
-    const savedCelebration = localStorage.getItem('celebrationEnabled');
-    if (savedCelebration !== null) setCelebrationEnabled(savedCelebration === 'true');
-    const savedNotifications = localStorage.getItem('notificationsEnabled');
-    if (savedNotifications !== null) setNotificationsEnabled(savedNotifications === 'true');
-    const savedThemeColors = localStorage.getItem('themeColors');
-    if (savedThemeColors) setThemeColors(JSON.parse(savedThemeColors));
+    // تم نقل استرجاع الإعدادات لتكون متزامنة مع تهيئة الـ State لتجنب مسحها بالغلط
 
     // حساب المواظبة اليومية (Streaks)
     const todayStr = new Date().toLocaleDateString('en-CA');

@@ -1256,8 +1256,7 @@ export default function App() {
               onClick={() => setShowStatsModal(true)}
             >
               <Crown className="w-3.5 h-3.5 md:w-4 md:h-4 text-amber-300" />
-              <span className="hidden sm:inline">{currentLevel}</span>
-              <span className="sm:hidden">{userXP}</span>
+              <span>{currentLevel}</span>
             </div>
 
             {/* زر المسبحة الحرة */}

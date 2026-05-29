@@ -8,7 +8,7 @@ export default defineConfig({
     react(),
     tailwindcss(),
     VitePWA({
-      registerType: 'autoUpdate',
+      registerType: 'prompt',
       includeAssets: ['icon-192x192.png', 'icon-512x512.png'], // الأيقونات التي أضفتها
       manifest: {
         name: 'أذكار الصباح والمساء', // الاسم الكامل

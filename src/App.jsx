@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Sun, Moon, Settings, Info, BookOpen, CheckCircle, RotateCcw, Clock, Star, X, Plus, Minus, Type, Flame, Volume2, VolumeX, Vibrate, VibrateOff, Target, Sunrise, Sunset, MoonStar, ChevronDown, ChevronUp, Palette, Fingerprint, BarChart2, Edit3, Trash2, Award, Trophy, Bell, BellRing, Shield, Crown } from 'lucide-react';
+import { useRegisterSW } from 'virtual:pwa-register/react';
+import { Sun, Moon, Settings, Info, BookOpen, CheckCircle, RotateCcw, Clock, Star, X, Plus, Minus, Type, Flame, Volume2, VolumeX, Vibrate, VibrateOff, Target, Sunrise, Sunset, MoonStar, ChevronDown, ChevronUp, Palette, Fingerprint, BarChart2, Edit3, Trash2, Award, Trophy, Bell, BellRing, Shield, Crown, RefreshCw } from 'lucide-react';
 
 // مكون أيقونة المسبحة الإسلامية المخصصة والجميلة
 const TasbeehIcon = ({ className = "w-6 h-6" }) => (
@@ -498,6 +499,20 @@ const colorMap = {
 const defaultThemeColors = { wake: 'cyan', morning: 'teal', evening: 'red', sleep: 'indigo', free: 'orange' };
 
 export default function App() {
+  // -- نظام التحديثات (PWA Update) --
+  const {
+    needRefresh: [needRefresh, setNeedRefresh],
+    updateServiceWorker,
+  } = useRegisterSW({
+    onRegistered(r) {
+      // فحص وجود تحديثات كل ساعة
+      r && setInterval(() => { r.update() }, 60 * 60 * 1000);
+    },
+    onRegisterError(error) {
+      console.log('SW registration error', error);
+    },
+  });
+
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [activeTab, setActiveTab] = useState('morning');
   const [showTakhreej, setShowTakhreej] = useState(true);
@@ -1079,6 +1094,27 @@ export default function App() {
     <div dir="rtl" className={`min-h-screen font-cairo transition-colors duration-300 ${isDarkMode ? 'dark bg-slate-900 text-slate-100' : 'bg-slate-50 text-slate-900'}`}>
       <style dangerouslySetInnerHTML={globalStyles} />
       
+      {/* --- إشعار تحديث التطبيق (PWA Update Prompt) --- */}
+      {needRefresh && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] w-[90%] max-w-md bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-2xl border-2 border-teal-500 dark:border-teal-400 flex items-center justify-between gap-4 animate-in slide-in-from-bottom-8">
+          <div className="flex items-center gap-3">
+            <div className="bg-teal-100 dark:bg-teal-900/30 p-2 rounded-full">
+              <RefreshCw className="w-6 h-6 text-teal-600 dark:text-teal-400 animate-spin" />
+            </div>
+            <div>
+              <p className="font-bold text-slate-800 dark:text-slate-100 text-sm md:text-base">تحديث جديد متاح! ✨</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">انقر لتحديث التطبيق والحصول على أحدث الميزات.</p>
+            </div>
+          </div>
+          <button 
+            onClick={() => updateServiceWorker(true)}
+            className="shrink-0 bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-xl font-bold transition shadow-md active:scale-95 text-sm md:text-base"
+          >
+            تحديث الآن
+          </button>
+        </div>
+      )}
+
       {/* --- تأثير الاحتفال بالإنجاز والدعاء --- */}
       {showConfetti && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none">

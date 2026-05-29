@@ -1244,11 +1244,11 @@ export default function App() {
             <BookOpen className="w-6 h-6 md:w-8 md:h-8" />
             <h1 className="text-xl md:text-2xl font-bold tracking-wide">الأذكار</h1>
           </div>
-          <div className="flex items-center space-x-2 space-x-reverse md:space-x-4">
+          <div className="flex items-center space-x-1.5 space-x-reverse md:space-x-3">
             
             {/* مؤشر الهدف اليومي للمسبحة */}
             <div 
-              className="hidden sm:flex items-center gap-1 bg-white/20 text-white px-2.5 py-1 rounded-full text-sm md:text-base font-bold border border-white/30 cursor-pointer hover:bg-white/30 transition" 
+              className="hidden sm:flex items-center gap-1 bg-white/20 text-white px-2 py-1 rounded-full text-xs md:text-base font-bold border border-white/30 cursor-pointer hover:bg-white/30 transition" 
               title="الهدف اليومي للتسبيح"
               onClick={() => setShowTasbeehModal(true)}
             >
@@ -1256,38 +1256,46 @@ export default function App() {
               <span>{Math.min(100, Math.floor((todayTasbeehs / dailyTasbeehGoal) * 100))}%</span>
             </div>
 
+            {/* خريطة التحدي */}
+            <button 
+              onClick={() => setShowRoadmapModal(true)} 
+              className="p-1.5 md:p-2 rounded-full bg-black/20 hover:bg-black/30 dark:bg-slate-700/50 dark:hover:bg-slate-700 transition relative group" 
+              title="خريطة الـ 40 يوماً"
+            >
+              <Map className="w-4 h-4 md:w-5 md:h-5 text-amber-200" />
+              <div className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full animate-ping"></div>
+              <div className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></div>
+            </button>
+
             {/* شعلة المواظبة اليومية */}
             {streak > 0 && (
               <div 
-                className="flex items-center gap-1 bg-yellow-400/20 text-yellow-100 px-2.5 py-1 rounded-full text-sm md:text-base font-bold border border-yellow-400/30 relative cursor-pointer hover:bg-yellow-400/30 transition" 
-                title="أيام المواظبة المتتالية (اضغط لرؤية خريطة التحدي)" 
+                className="flex items-center gap-1 bg-yellow-400/20 text-yellow-100 px-2 py-1 rounded-full text-xs md:text-base font-bold border border-yellow-400/30 cursor-pointer hover:bg-yellow-400/30 transition" 
+                title="أيام المواظبة المتتالية" 
                 onClick={() => setShowStatsModal(true)}
               >
-                <Flame className="w-4 h-4 md:w-5 md:h-5 text-yellow-400" />
+                <Flame className="w-3.5 h-3.5 md:w-5 md:h-5 text-yellow-400" />
                 <span>{streak}</span>
-                {/* نقطة التنبيه لجذب الانتباه للخريطة الجديدة */}
-                <div className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full animate-ping"></div>
-                <div className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full"></div>
               </div>
             )}
 
             {/* المستوى الحالي (RPG) */}
             <div 
-              className="flex items-center gap-1 bg-white/20 text-white px-2.5 py-1 rounded-full text-xs md:text-sm font-bold border border-white/30 cursor-pointer hover:bg-white/30 transition" 
+              className="flex items-center gap-1 bg-white/20 text-white px-2 py-1 rounded-full text-[10px] md:text-sm font-bold border border-white/30 cursor-pointer hover:bg-white/30 transition" 
               title={`المستوى الحالي: ${currentLevel}`}
               onClick={() => setShowStatsModal(true)}
             >
-              <Crown className="w-3.5 h-3.5 md:w-4 md:h-4 text-amber-300" />
+              <Crown className="w-3 h-3 md:w-4 md:h-4 text-amber-300" />
               <span>{currentLevel}</span>
             </div>
 
             {/* زر المسبحة الحرة */}
             <button 
               onClick={() => setShowTasbeehModal(true)} 
-              className="flex items-center gap-1 md:gap-2 p-2 px-3 rounded-full md:rounded-xl bg-black/20 hover:bg-black/30 dark:bg-slate-700/50 dark:hover:bg-slate-700 transition text-white font-bold shadow-sm"
+              className="flex items-center gap-1 md:gap-2 p-1.5 md:p-2 md:px-3 rounded-full md:rounded-xl bg-black/20 hover:bg-black/30 dark:bg-slate-700/50 dark:hover:bg-slate-700 transition text-white font-bold shadow-sm"
               title="المسبحة الحرة"
             >
-              <TasbeehIcon className="w-5 h-5 md:w-6 md:h-6" />
+              <TasbeehIcon className="w-4 h-4 md:w-5 md:h-5" />
               <span className="hidden md:inline text-sm">المسبحة</span>
             </button>
 

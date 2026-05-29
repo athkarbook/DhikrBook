@@ -1288,7 +1288,7 @@ export default function App() {
             </button>
             <h3 className="text-2xl font-bold mb-8 text-teal-700 dark:text-teal-400 flex items-center gap-2">
               <BarChart2 className="w-7 h-7" />
-              إحصاءات المتابعة
+              إحصاءات المتابعة والأوسمة
             </h3>
 
             <div className="w-full space-y-4">

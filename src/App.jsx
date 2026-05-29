@@ -558,7 +558,7 @@ export default function App() {
   const [isExporting, setIsExporting] = useState(false);
 
   // -- حساب نقاط النور (XP) والمستوى (RPG Leveling) --
-  const userXP = (totalTasbeehsMade * 1) + (totalAdhkarRead * 5) + (bestStreak * 100);
+  const userXP = (totalTasbeehsMade * 1) + (totalAdhkarRead * 2) + (bestStreak * 50);
   
   const getLevelInfo = (xp) => {
     if (xp < 500) return { title: 'مبتدئ', minXP: 0, maxXP: 500, color: 'text-slate-400', bg: 'bg-slate-400' };
@@ -1421,6 +1421,21 @@ export default function App() {
                 <div className="flex justify-between mt-2 text-[10px] font-bold text-slate-400">
                   <span>{minXP} XP</span>
                   <span>الهدف القادم: {maxXP} XP</span>
+                </div>
+                
+                {/* شرح كيفية حساب النقاط */}
+                <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-600/50">
+                  <div className="flex items-start gap-2 text-xs text-slate-600 dark:text-slate-400 font-medium">
+                    <Info className="w-4 h-4 shrink-0 text-teal-500" />
+                    <div>
+                      <p className="font-bold text-slate-700 dark:text-slate-300 mb-1">كيف أجمع نقاط النور (XP)؟</p>
+                      <ul className="list-disc list-inside space-y-0.5">
+                        <li>كل تسبيحة بالمسبحة = <strong className="text-teal-600 dark:text-teal-400">1 نقطة</strong></li>
+                        <li>كل قراءة لذكر = <strong className="text-teal-600 dark:text-teal-400">2 نقطة</strong></li>
+                        <li>المواظبة المستمرة = <strong className="text-teal-600 dark:text-teal-400">50 نقطة</strong> إضافية عن كل يوم في أعلى ستريك لك!</li>
+                      </ul>
+                    </div>
+                  </div>
                 </div>
               </div>
 

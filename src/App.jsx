@@ -862,10 +862,10 @@ export default function App() {
         initialPeriod = 'wake'; // من 3 الفجر إلى 6 صباحاً استيقاظ
     } else if (hour >= 6 && hour < 15) {
         initialPeriod = 'morning'; // من 6 صباحاً إلى 3 عصراً صباح
-    } else if (hour >= 15 && hour < 20) { 
-        initialPeriod = 'evening'; // من 3 عصراً إلى 8 مساءً مساء
+    } else if (hour >= 15 && hour < 22) { 
+        initialPeriod = 'evening'; // من 3 عصراً إلى 10 مساءً مساء (تمديد المساء)
     } else { 
-        initialPeriod = 'sleep'; // ما عدا ذلك نوم
+        initialPeriod = 'sleep'; // من 10 مساءً فصاعداً نوم
     }
     
     // دالة لتطبيق الفترة وتصفير التقدم إذا لزم الأمر
@@ -931,13 +931,13 @@ export default function App() {
         // تقسيم الفترات بناءً على أوقات الصلاة:
         // الاستيقاظ: من منتصف الليل إلى الفجر
         // الصباح: من الفجر إلى العصر
-        // المساء: من العصر إلى العشاء
-        // النوم: من العشاء إلى منتصف الليل
+        // المساء: من العصر إلى ما بعد العشاء بساعة ونصف
+        // النوم: بعد العشاء بساعة ونصف إلى منتصف الليل
         if (nowMins >= 0 && nowMins < fajrMins) {
            accuratePeriod = 'wake';
         } else if (nowMins >= fajrMins && nowMins < asrMins) {
            accuratePeriod = 'morning';
-        } else if (nowMins >= asrMins && nowMins < ishaMins) {
+        } else if (nowMins >= asrMins && nowMins < (ishaMins + 90)) {
            accuratePeriod = 'evening';
         } else {
            accuratePeriod = 'sleep';
@@ -1125,6 +1125,13 @@ export default function App() {
         else if (h === asrH && m === asrM) {
           new Notification("أذكار المساء", { 
             body: "حان الآن موعد قراءة أذكار المساء، اختم نهارك بذكر الله وطمأنينته.", 
+            icon: "/icon-192x192.png" 
+          });
+        }
+        // إشعار النوم (في الساعة 10:00 مساءً)
+        else if (h === 22 && m === 0) {
+          new Notification("أذكار النوم", { 
+            body: "هل تستعد للنوم؟ لا تنسَ قراءة أذكار النوم لتكن في حفظ الله حتى تصبح.", 
             icon: "/icon-192x192.png" 
           });
         }

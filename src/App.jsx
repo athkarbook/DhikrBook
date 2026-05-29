@@ -643,47 +643,78 @@ export default function App() {
         
         // جميع الأذكار غير المكتملة
         const uncompletedCards = Array.from(document.querySelectorAll('.dhikr-card:not(.completed)'));
-        
-        if (uncompletedCards.length > 0) {
-          let targetCard = null;
+        if (uncompletedCards.length === 0) {
+            // إذا اكتملت كل الأذكار في الصفحة، اجعلها مسبحة حرة عامة كخيار احتياطي
+            if (containsDhikr) tasbeehBtn?.click();
+            return;
+        }
 
-          // نكتشف البطاقات المرئية حالياً في الشاشة أمامه
-          const visibleCards = uncompletedCards.filter(card => {
+        // تحديد البطاقة المستهدفة (أول بطاقة ظاهرة أمامه)
+        const visibleCards = uncompletedCards.filter(card => {
              const rect = card.getBoundingClientRect();
-             // نعتبرها مرئية إذا كان جزء منها داخل الشاشة بوضوح
              return rect.top < window.innerHeight - 100 && rect.bottom > 100;
-          });
+        });
+        const targetCard = visibleCards.length > 0 ? visibleCards[0] : uncompletedCards[0];
+        
+        // تهيئة أو إعادة ضبط المتغيرات التراكمية إذا انتقل المستخدم لذكر جديد
+        if (!window.voiceState || window.voiceState.targetId !== targetCard.id) {
+            window.voiceState = { targetId: targetCard.id, accumulated: [] };
+        }
 
-          // هل الكلام المنطوق يعتبر قراءة لذكر؟ (يحتوي كلمات مفتاحية، أو جملة طويلة من 3 كلمات فأكثر)
-          const isReadingDhikr = containsDhikr || transcriptWords.length >= 3;
+        // تنظيف الكلمات وتجميعها في السجل التراكمي
+        const cleanStr = (s) => s.replace(/[^\u0600-\u06FF\s]/g, '').trim();
+        const spokenWords = cleanStr(transcript).split(/\s+/).filter(w => w.length >= 2);
+        window.voiceState.accumulated.push(...spokenWords);
 
-          if (isReadingDhikr) {
-             // الأولوية القصوى والوحيدة: أول بطاقة غير مكتملة ظاهرة أمامه على الشاشة حالياً
-             if (visibleCards.length > 0) {
-                 targetCard = visibleCards[0];
-             } else {
-                 // إذا لم تكن هناك بطاقات ظاهرة (مثلاً الشاشة في المنتصف والأذكار المتبقية تحت)، نأخذ أول ذكر متبقي
-                 targetCard = uncompletedCards[0];
-             }
-          }
+        // جلب نص الذكر الفعلي (من داخل الـ paragraph لتجنب قراءة نصوص التخريج والفوائد)
+        const pElem = targetCard.querySelector('p.font-bold');
+        const cardText = pElem ? pElem.innerText : '';
+        const cardWords = cleanStr(cardText).split(/\s+/).filter(w => w.length >= 2);
+        
+        if (cardWords.length === 0) return;
 
-          if (targetCard) {
+        let shouldIncrement = false;
+
+        // إذا كان الذكر قصيراً جداً (مثل: سبحان الله، الحمد لله)
+        if (cardWords.length <= 6) {
+           // يكفي أن يتطابق أي جزء منه ليتم الحساب فوراً
+           const hasMatch = spokenWords.some(tw => cardWords.includes(tw));
+           if (hasMatch) {
+              shouldIncrement = true;
+           }
+        } else {
+           // الأذكار الطويلة (مثل آية الكرسي، سيد الاستغفار)
+           // نحسب نسبة تطابق الكلمات المجمعة (accumulated) مع كلمات الذكر الأصلي
+           const uniqueCardWords = [...new Set(cardWords)];
+           const uniqueAccumulated = [...new Set(window.voiceState.accumulated)];
+           
+           let matches = 0;
+           for (const w of uniqueCardWords) {
+               if (uniqueAccumulated.includes(w)) matches++;
+           }
+           
+           // إذا تطابقت 40% من الكلمات (نكتفي بـ 40% لأن الذكاء الاصطناعي قد لا يفهم بعض الكلمات أو الحركات)
+           const matchRatio = matches / uniqueCardWords.length;
+           if (matchRatio >= 0.4) {
+              shouldIncrement = true;
+           }
+        }
+
+        if (shouldIncrement) {
             const btn = targetCard.querySelector('button.dhikr-increment-btn');
             if (btn) {
               btn.click();
-              // تمرير سلس وذكي فقط إذا لم تكن البطاقة ظاهرة بوضوح
-              const rect = targetCard.getBoundingClientRect();
-              const isFullyVisible = (rect.top >= 100) && (rect.bottom <= window.innerHeight - 50);
-              if (!isFullyVisible) {
-                targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-              }
+              window.voiceState.accumulated = []; // تصفير الذاكرة استعداداً لتكرار الذكر نفسه أو لذكر جديد
+              
+              // تمرير سلس بعد زيادة العداد لتجنب القفز المفاجئ
+              setTimeout(() => {
+                  const rect = targetCard.getBoundingClientRect();
+                  const isFullyVisible = (rect.top >= 100) && (rect.bottom <= window.innerHeight - 50);
+                  if (!isFullyVisible) {
+                    targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  }
+              }, 150);
             }
-          }
-        } else {
-          // If no cards left, count as general tasbeeh
-          if (containsDhikr) {
-             tasbeehBtn?.click();
-          }
         }
       };
       

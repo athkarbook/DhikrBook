@@ -1274,6 +1274,17 @@ export default function App() {
               <span>{currentLevel}</span>
             </div>
 
+            {/* خريطة التحدي */}
+            <button 
+              onClick={() => setShowRoadmapModal(true)} 
+              className="p-2 rounded-full bg-black/20 hover:bg-black/30 dark:bg-slate-700/50 dark:hover:bg-slate-700 transition relative group" 
+              title="خريطة الـ 40 يوماً"
+            >
+              <Map className="w-5 h-5 md:w-6 md:h-6 text-amber-200" />
+              <div className="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full animate-ping"></div>
+              <div className="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full"></div>
+            </button>
+
             {/* زر المسبحة الحرة */}
             <button 
               onClick={() => setShowTasbeehModal(true)} 
@@ -1467,10 +1478,11 @@ export default function App() {
                 </div>
                 <button 
                   onClick={() => setShowRoadmapModal(true)}
-                  className="bg-amber-500 hover:bg-amber-600 text-white p-2.5 rounded-xl shadow-md transition active:scale-95"
+                  className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-4 py-2.5 rounded-xl shadow-md transition active:scale-95 flex items-center gap-2 font-bold"
                   title="خريطة الـ 40 يوماً"
                 >
-                  <Map className="w-6 h-6" />
+                  <Map className="w-5 h-5" />
+                  <span className="hidden sm:inline">افتح الخريطة</span>
                 </button>
               </div>
 

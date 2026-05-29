@@ -620,31 +620,49 @@ export default function App() {
       window.recognition.onresult = (event) => {
         const current = event.resultIndex;
         const transcript = event.results[current][0].transcript.trim();
-        if (transcript.length > 0) {
-           // Any spoken word will be counted
-           
-           const tasbeehBtn = document.getElementById('hidden-tasbeeh-btn');
-           if (document.getElementById('tasbeeh-modal-container')) {
+        
+        if (transcript.length === 0) return;
+
+        const tasbeehBtn = document.getElementById('hidden-tasbeeh-btn');
+        const isTasbeehModalOpen = !!document.getElementById('tasbeeh-modal-container');
+
+        // الكلمات المفتاحية الشائعة للأذكار لتجنب عد الكلام العادي أو الضجيج
+        const dhikrKeywords = ['الله', 'سبحان', 'حمد', 'إله', 'اله', 'اكبر', 'أكبر', 'استغفر', 'أستغفر', 'اللهم', 'رب', 'نبي', 'رسول', 'حول', 'قوة', 'بسم', 'أعوذ', 'اعوذ', 'تبارك', 'تعالى', 'عز', 'كريم', 'عظيم'];
+        
+        const transcriptWords = transcript.split(' ');
+        const containsDhikr = transcriptWords.some(tw => 
+          tw.length >= 2 && dhikrKeywords.some(keyword => tw.includes(keyword))
+        );
+        
+        if (isTasbeehModalOpen) {
+           if (containsDhikr || transcript.length > 5) {
               tasbeehBtn?.click();
-              return;
            }
-           
-           // Find first uncompleted dhikr
-           const uncompletedCards = document.querySelectorAll('.dhikr-card:not(.completed)');
-           if (uncompletedCards.length > 0) {
-             const firstCard = uncompletedCards[0];
-             const btn = firstCard.querySelector('button.dhikr-increment-btn');
-             if (btn) {
-               btn.click();
-               // Scroll if out of view
-               const rect = firstCard.getBoundingClientRect();
-               if(rect.top < 100 || rect.bottom > window.innerHeight - 100) {
-                 window.scrollBy({ top: rect.top - 120, behavior: 'smooth' });
-               }
-             }
-           } else {
+           return;
+        }
+        
+        // Find first uncompleted dhikr
+        const uncompletedCards = document.querySelectorAll('.dhikr-card:not(.completed)');
+        if (uncompletedCards.length > 0) {
+          const firstCard = uncompletedCards[0];
+          
+          // تحقق أذكى: هل الكلمات المنطوقة موجودة في نص الذكر الفعلي؟
+          const cardText = firstCard.innerText || '';
+          const isMatchWithCard = transcriptWords.some(tw => tw.length >= 3 && cardText.includes(tw));
+
+          if (containsDhikr || isMatchWithCard) {
+            const btn = firstCard.querySelector('button.dhikr-increment-btn');
+            if (btn) {
+              btn.click();
+              // تمرير سلس وذكي ليصبح الكارت في منتصف الشاشة دائماً
+              firstCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+          }
+        } else {
+          // If no cards left, count as general tasbeeh
+          if (containsDhikr) {
              tasbeehBtn?.click();
-           }
+          }
         }
       };
       

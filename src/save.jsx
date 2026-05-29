@@ -1,34 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Sun, Moon, Settings, Info, BookOpen, CheckCircle, RotateCcw, Clock, Star, X, Plus, Minus, Type, Flame, Volume2, VolumeX, Vibrate, VibrateOff, Target, Sunrise, Sunset, MoonStar, ChevronDown, ChevronUp, Palette, Fingerprint, BarChart2, Edit3, Trash2, Award, Trophy, Bell, BellRing, Shield, Crown } from 'lucide-react';
-
-// مكون أيقونة المسبحة الإسلامية المخصصة والجميلة
-const TasbeehIcon = ({ className = "w-6 h-6" }) => (
-  <svg 
-    xmlns="http://www.w3.org/2000/svg" 
-    viewBox="0 0 24 24" 
-    fill="none" 
-    stroke="currentColor" 
-    strokeWidth="2" 
-    strokeLinecap="round" 
-    strokeLinejoin="round" 
-    className={className}
-  >
-    {/* خرزات دائرية مرتبة بشكل مسبحة دائري */}
-    <circle cx="12" cy="4" r="1.5" />
-    <circle cx="16.5" cy="5.5" r="1.5" />
-    <circle cx="19.5" cy="9.5" r="1.5" />
-    <circle cx="19.5" cy="14.5" r="1.5" />
-    <circle cx="16.5" cy="18.5" r="1.5" />
-    <circle cx="12" cy="20" r="1.5" />
-    <circle cx="7.5" cy="18.5" r="1.5" />
-    <circle cx="4.5" cy="14.5" r="1.5" />
-    <circle cx="4.5" cy="9.5" r="1.5" />
-    <circle cx="7.5" cy="5.5" r="1.5" />
-    {/* الشاهد والشرابة في الأسفل */}
-    <line x1="12" y1="20" x2="12" y2="22" strokeWidth="2.5" />
-    <path d="M10 22 C 10 24, 14 24, 14 22 Z" fill="currentColor" />
-  </svg>
-);
+import { Sun, Moon, Settings, Info, BookOpen, CheckCircle, RotateCcw, Clock, Star, X, Plus, Minus, Type, Flame, Volume2, VolumeX, Vibrate, VibrateOff, Target, Sunrise, MoonStar, ChevronDown, ChevronUp } from 'lucide-react';
 
 // --- البيانات المستخرجة حصرياً من ملف د. مطلق الجاسر ---
 const adhkarData = [
@@ -75,7 +46,7 @@ const adhkarData = [
     id: 205,
     target: 1,
     category: 'أذكار الاستيقاظ من النوم',
-    textMorning: 'يُستحب مسح أثر النوم عن الوجه باليد، ثم قراءة خواتيم سورة آل عمران:\n\n﴿إِنَّ فِي خَلْقِ السَّمَاوَاتِ وَالْأَرْضِ وَاخْتِلَافِ اللَّيْلِ وَالنَّهَارِ لَآيَاتٍ لِّأُولِي الْأَلْبَابِ (190) الَّذِينَ يَذْكُرُونَ اللَّهَ قِيَامًا وَقُعُودًا وَعَلَىٰ جُنُوبِهِمْ وَيَتَفَكَّرُونَ فِي خَلْقِ السَّمَاوَاتِ وَالْأَرْضِ رَبَّنَا مَا خَلَقْتَ هَٰذَا بَاطِلًا سُبْحَانَكَ فَقِنَا عَذَابَ النَّارِ (191) رَبَّنَا إِنَّكَ مَن تُدْخِلِ النَّارَ فَقَدْ أَخْزَيْتَهُ ۖ وَمَا لِلظَّالِمِينَ مِنْ أَنصَارٍ (192) رَّبَّنَا إِنَّنَا سَمِعْنَا مُنَادِيًا يُنَادِي لِلْإِيمَانِ أَنْ آمِنُوا بِرَبِّكُمْ فَآمَنَّا ۚ رَبَّنَا فَاغْفِرْ لَنَا ذُنُوبَنَا وَكَفِّرْ عَنَّا سَيِّئَاتِنَا وَتَوَفَّنَا مَعَ الْأَبْرَارِ (193) رَبَّنَا وَآتِنَا مَا وَعَدتَّنَا عَلَىٰ رُسُلِكَ وَلَا تُخْزِنَا يَوْمَ الْقِيَامَةِ ۗ إِنَّكَ لَا تُخْلِفُ الْمِيعَادَ (194) فَاسْتَجَابَ لَهُمْ رَبُّهُمْ أَنِّي لَا أُضِيعُ عَمَلَ عَامِلٍ مِّنكُم مِّن ذَكَرٍ أَوْ أُنثَىٰ ۖ بَعْضُكُم مِّن بَعْضٍ ۖ فَالَّذِينَ هَاجَرُوا وَأُخْرِجُوا مِن دِيَارِهِمْ وَأُوذُوا فِي سَبِيلِي وَقَاتَلُوا وَقُتِلُوا لَأُكَفِّرَنَّ عَنْهُمْ سَيِّئَاتِهِمْ وَلَأُدْخِلَنَّهُمْ جَنَّاتٍ تَجْرِي مِن تَحْتِهَا الْأَنْهَارُ ثَوَابًا مِّنْ عِندِ اللَّهِ ۗ وَاللَّهُ عِندَهُ حُسْنُ الثَّوَابِ (195) لَا يَغُرَّنَّكَ تَقَلُّبُ الَّذِينَ كَفَرُوا فِي الْبِلَادِ (196) مَتَاعٌ قَلِيلٌ ثُمَّ مَأْوَاهُمْ جَهَنَّمُ ۚ وَبِئْسَ الْمِهَادُ (197) لَٰكِنِ الَّذِينَ اتَّقَوْا رَبَّهُمْ لَهُمْ جَنَّاتٌ تَجْرِي مِن تَحْتِهَا الْأَنْهَارُ خَالِدِينَ فِيهَا نُزُلًا مِّنْ عِندِ اللَّهِ ۗ وَمَا عِندَ اللَّهِ خَيْرٌ لِّلْأَبْرَارِ (198) وَإِنَّ مِنْ أَهْلِ الْكِتَابِ لَمَن يُؤْمِنُ بِاللَّهِ وَمَا أُنزِلَ إِلَيْكُمْ وَمَا أُنزِلَ إِلَيْهِمْ خَاشِعِينَ لِلَّهِ لَا يَشْتَرُونَ بِآيَاتِ اللَّهِ ثَمَنًا قَلِيلًا ۗ أُولَٰئِكَ لَهُمْ أَجْرُهُمْ عِندَ رَبِّهِمْ ۗ إِنَّ اللَّهَ سَرِيعُ الْحِسَابِ (199) يَا أَيُّهَا الَّذِينَ آمَنُوا اصْبِرُوا وَصَابِرُوا وَرَابِطُوا وَاتَّقُوا اللَّهَ لَعَلَّكُمْ تُفْلِحُونَ (200)﴾',
+    textMorning: 'يُستحب مسح أثر النوم عن الوجه باليد، ثم قراءة خواتيم سورة آل عمران:\n\n﴿إِنَّ فِي خَلْقِ السَّمَاوَاتِ وَالْأَرْضِ وَاخْتِلَافِ اللَّيْلِ وَالنَّهَارِ لَآيَاتٍ لِّأُولِي الْأَلْبَابِ...﴾ إلى آخر السورة [الآيات 190-200].',
     takhreej: 'رواه البخاري (183) ومسلم (763) عن ابن عباس رضي الله عنهما.',
     fawaid: 'قال النووي: وفيه استحباب قراءة هذه الآيات عند القيام من النوم.',
     wakeOnly: true,
@@ -179,23 +150,7 @@ const adhkarData = [
     id: 12,
     target: 3,
     category: 'ثانياً: ما يُقال ثلاث مرات',
-    textMorning: 'سورة الإخلاص:\n﴿قُلْ هُوَ اللَّهُ أَحَدٌ (1) اللَّهُ الصَّمَدُ (2) لَمْ يَلِدْ وَلَمْ يُولَدْ (3) وَلَمْ يَكُن لَّهُ كُفُوًا أَحَدٌ (4)﴾',
-    takhreej: 'رواه أبو داود والترمذي والنسائي وصححه النووي وحسنه ابن حجر.',
-    fadl: 'من قالها حين يمسي وحين يصبح ثلاث مرات تكفيك من كل شيء.',
-  },
-  {
-    id: 1201,
-    target: 3,
-    category: 'ثانياً: ما يُقال ثلاث مرات',
-    textMorning: 'سورة الفلق:\n﴿قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ (1) مِن شَرِّ مَا خَلَقَ (2) وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ (3) وَمِن شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ (4) وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ (5)﴾',
-    takhreej: 'رواه أبو داود والترمذي والنسائي وصححه النووي وحسنه ابن حجر.',
-    fadl: 'من قالها حين يمسي وحين يصبح ثلاث مرات تكفيك من كل شيء.',
-  },
-  {
-    id: 1202,
-    target: 3,
-    category: 'ثانياً: ما يُقال ثلاث مرات',
-    textMorning: 'سورة الناس:\n﴿قُلْ أَعُوذُ بِرَبِّ النَّاسِ (1) مَلِكِ النَّاسِ (2) إِلَٰهِ النَّاسِ (3) مِن شَرِّ الْوَسْوَاسِ الْخَنَّاسِ (4) الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ (5) مِنَ الْجِنَّةِ وَالنَّاسِ (6)﴾',
+    textMorning: 'سورة الإخلاص: ﴿قُلْ هُوَ اللَّهُ أَحَدٌ...﴾\nسورة الفلق: ﴿قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ...﴾\nسورة الناس: ﴿قُلْ أَعُوذُ بِرَبِّ النَّاسِ...﴾',
     takhreej: 'رواه أبو داود والترمذي والنسائي وصححه النووي وحسنه ابن حجر.',
     fadl: 'من قالها حين يمسي وحين يصبح ثلاث مرات تكفيك من كل شيء.',
   },
@@ -291,7 +246,7 @@ const adhkarData = [
     id: 101,
     target: 1,
     category: 'الذكر من القرآن',
-    textMorning: '﴿اللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ لَّهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ مَن ذَا الَّذِي يَشْفَعُ عِندَهُ إِلَّا بِإِذْنِهِ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ وَلَا يُحِيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلَّا بِمَا شَاءَ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ وَلَا يَئُودُهُ حِفْظُهُمَا وَهُوَ الْعَلِيُّ الْعَظِيمُ﴾',
+    textMorning: '﴿اللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ لَّهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ مَن ذَا الَّذِي يَشْفَعُ عِندَهُ إِلَّا بِإِذْنِهِ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ وَلَا يُحِيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلَّا بِمَا شَاءَ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ وَلَا يَئُودُهُ حِفْظُهُمَا وَهُوَ الْعَلِيُّ الْعَظِيمُ﴾ [البقرة: 255].',
     takhreej: 'رواه البخاري (2311) عن أبي هريرة رضي الله عنه.',
     fadl: 'لن يزال معك من الله تعالى حافظ، ولا يقربك شيطان حتى تصبح.',
     fawaid: 'قال علي بن أبي طالب رضي الله عنه: ما أرى رجلاً ولد في الإسلام يبيت أبداً حتى يقرأ هذه الآية.',
@@ -301,7 +256,7 @@ const adhkarData = [
     id: 102,
     target: 1,
     category: 'الذكر من القرآن',
-    textMorning: '﴿آمَنَ الرَّسُولُ بِمَا أُنْزِلَ إِلَيْهِ مِنْ رَبِّهِ وَالْمُؤْمِنُونَ ۚ كُلٌّ آمَنَ بِاللَّهِ وَمَلَائِكَتِهِ وَكُتُبِهِ وَرُسُلِهِ لَا نُفَرِّقُ بَيْنَ أَحَدٍ مِنْ رُسُلِهِ ۚ وَقَالُوا سَمِعْنَا وَأَطَعْنَا ۖ غُفْرَانَكَ رَبَّنَا وَإِلَيْكَ الْمَصِيرُ (285) لَا يُكَلِّفُ اللَّهُ نَفْسًا إِلَّا وُسْعَهَا ۚ لَهَا مَا كَسَبَتْ وَعَلَيْهَا مَا اكْتَسَبَتْ ۗ رَبَّنَا لَا تُؤَاخِذْنَا إِنْ نَسِينَا أَوْ أَخْطَأْنَا ۚ رَبَّنَا وَلَا تَحْمِلْ عَلَيْنَا إِصْرًا كَمَا حَمَلْتَهُ عَلَى الَّذِينَ مِنْ قَبْلِنَا ۚ رَبَّنَا وَلَا تُحَمِّلْنَا مَا لَا طَاقَةَ لَنَا بِهِ ۖ وَاعْفُ عَّنَا وَاغْفِرْ لَنَا وَارْحَمْنَا ۚ أَنْتَ مَوْلَانَا فَانْصُرْنَا عَلَى الْقَوْمِ الْكَافِرِينَ (286)﴾',
+    textMorning: '﴿آمَنَ الرَّسُولُ بِمَا أُنْزِلَ إِلَيْهِ مِنْ رَبِّهِ وَالْمُؤْمِنُونَ ۚ كُلٌّ آمَنَ بِاللَّهِ وَمَلَائِكَتِهِ وَكُتُبِهِ وَرُسُلِهِ لَا نُفَرِّقُ بَيْنَ أَحَدٍ مِنْ رُسُلِهِ ۚ وَقَالُوا سَمِعْنَا وَأَطَعْنَا ۖ غُفْرَانَكَ رَبَّنَا وَإِلَيْكَ الْمَصِيرُ * لَا يُكَلِّفُ اللَّهُ نَفْسًا إِلَّا وُسْعَهَا ۚ لَهَا مَا كَسَبَتْ وَعَلَيْهَا مَا اكْتَسَبَتْ ۗ رَبَّنَا لَا تُؤَاخِذْنَا إِنْ نَسِينَا أَوْ أَخْطَأْنَا ۚ رَبَّنَا وَلَا تَحْمِلْ عَلَيْنَا إِصْرًا كَمَا حَمَلْتَهُ عَلَى الَّذِينَ مِنْ قَبْلِنَا ۚ رَبَّنَا وَلَا تُحَمِّلْنَا مَا لَا طَاقَةَ لَنَا بِهِ ۖ وَاعْفُ عَّنَا وَاغْفِرْ لَنَا وَارْحَمْنَا ۚ أَنْتَ مَوْلَانَا فَانْصُرْنَا عَلَى الْقَوْمِ الْكَافِرِينَ﴾ [البقرة: 285-286].',
     takhreej: 'رواه البخاري (509) ومسلم (808) عن أبي مسعود الأنصاري البدري.',
     fadl: 'الآيتان من قرأهما في ليلة كفتاه (من كل سوء، وقيل: من الشيطان).',
     fawaid: 'قال علي رضي الله عنه: ما كنت أرى أن أحداً يعقل ينام حتى يقرأ هؤلاء الآيات وإنهن من كنز تحت العرش.',
@@ -311,9 +266,9 @@ const adhkarData = [
     id: 103,
     target: 1,
     category: 'الذكر من القرآن',
-    textMorning: 'سورة الكافرون: \n﴿قُلْ يَا أَيُّهَا الْكَافِرُونَ (1) لَا أَعْبُدُ مَا تَعْبُدُونَ (2) وَلَا أَنْتُمْ عَابِدُونَ مَا أَعْبُدُ (3) وَلَا أَنَا عَابِدٌ مَا عَبَدْتُمْ (4) وَلَا أَنْتُمْ عَابِدُونَ مَا أَعْبُدُ (5) لَكُمْ دِينُكُمْ وَلِيَ دِينِ (6)﴾',
+    textMorning: 'سورة الكافرون: ﴿قُلْ يَا أَيُّهَا الْكَافِرُونَ * لَا أَعْبُدُ مَا تَعْبُدُونَ * وَلَا أَنْتُمْ عَابِدُونَ مَا أَعْبُدُ * وَلَا أَنَا عَابِدٌ مَا عَبَدْتُمْ * وَلَا أَنْتُمْ عَابِدُونَ مَا أَعْبُدُ * لَكُمْ دِينُكُمْ وَلِيَ دِينِ﴾.',
     takhreej: 'رواه أبو داود (5055) والترمذي (3403) عن نوفل الأشجعي، وصححه الألباني.',
-    fadl: 'اقرأ سورة الكافرون ثم نم على خاتمتها فإنها براءة من الشرك.',
+    fadl: 'اقرأ ﴿قُلْ يَا أَيُّهَا الْكَافِرُونَ﴾ ثم نم على خاتمتها فإنها براءة من الشرك.',
     sleepOnly: true,
   },
   {
@@ -457,6 +412,7 @@ const fontSizes = [
 // تعريف الـ Styles خارج المكون يمنع وميض الشاشة ويحافظ على استقرار الخطوط
 const globalStyles = {
   __html: `
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap');
     .font-cairo { font-family: 'Cairo', sans-serif; }
     .card-hover { transition: transform 0.2s ease, box-shadow 0.2s ease; }
     .card-hover:hover { transform: translateY(-2px); }
@@ -465,13 +421,6 @@ const globalStyles = {
     @keyframes confettiFall {
       0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
       100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
-    }
-    @keyframes ripple {
-      to { transform: scale(4); opacity: 0; }
-    }
-    .ripple-effect {
-      position: absolute; border-radius: 50%; transform: scale(0);
-      animation: ripple 600ms linear; background-color: rgba(255, 255, 255, 0.4);
     }
     .confetti {
       position: fixed;
@@ -482,21 +431,6 @@ const globalStyles = {
   `
 };
 
-// خريطة الألوان الديناميكية
-const colorMap = {
-  cyan: { id: 'cyan', hex: '#0891b2', name: 'سماوي', header: 'bg-cyan-600', tabActive: 'bg-cyan-700', tabBorder: 'border-cyan-300', progress: 'bg-cyan-400 shadow-md shadow-cyan-400/50', icon: 'text-cyan-600 dark:text-cyan-400', taarBtn: 'from-cyan-600 to-cyan-800', cardHeader: 'bg-cyan-50 text-cyan-800 dark:bg-cyan-900/20 dark:text-cyan-300', counterDone: 'bg-cyan-50 border-2 border-cyan-400 text-cyan-700 dark:bg-cyan-900/40 dark:border-cyan-600 dark:text-cyan-300', counterHigh: 'bg-cyan-400 hover:bg-cyan-500', counterMed: 'bg-cyan-500 hover:bg-cyan-600', counterLow: 'bg-cyan-600 hover:bg-cyan-700' },
-  green: { id: 'green', hex: '#16a34a', name: 'أخضر', header: 'bg-green-600', tabActive: 'bg-green-700', tabBorder: 'border-green-300', progress: 'bg-green-400 shadow-md shadow-green-400/50', icon: 'text-green-600 dark:text-green-400', taarBtn: 'from-green-600 to-green-800', cardHeader: 'bg-green-50 text-green-800 dark:bg-green-900/20 dark:text-green-300', counterDone: 'bg-green-50 border-2 border-green-400 text-green-700 dark:bg-green-900/40 dark:border-green-600 dark:text-green-300', counterHigh: 'bg-green-500 hover:bg-green-600', counterMed: 'bg-green-600 hover:bg-green-700', counterLow: 'bg-green-700 hover:bg-green-800' },
-  red: { id: 'red', hex: '#991b1b', name: 'خمري', header: 'bg-red-800', tabActive: 'bg-red-900', tabBorder: 'border-red-300', progress: 'bg-red-400 shadow-md shadow-red-400/50', icon: 'text-red-800 dark:text-red-400', taarBtn: 'from-red-700 to-red-900', cardHeader: 'bg-red-50 text-red-900 dark:bg-red-900/20 dark:text-red-300', counterDone: 'bg-red-50 border-2 border-red-400 text-red-800 dark:bg-red-900/40 dark:border-red-600 dark:text-red-300', counterHigh: 'bg-red-600 hover:bg-red-700', counterMed: 'bg-red-700 hover:bg-red-800', counterLow: 'bg-red-800 hover:bg-red-900' },
-  indigo: { id: 'indigo', hex: '#4f46e5', name: 'نيلي', header: 'bg-indigo-600', tabActive: 'bg-indigo-700', tabBorder: 'border-indigo-300', progress: 'bg-indigo-400 shadow-md shadow-indigo-400/50', icon: 'text-indigo-600 dark:text-indigo-400', taarBtn: 'from-indigo-600 to-indigo-800', cardHeader: 'bg-indigo-50 text-indigo-800 dark:bg-indigo-900/20 dark:text-indigo-300', counterDone: 'bg-indigo-50 border-2 border-indigo-400 text-indigo-700 dark:bg-indigo-900/40 dark:border-indigo-600 dark:text-indigo-300', counterHigh: 'bg-indigo-400 hover:bg-indigo-500', counterMed: 'bg-indigo-500 hover:bg-indigo-600', counterLow: 'bg-indigo-600 hover:bg-indigo-700' },
-  blue: { id: 'blue', hex: '#2563eb', name: 'أزرق', header: 'bg-blue-600', tabActive: 'bg-blue-700', tabBorder: 'border-blue-300', progress: 'bg-blue-400 shadow-md shadow-blue-400/50', icon: 'text-blue-600 dark:text-blue-400', taarBtn: 'from-blue-600 to-blue-800', cardHeader: 'bg-blue-50 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300', counterDone: 'bg-blue-50 border-2 border-blue-400 text-blue-700 dark:bg-blue-900/40 dark:border-blue-600 dark:text-blue-300', counterHigh: 'bg-blue-400 hover:bg-blue-500', counterMed: 'bg-blue-500 hover:bg-blue-600', counterLow: 'bg-blue-600 hover:bg-blue-700' },
-  teal: { id: 'teal', hex: '#0d9488', name: 'تيل', header: 'bg-teal-600', tabActive: 'bg-teal-700', tabBorder: 'border-teal-300', progress: 'bg-teal-400 shadow-md shadow-teal-400/50', icon: 'text-teal-600 dark:text-teal-400', taarBtn: 'from-teal-600 to-teal-800', cardHeader: 'bg-teal-50 text-teal-800 dark:bg-teal-900/20 dark:text-teal-300', counterDone: 'bg-teal-50 border-2 border-teal-400 text-teal-700 dark:bg-teal-900/40 dark:border-teal-600 dark:text-teal-300', counterHigh: 'bg-teal-400 hover:bg-teal-500', counterMed: 'bg-teal-500 hover:bg-teal-600', counterLow: 'bg-teal-600 hover:bg-teal-700' },
-  orange: { id: 'orange', hex: '#f97316', name: 'برتقالي', header: 'bg-orange-500', tabActive: 'bg-orange-600', tabBorder: 'border-orange-300', progress: 'bg-orange-400 shadow-md shadow-orange-400/50', icon: 'text-orange-600 dark:text-orange-400', taarBtn: 'from-orange-500 to-orange-700', cardHeader: 'bg-orange-50 text-orange-800 dark:bg-orange-900/20 dark:text-orange-300', counterDone: 'bg-orange-50 border-2 border-orange-400 text-orange-700 dark:bg-orange-900/40 dark:border-orange-600 dark:text-orange-300', counterHigh: 'bg-orange-400 hover:bg-orange-500', counterMed: 'bg-orange-500 hover:bg-orange-600', counterLow: 'bg-orange-600 hover:bg-orange-700' },
-  rose: { id: 'rose', hex: '#e11d48', name: 'وردي', header: 'bg-rose-600', tabActive: 'bg-rose-700', tabBorder: 'border-rose-300', progress: 'bg-rose-400 shadow-md shadow-rose-400/50', icon: 'text-rose-600 dark:text-rose-400', taarBtn: 'from-rose-600 to-rose-800', cardHeader: 'bg-rose-50 text-rose-800 dark:bg-rose-900/20 dark:text-rose-300', counterDone: 'bg-rose-50 border-2 border-rose-400 text-rose-700 dark:bg-rose-900/40 dark:border-rose-600 dark:text-rose-300', counterHigh: 'bg-rose-400 hover:bg-rose-500', counterMed: 'bg-rose-500 hover:bg-rose-600', counterLow: 'bg-rose-600 hover:bg-rose-700' },
-  purple: { id: 'purple', hex: '#9333ea', name: 'بنفسجي', header: 'bg-purple-600', tabActive: 'bg-purple-700', tabBorder: 'border-purple-300', progress: 'bg-purple-400 shadow-md shadow-purple-400/50', icon: 'text-purple-600 dark:text-purple-400', taarBtn: 'from-purple-600 to-purple-800', cardHeader: 'bg-purple-50 text-purple-800 dark:bg-purple-900/20 dark:text-purple-300', counterDone: 'bg-purple-50 border-2 border-purple-400 text-purple-700 dark:bg-purple-900/40 dark:border-purple-600 dark:text-purple-300', counterHigh: 'bg-purple-400 hover:bg-purple-500', counterMed: 'bg-purple-500 hover:bg-purple-600', counterLow: 'bg-purple-600 hover:bg-purple-700' }
-};
-
-const defaultThemeColors = { wake: 'cyan', morning: 'teal', evening: 'red', sleep: 'indigo', free: 'orange' };
-
 export default function App() {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [activeTab, setActiveTab] = useState('morning');
@@ -506,15 +440,11 @@ export default function App() {
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [fontSizeIndex, setFontSizeIndex] = useState(2); 
   const [progress, setProgress] = useState({});
-  const [themeColors, setThemeColors] = useState(defaultThemeColors);
   
-  // -- الحالات الجديدة للصوت والاهتزاز والمواظبة والاحتفال والإشعارات --
+  // -- الحالات الجديدة للصوت والاهتزاز والمواظبة --
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [vibrationEnabled, setVibrationEnabled] = useState(true);
-  const [celebrationEnabled, setCelebrationEnabled] = useState(true);
-  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const [streak, setStreak] = useState(0);
-  const [prayerTimes, setPrayerTimes] = useState(null);
 
   // -- حالة الاحتفال (Confetti) --
   const [showConfetti, setShowConfetti] = useState(false);
@@ -523,22 +453,10 @@ export default function App() {
   const [showTasbeehModal, setShowTasbeehModal] = useState(false);
   const [tasbeehCount, setTasbeehCount] = useState(0);
 
-  // -- الإحصاءات والأذكار الحرة --
-  const [showStatsModal, setShowStatsModal] = useState(false);
-  const [totalAdhkarRead, setTotalAdhkarRead] = useState(0);
-  const [totalTasbeehsMade, setTotalTasbeehsMade] = useState(0);
-  const [bestStreak, setBestStreak] = useState(0);
-  
-  const [customAdhkar, setCustomAdhkar] = useState([]);
-  const [newCustomText, setNewCustomText] = useState('');
-  const [newCustomTarget, setNewCustomTarget] = useState(1);
-  const [showAddCustom, setShowAddCustom] = useState(false);
-  const [showFreeAdhkarModal, setShowFreeAdhkarModal] = useState(false);
-
   // -- حالة إظهار قسم التعار --
   const [showTaarSection, setShowTaarSection] = useState(false);
 
-  // دالة المؤثرات الصوتية
+  // دالة المؤثرات الصوتية (المحدثة بناءً على طلبك)
   const playSound = (type) => {
     if (!soundEnabled) return;
     try {
@@ -549,6 +467,7 @@ export default function App() {
       const now = window.audioCtx.currentTime;
       
       if (type === 'click') {
+        // صوت نقرة هادئة (Soft Tap/Drop)
         const osc = window.audioCtx.createOscillator();
         const gain = window.audioCtx.createGain();
         osc.connect(gain);
@@ -566,7 +485,8 @@ export default function App() {
         osc.stop(now + 0.05);
         
       } else if (type === 'success') {
-        const frequencies = [523.25, 659.25, 783.99]; 
+        // صوت إنجاز هادئ ومريح (Soft Chime/Bell) مكون من 3 نغمات متوافقة
+        const frequencies = [523.25, 659.25, 783.99]; // كورد C Major
         frequencies.forEach((freq, index) => {
           const osc = window.audioCtx.createOscillator();
           const gain = window.audioCtx.createGain();
@@ -578,6 +498,7 @@ export default function App() {
           osc.frequency.value = freq;
           
           gain.gain.setValueAtTime(0, now);
+          // تأخير بسيط لكل نغمة لإعطاء تأثير رنين لطيف
           const attackTime = now + (index * 0.05) + 0.02;
           gain.gain.linearRampToValueAtTime(0.05, attackTime);
           gain.gain.exponentialRampToValueAtTime(0.001, now + 1.5);
@@ -586,6 +507,7 @@ export default function App() {
           osc.stop(now + 1.5);
         });
       } else if (type === 'celebration') {
+        // صوت فرقعات بسيطة متتالية للكونفيتي (بدون نغم موسيقي)
         const popTimes = [0, 0.08, 0.15, 0.2, 0.28, 0.35, 0.4];
         popTimes.forEach(delay => {
           const osc = window.audioCtx.createOscillator();
@@ -624,105 +546,39 @@ export default function App() {
 
   // استرجاع البيانات وتحديد الوقت تلقائياً
   useEffect(() => {
-    // 1. تحديد الوقت المبدئي (في حال فشل جلب أوقات الصلاة)
     const hour = new Date().getHours();
-    let initialPeriod = 'sleep';
+    let currentPeriod = 'sleep';
     
-    // الخوارزمية القديمة كبديل
+    // الخوارزمية الجديدة لـ 4 فترات
     if (hour >= 3 && hour < 6) {
-        initialPeriod = 'wake'; // من 3 الفجر إلى 6 صباحاً استيقاظ
+        currentPeriod = 'wake'; // من 3 الفجر إلى 6 صباحاً استيقاظ
     } else if (hour >= 6 && hour < 15) {
-        initialPeriod = 'morning'; // من 6 صباحاً إلى 3 عصراً صباح
+        currentPeriod = 'morning'; // من 6 صباحاً إلى 3 عصراً صباح
     } else if (hour >= 15 && hour < 20) { 
-        initialPeriod = 'evening'; // من 3 عصراً إلى 8 مساءً مساء
+        currentPeriod = 'evening'; // من 3 عصراً إلى 8 مساءً مساء
     } else { 
-        initialPeriod = 'sleep'; // ما عدا ذلك نوم
+        currentPeriod = 'sleep'; // ما عدا ذلك نوم
     }
     
-    // دالة لتطبيق الفترة وتصفير التقدم إذا لزم الأمر
-    const applyPeriod = (period) => {
-      setActiveTab(period);
-      const lastPeriod = localStorage.getItem('lastSavedPeriod');
-      if (lastPeriod && lastPeriod !== period) {
-        localStorage.removeItem('adhkarProgress'); 
-        setProgress({}); 
+    setActiveTab(currentPeriod);
+
+    // تصفير التقدم عند انتقال الوقت
+    const lastPeriod = localStorage.getItem('lastSavedPeriod');
+    if (lastPeriod && lastPeriod !== currentPeriod) {
+      localStorage.removeItem('adhkarProgress'); 
+      setProgress({}); 
+    }
+    localStorage.setItem('lastSavedPeriod', currentPeriod);
+
+    // استرجاع بيانات التقدم المحفوظة
+    try {
+      const savedProgress = localStorage.getItem('adhkarProgress');
+      if (savedProgress && lastPeriod === currentPeriod) {
+        setProgress(JSON.parse(savedProgress));
       }
-      localStorage.setItem('lastSavedPeriod', period);
-
-      try {
-        const savedProgress = localStorage.getItem('adhkarProgress');
-        if (savedProgress && (!lastPeriod || lastPeriod === period)) {
-          setProgress(JSON.parse(savedProgress));
-        }
-      } catch (e) {
-        setProgress({});
-      }
-    };
-
-    applyPeriod(initialPeriod);
-
-    // 2. محاولة جلب أوقات الصلاة الحقيقية للمستخدم لتحديد الفترة بدقة أكبر وبدون إشعار المستخدم
-    const fetchAccuratePeriod = async () => {
-      try {
-        const ipRes = await fetch('https://freeipapi.com/api/json');
-        if (!ipRes.ok) return;
-        const ipData = await ipRes.json();
-        const { latitude, longitude } = ipData;
-        if (!latitude || !longitude) return;
-
-        const today = new Date();
-        const dateStr = `${today.getDate()}-${today.getMonth() + 1}-${today.getFullYear()}`;
-        // استخدام طريقة 4 (أم القرى) كافتراضي مناسب
-        const prayerRes = await fetch(`https://api.aladhan.com/v1/timings/${dateStr}?latitude=${latitude}&longitude=${longitude}&method=4`);
-        if (!prayerRes.ok) return;
-
-        const prayerData = await prayerRes.json();
-        const timings = prayerData.data.timings;
-
-        const timeToMins = (timeStr) => {
-          const [h, m] = timeStr.split(':').map(Number);
-          return h * 60 + m;
-        };
-
-        const nowMins = today.getHours() * 60 + today.getMinutes();
-        const fajrMins = timeToMins(timings.Fajr);
-        const asrMins = timeToMins(timings.Asr);
-        const ishaMins = timeToMins(timings.Isha);
-
-        // حفظ مواقيت الفجر والعصر في الـ State لاستخدامها في الإشعارات
-        const [fajrH, fajrM] = timings.Fajr.split(':').map(Number);
-        const [asrH, asrM] = timings.Asr.split(':').map(Number);
-        setPrayerTimes({
-          fajr: { h: fajrH, m: fajrM },
-          asr: { h: asrH, m: asrM }
-        });
-
-        let accuratePeriod = 'sleep';
-        
-        // تقسيم الفترات بناءً على أوقات الصلاة:
-        // الاستيقاظ: من منتصف الليل إلى الفجر
-        // الصباح: من الفجر إلى العصر
-        // المساء: من العصر إلى العشاء
-        // النوم: من العشاء إلى منتصف الليل
-        if (nowMins >= 0 && nowMins < fajrMins) {
-           accuratePeriod = 'wake';
-        } else if (nowMins >= fajrMins && nowMins < asrMins) {
-           accuratePeriod = 'morning';
-        } else if (nowMins >= asrMins && nowMins < ishaMins) {
-           accuratePeriod = 'evening';
-        } else {
-           accuratePeriod = 'sleep';
-        }
-
-        if (accuratePeriod !== initialPeriod) {
-          applyPeriod(accuratePeriod);
-        }
-      } catch (e) {
-        // فشل صامت، نعتمد على الوقت المبدئي
-      }
-    };
-
-    fetchAccuratePeriod();
+    } catch (e) {
+      setProgress({});
+    }
 
     const savedMode = localStorage.getItem('darkMode');
     if (savedMode === 'true') setIsDarkMode(true);
@@ -730,17 +586,11 @@ export default function App() {
     const savedFontSize = localStorage.getItem('fontSizeIndex');
     if (savedFontSize) setFontSizeIndex(parseInt(savedFontSize));
 
-    // استرجاع إعدادات الصوت والاهتزاز والاحتفال والألوان
+    // استرجاع إعدادات الصوت والاهتزاز
     const savedSound = localStorage.getItem('soundEnabled');
     if (savedSound !== null) setSoundEnabled(savedSound === 'true');
     const savedVibration = localStorage.getItem('vibrationEnabled');
     if (savedVibration !== null) setVibrationEnabled(savedVibration === 'true');
-    const savedCelebration = localStorage.getItem('celebrationEnabled');
-    if (savedCelebration !== null) setCelebrationEnabled(savedCelebration === 'true');
-    const savedNotifications = localStorage.getItem('notificationsEnabled');
-    if (savedNotifications !== null) setNotificationsEnabled(savedNotifications === 'true');
-    const savedThemeColors = localStorage.getItem('themeColors');
-    if (savedThemeColors) setThemeColors(JSON.parse(savedThemeColors));
 
     // حساب المواظبة اليومية (Streaks)
     const todayStr = new Date().toLocaleDateString('en-CA');
@@ -764,26 +614,9 @@ export default function App() {
     }
     setStreak(currentStreak);
 
-    // تحديث أفضل مواظبة
-    let cBestStreak = parseInt(localStorage.getItem('bestStreak') || '0', 10);
-    if (currentStreak > cBestStreak) {
-      cBestStreak = currentStreak;
-      localStorage.setItem('bestStreak', cBestStreak.toString());
-    }
-    setBestStreak(cBestStreak);
-
-    // استرجاع الإحصاءات والمسبحة والأذكار الحرة
+    // استرجاع المسبحة الحرة
     const savedTasbeehCount = localStorage.getItem('tasbeehCount');
     if (savedTasbeehCount) setTasbeehCount(parseInt(savedTasbeehCount, 10));
-
-    const savedTotalAdhkar = localStorage.getItem('totalAdhkarRead');
-    if (savedTotalAdhkar) setTotalAdhkarRead(parseInt(savedTotalAdhkar, 10));
-
-    const savedTotalTasbeehs = localStorage.getItem('totalTasbeehsMade');
-    if (savedTotalTasbeehs) setTotalTasbeehsMade(parseInt(savedTotalTasbeehs, 10));
-
-    const savedCustomAdhkar = localStorage.getItem('customAdhkar');
-    if (savedCustomAdhkar) setCustomAdhkar(JSON.parse(savedCustomAdhkar));
 
   }, []);
 
@@ -791,10 +624,6 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem('adhkarProgress', JSON.stringify(progress));
   }, [progress]);
-
-  useEffect(() => {
-    localStorage.setItem('themeColors', JSON.stringify(themeColors));
-  }, [themeColors]);
 
   useEffect(() => {
     localStorage.setItem('soundEnabled', soundEnabled.toString());
@@ -805,28 +634,8 @@ export default function App() {
   }, [vibrationEnabled]);
 
   useEffect(() => {
-    localStorage.setItem('celebrationEnabled', celebrationEnabled.toString());
-  }, [celebrationEnabled]);
-
-  useEffect(() => {
-    localStorage.setItem('notificationsEnabled', notificationsEnabled.toString());
-  }, [notificationsEnabled]);
-
-  useEffect(() => {
     localStorage.setItem('tasbeehCount', tasbeehCount.toString());
   }, [tasbeehCount]);
-
-  useEffect(() => {
-    localStorage.setItem('totalAdhkarRead', totalAdhkarRead.toString());
-  }, [totalAdhkarRead]);
-
-  useEffect(() => {
-    localStorage.setItem('totalTasbeehsMade', totalTasbeehsMade.toString());
-  }, [totalTasbeehsMade]);
-
-  useEffect(() => {
-    localStorage.setItem('customAdhkar', JSON.stringify(customAdhkar));
-  }, [customAdhkar]);
 
   useEffect(() => {
     localStorage.setItem('darkMode', isDarkMode);
@@ -841,85 +650,10 @@ export default function App() {
     localStorage.setItem('fontSizeIndex', fontSizeIndex.toString());
   }, [fontSizeIndex]);
 
-  // إشعارات التذكير اليومية المرتبطة بأوقات الصلاة
-  useEffect(() => {
-    if (!notificationsEnabled) return;
-    if (!("Notification" in window)) return;
-    
-    if (Notification.permission !== "granted" && Notification.permission !== "denied") {
-      Notification.requestPermission();
-    }
-    
-    const checkTimeForNotification = () => {
-      if (Notification.permission === "granted") {
-        const now = new Date();
-        const h = now.getHours();
-        const m = now.getMinutes();
-        
-        // استخدام أوقات الصلاة الدقيقة لو تم جلبها، وإلا 5 الفجر و4 العصر كافتراضي
-        let fajrH = 5, fajrM = 0;
-        let asrH = 16, asrM = 0;
-
-        if (prayerTimes) {
-          fajrH = prayerTimes.fajr.h;
-          fajrM = prayerTimes.fajr.m;
-          asrH = prayerTimes.asr.h;
-          asrM = prayerTimes.asr.m;
-        }
-        
-        // إشعار الصباح وقت الفجر
-        if (h === fajrH && m === fajrM) {
-          new Notification("أذكار الصباح", { 
-            body: "حان الآن موعد قراءة أذكار الصباح، ابدأ يومك بذكر الله وحصّن نفسك.", 
-            icon: "/icon-192x192.png" 
-          });
-        } 
-        // إشعار المساء وقت العصر
-        else if (h === asrH && m === asrM) {
-          new Notification("أذكار المساء", { 
-            body: "حان الآن موعد قراءة أذكار المساء، اختم نهارك بذكر الله وطمأنينته.", 
-            icon: "/icon-192x192.png" 
-          });
-        }
-      }
-    };
-    
-    // التحقق كل دقيقة
-    const intervalId = setInterval(checkTimeForNotification, 60000);
-    return () => clearInterval(intervalId);
-  }, [notificationsEnabled, prayerTimes]);
-
   const toggleDarkMode = () => setIsDarkMode(!isDarkMode);
-
-  // تعريف قائمة الأوسمة والإنجازات الشاملة (Gamification)
-  const badges = [
-    // أوسمة المواظبة (Streaks)
-    { id: 's1', title: 'بداية النور', desc: 'مواظبة ليوم واحد', unlocked: bestStreak >= 1, icon: <Flame className="w-6 h-6" /> },
-    { id: 's2', title: 'المواظب المبتدئ', desc: 'مواظبة لـ 3 أيام', unlocked: bestStreak >= 3, icon: <Flame className="w-6 h-6" /> },
-    { id: 's3', title: 'نجم الأسبوع', desc: 'مواظبة لـ 7 أيام', unlocked: bestStreak >= 7, icon: <Star className="w-6 h-6" /> },
-    { id: 's4', title: 'نصف الشهر', desc: 'مواظبة لـ 15 يوم', unlocked: bestStreak >= 15, icon: <MoonStar className="w-6 h-6" /> },
-    { id: 's5', title: 'الذاكر الدائم', desc: 'مواظبة لـ 30 يوم', unlocked: bestStreak >= 30, icon: <Trophy className="w-6 h-6" /> },
-    { id: 's6', title: 'أسطورة المواظبة', desc: 'مواظبة لـ 100 يوم!', unlocked: bestStreak >= 100, icon: <Crown className="w-6 h-6" /> },
-
-    // أوسمة التسبيح
-    { id: 't1', title: 'بذرة الذاكرين', desc: 'إتمام 100 تسبيحة', unlocked: totalTasbeehsMade >= 100, icon: <TasbeehIcon className="w-6 h-6" /> },
-    { id: 't2', title: 'ألفية التسبيح', desc: 'إتمام 1,000 تسبيحة', unlocked: totalTasbeehsMade >= 1000, icon: <Award className="w-6 h-6" /> },
-    { id: 't3', title: 'بحر التسبيح', desc: 'إتمام 5,000 تسبيحة', unlocked: totalTasbeehsMade >= 5000, icon: <Target className="w-6 h-6" /> },
-    { id: 't4', title: 'جبل الحسنات', desc: 'إتمام 10,000 تسبيحة', unlocked: totalTasbeehsMade >= 10000, icon: <Sunrise className="w-6 h-6" /> },
-
-    // أوسمة قراءة الأذكار
-    { id: 'a1', title: 'خطوة البداية', desc: 'قراءة 50 ذكر', unlocked: totalAdhkarRead >= 50, icon: <BookOpen className="w-6 h-6" /> },
-    { id: 'a2', title: 'قارئ الأذكار', desc: 'قراءة 500 ذكر', unlocked: totalAdhkarRead >= 500, icon: <BookOpen className="w-6 h-6" /> },
-    { id: 'a3', title: 'حصن المسلم', desc: 'قراءة 1,000 ذكر', unlocked: totalAdhkarRead >= 1000, icon: <Shield className="w-6 h-6" /> },
-    { id: 'a4', title: 'نور على نور', desc: 'قراءة 5,000 ذكر', unlocked: totalAdhkarRead >= 5000, icon: <Sun className="w-6 h-6" /> },
-
-    // أوسمة خاصة
-    { id: 'c1', title: 'أدعية خاصة', desc: 'إضافة ذكر حر واحد', unlocked: customAdhkar.length > 0, icon: <Edit3 className="w-6 h-6" /> },
-  ];
 
   // فلترة الأذكار حسب التبويب النشط (بدون أذكار التعار)
   const currentTabAdhkar = useMemo(() => {
-    if (activeTab === 'free') return customAdhkar;
     return adhkarData.filter(dhikr => {
       if (activeTab === 'wake') return dhikr.wakeOnly && !dhikr.isTaar;
       if (activeTab === 'morning') return !dhikr.eveningOnly && !dhikr.sleepOnly && !dhikr.wakeOnly;
@@ -927,7 +661,7 @@ export default function App() {
       if (activeTab === 'sleep') return dhikr.sleepOnly;
       return true;
     });
-  }, [activeTab, customAdhkar]);
+  }, [activeTab]);
 
   // أذكار التعار مفصولة
   const taarAdhkar = useMemo(() => {
@@ -959,7 +693,7 @@ export default function App() {
 
   // مراقبة الوصول لنسبة 100% لتشغيل الاحتفال البصري
   useEffect(() => {
-    if (totalProgressPercentage === 100 && currentTabAdhkar.length > 0 && celebrationEnabled) {
+    if (totalProgressPercentage === 100 && currentTabAdhkar.length > 0) {
       setShowConfetti(true);
       playSound('celebration');
       // اهتزاز مميز للاحتفال
@@ -967,13 +701,13 @@ export default function App() {
       
       const timer = setTimeout(() => {
         setShowConfetti(false);
-      }, 7000); // إخفاء التأثير والنافذة بعد 7 ثوانٍ
+      }, 5000); // إخفاء التأثير بعد 5 ثوان
       
       return () => clearTimeout(timer);
     } else {
       setShowConfetti(false);
     }
-  }, [totalProgressPercentage, currentTabAdhkar.length, celebrationEnabled]);
+  }, [totalProgressPercentage, currentTabAdhkar.length]);
 
   // تحديث العداد المحدث بالصوت
   const handleDhikrClick = (id, target) => {
@@ -981,7 +715,6 @@ export default function App() {
     setProgress((prev) => {
       const current = prev[key] || 0;
       if (current < target) {
-        setTotalAdhkarRead(p => p + 1);
         const newCount = current + 1;
         if (newCount === target) {
           triggerVibration([100, 50, 100]); 
@@ -1022,7 +755,6 @@ export default function App() {
   // دوال المسبحة الحرة
   const handleTasbeehClick = () => {
     setTasbeehCount(prev => prev + 1);
-    setTotalTasbeehsMade(prev => prev + 1);
     triggerVibration(50);
     playSound('click');
   };
@@ -1031,93 +763,32 @@ export default function App() {
     setTasbeehCount(0);
   };
 
-  // إضافة ذكر حر
-  const addCustomDhikr = () => {
-    if (!newCustomText.trim()) return;
-    const newDhikr = {
-      id: Date.now(),
-      textMorning: newCustomText,
-      target: newCustomTarget,
-      category: 'ذكر مخصص',
-    };
-    setCustomAdhkar([...customAdhkar, newDhikr]);
-    setNewCustomText('');
-    setNewCustomTarget(1);
-    setShowAddCustom(false);
-  };
-
-  // حذف ذكر حر
-  const deleteCustomDhikr = (id) => {
-    setCustomAdhkar(customAdhkar.filter(d => d.id !== id));
-    resetSingleDhikr(id);
-  };
-
-  // جلب إعدادات الألوان للتبويب النشط
-  const currentTabTheme = colorMap[themeColors[activeTab]] || colorMap.teal;
-
-  const getTabClass = (tabId) => {
-    const isActive = activeTab === tabId;
-    const tabTheme = colorMap[themeColors[tabId]] || colorMap.teal;
-
-    return `flex-1 py-3 text-center font-bold text-xs sm:text-sm md:text-xl transition-colors ${
-      isActive 
-        ? `${tabTheme.tabActive} dark:bg-slate-700 text-white border-b-4 ${tabTheme.tabBorder}`
-        : 'text-white/70 hover:bg-white/10 dark:hover:bg-slate-600'
-    }`;
-  };
-
-  const getTabLabel = (tabId) => {
-    if (tabId === 'wake') return 'الاستيقاظ';
-    if (tabId === 'morning') return 'الصباح';
-    if (tabId === 'evening') return 'المساء';
-    return 'النوم';
-  };
-
-  const TabIcon = activeTab === 'sleep' ? Moon : activeTab === 'wake' ? Sunrise : activeTab === 'morning' ? Sun : Sunset;
-
   return (
     <div dir="rtl" className={`min-h-screen font-cairo transition-colors duration-300 ${isDarkMode ? 'dark bg-slate-900 text-slate-100' : 'bg-slate-50 text-slate-900'}`}>
       <style dangerouslySetInnerHTML={globalStyles} />
       
-      {/* --- تأثير الاحتفال بالإنجاز والدعاء --- */}
+      {/* --- تأثير الاحتفال بالإنجاز (Confetti) --- */}
       {showConfetti && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none">
-          <div className="absolute inset-0 overflow-hidden">
-            {[...Array(60)].map((_, i) => (
-              <div
-                key={i}
-                className="confetti absolute w-2 h-4 sm:w-3 sm:h-6"
-                style={{
-                  left: `${Math.random() * 100}vw`,
-                  backgroundColor: ['#14b8a6', '#facc15', '#a855f7', '#ec4899', '#3b82f6', '#ef4444'][Math.floor(Math.random() * 6)],
-                  animationDuration: `${Math.random() * 3 + 2}s`,
-                  animationDelay: `${Math.random() * 0.5}s`,
-                  borderRadius: Math.random() > 0.5 ? '50%' : '2px',
-                  transform: `rotate(${Math.random() * 360}deg)`
-                }}
-              />
-            ))}
-          </div>
-          <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-md p-8 rounded-3xl shadow-2xl transform transition-all animate-in zoom-in-75 duration-500 flex flex-col items-center text-center max-w-sm mx-4 border border-yellow-200 dark:border-slate-600 pointer-events-auto">
-            <div className="bg-yellow-100 dark:bg-yellow-900/50 p-4 rounded-full mb-4">
-              <Star className="w-10 h-10 text-yellow-500" />
-            </div>
-            <h2 className="text-2xl font-black text-slate-800 dark:text-slate-100 mb-2">الحمد لله</h2>
-            <p className="text-lg font-bold text-slate-600 dark:text-slate-300 leading-relaxed">
-              تقبل الله طاعتكم، وجعلها في ميزان حسناتكم، وكتب لكم الأجر العظيم.
-            </p>
-            <button 
-              onClick={() => setShowConfetti(false)}
-              className="mt-6 px-6 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 rounded-full font-bold transition"
-            >
-              إغلاق
-            </button>
-          </div>
+        <div className="fixed inset-0 pointer-events-none z-[100] overflow-hidden">
+          {[...Array(60)].map((_, i) => (
+            <div
+              key={i}
+              className="confetti absolute w-2 h-4 sm:w-3 sm:h-6"
+              style={{
+                left: `${Math.random() * 100}vw`,
+                backgroundColor: ['#14b8a6', '#facc15', '#a855f7', '#ec4899', '#3b82f6', '#ef4444'][Math.floor(Math.random() * 6)],
+                animationDuration: `${Math.random() * 3 + 2}s`,
+                animationDelay: `${Math.random() * 0.5}s`,
+                borderRadius: Math.random() > 0.5 ? '50%' : '2px',
+                transform: `rotate(${Math.random() * 360}deg)`
+              }}
+            />
+          ))}
         </div>
       )}
 
       {/* --- شريط التنقل العلوي --- */}
-      <header className={`sticky top-0 z-40 shadow-md transition-colors duration-500 ${currentTabTheme.header} dark:bg-slate-800 text-white`}>
+      <header className="sticky top-0 z-40 shadow-md bg-teal-600 dark:bg-slate-800 text-white">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center space-x-3 space-x-reverse">
             <BookOpen className="w-6 h-6 md:w-8 md:h-8" />
@@ -1133,45 +804,26 @@ export default function App() {
               </div>
             )}
 
-            {/* زر الإحصاءات */}
-            <button 
-              onClick={() => setShowStatsModal(true)} 
-              className="p-2 rounded-full bg-black/20 hover:bg-black/30 dark:bg-slate-700/50 dark:hover:bg-slate-700 transition" 
-              title="الإحصاءات والمتابعة"
-            >
-              <BarChart2 className="w-5 h-5 md:w-6 md:h-6" />
-            </button>
-
-            {/* زر الأذكار الحرة */}
-            <button 
-              onClick={() => setShowFreeAdhkarModal(true)} 
-              className="flex items-center gap-1 md:gap-2 p-2 px-3 rounded-full md:rounded-xl bg-black/20 hover:bg-black/30 dark:bg-slate-700/50 dark:hover:bg-slate-700 transition text-white font-bold shadow-sm"
-              title="الأذكار الحرة"
-            >
-              <Edit3 className="w-5 h-5 md:w-6 md:h-6" />
-              <span className="hidden md:inline text-sm">أذكار حرة</span>
-            </button>
-
             {/* زر المسبحة الحرة */}
             <button 
               onClick={() => setShowTasbeehModal(true)} 
-              className="flex items-center gap-1 md:gap-2 p-2 px-3 rounded-full md:rounded-xl bg-black/20 hover:bg-black/30 dark:bg-slate-700/50 dark:hover:bg-slate-700 transition text-white font-bold shadow-sm"
+              className="flex items-center gap-1 md:gap-2 p-2 px-3 rounded-full md:rounded-xl bg-teal-700/50 hover:bg-teal-700 dark:bg-slate-700/50 dark:hover:bg-slate-700 transition text-white font-bold shadow-sm"
               title="المسبحة الحرة"
             >
-              <TasbeehIcon className="w-5 h-5 md:w-6 md:h-6" />
+              <Target className="w-5 h-5 md:w-6 md:h-6" />
               <span className="hidden md:inline text-sm">المسبحة</span>
             </button>
 
             <button 
               onClick={() => setShowSettingsModal(true)} 
-              className="p-2 rounded-full bg-black/20 hover:bg-black/30 dark:bg-slate-700/50 dark:hover:bg-slate-700 transition" 
+              className="p-2 rounded-full bg-teal-700/50 hover:bg-teal-700 dark:bg-slate-700/50 dark:hover:bg-slate-700 transition" 
               aria-label="إعدادات التطبيق"
             >
               <Settings className="w-5 h-5 md:w-6 md:h-6" />
             </button>
             <button 
               onClick={toggleDarkMode} 
-              className="p-2 rounded-full bg-black/20 hover:bg-black/30 dark:bg-slate-700/50 dark:hover:bg-slate-700 transition" 
+              className="p-2 rounded-full bg-teal-700/50 hover:bg-teal-700 dark:bg-slate-700/50 dark:hover:bg-slate-700 transition" 
               aria-label="تغيير المظهر"
             >
               {isDarkMode ? <Sun className="w-5 h-5 md:w-6 md:h-6" /> : <Moon className="w-5 h-5 md:w-6 md:h-6" />}
@@ -1179,22 +831,45 @@ export default function App() {
           </div>
         </div>
 
-        {/* --- التبويبات --- */}
-        <div className="flex border-t border-black/10 dark:border-slate-700 overflow-x-auto whitespace-nowrap hide-scrollbar">
-          <button onClick={() => setActiveTab('wake')} className={getTabClass('wake')}>الاستيقاظ</button>
-          <button onClick={() => setActiveTab('morning')} className={getTabClass('morning')}>الصباح</button>
-          <button onClick={() => setActiveTab('evening')} className={getTabClass('evening')}>المساء</button>
-          <button onClick={() => setActiveTab('sleep')} className={getTabClass('sleep')}>النوم</button>
+        {/* --- التبويبات الـ 4 --- */}
+        <div className="flex border-t border-teal-500 dark:border-slate-700">
+          <button 
+            onClick={() => setActiveTab('wake')}
+            className={`flex-1 py-3 text-center font-bold text-xs sm:text-sm md:text-xl transition-colors ${activeTab === 'wake' ? 'bg-teal-700 dark:bg-slate-700 text-white border-b-4 border-sky-400' : 'text-teal-100 hover:bg-teal-500 dark:hover:bg-slate-600'}`}
+          >
+            الاستيقاظ
+          </button>
+          <button 
+            onClick={() => setActiveTab('morning')}
+            className={`flex-1 py-3 text-center font-bold text-xs sm:text-sm md:text-xl transition-colors ${activeTab === 'morning' ? 'bg-teal-700 dark:bg-slate-700 text-white border-b-4 border-yellow-400' : 'text-teal-100 hover:bg-teal-500 dark:hover:bg-slate-600'}`}
+          >
+            الصباح
+          </button>
+          <button 
+            onClick={() => setActiveTab('evening')}
+            className={`flex-1 py-3 text-center font-bold text-xs sm:text-sm md:text-xl transition-colors ${activeTab === 'evening' ? 'bg-teal-700 dark:bg-slate-700 text-white border-b-4 border-indigo-400' : 'text-teal-100 hover:bg-teal-500 dark:hover:bg-slate-600'}`}
+          >
+            المساء
+          </button>
+          <button 
+            onClick={() => setActiveTab('sleep')}
+            className={`flex-1 py-3 text-center font-bold text-xs sm:text-sm md:text-xl transition-colors ${activeTab === 'sleep' ? 'bg-teal-700 dark:bg-slate-700 text-white border-b-4 border-purple-400' : 'text-teal-100 hover:bg-teal-500 dark:hover:bg-slate-600'}`}
+          >
+            النوم
+          </button>
         </div>
         
         {/* --- شريط التقدم --- */}
-        <div className="w-full bg-black/20 dark:bg-black/30 h-1.5 shadow-inner">
+        <div className="w-full bg-black/10 dark:bg-black/20 h-1.5 shadow-inner">
           <div 
-            className={`h-full transition-all duration-500 ease-out flex justify-end items-center ${currentTabTheme.progress}`}
+            className={`h-full transition-all duration-500 ease-out flex justify-end items-center 
+              ${activeTab === 'wake' ? 'bg-sky-400 shadow-[0_0_10px_rgba(56,189,248,0.6)]' : 
+                activeTab === 'sleep' ? 'bg-purple-400 shadow-[0_0_10px_rgba(192,132,252,0.6)]' : 
+                'bg-yellow-400 shadow-[0_0_10px_rgba(250,204,21,0.6)]'}`}
             style={{ width: `${totalProgressPercentage}%` }}
           >
             {totalProgressPercentage > 10 && (
-              <span className="text-[9px] font-bold text-slate-800 dark:text-slate-900 px-1 select-none">
+              <span className="text-[9px] font-bold text-teal-900 px-1 select-none">
                 {totalProgressPercentage}%
               </span>
             )}
@@ -1213,21 +888,17 @@ export default function App() {
               <X className="w-6 h-6" />
             </button>
             <h3 className="text-2xl font-bold mb-8 text-teal-700 dark:text-teal-400 flex items-center gap-2">
-              <TasbeehIcon className="w-7 h-7" />
+              <Target className="w-7 h-7" />
               المسبحة الحرة
             </h3>
 
-            {/* زر العداد الضخم مع تأثير النبض */}
-            <div className="relative mb-8">
-              <div className="absolute inset-0 bg-teal-400 rounded-full animate-ping opacity-20"></div>
-              <button
-                onClick={handleTasbeehClick}
-                className="relative z-10 w-48 h-48 md:w-56 md:h-56 bg-gradient-to-br from-teal-400 to-teal-600 hover:from-teal-500 hover:to-teal-700 rounded-full shadow-[0_10px_30px_rgba(20,184,166,0.4)] flex items-center justify-center text-white text-5xl md:text-6xl font-extrabold active:scale-95 transition-all border-4 border-teal-200 dark:border-teal-800 overflow-hidden group"
-              >
-                <span className="relative z-10 group-active:scale-110 transition-transform">{tasbeehCount}</span>
-                <div className="absolute inset-0 bg-white/20 opacity-0 group-active:opacity-100 transition-opacity"></div>
-              </button>
-            </div>
+            {/* زر العداد الضخم */}
+            <button
+              onClick={handleTasbeehClick}
+              className="w-48 h-48 md:w-56 md:h-56 bg-teal-500 hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-500 rounded-full shadow-[0_10px_30px_rgba(20,184,166,0.3)] dark:shadow-[0_10px_30px_rgba(13,148,136,0.3)] flex items-center justify-center text-white text-5xl md:text-6xl font-extrabold active:scale-95 transition-all mb-8 border-4 border-teal-200 dark:border-teal-400"
+            >
+              {tasbeehCount}
+            </button>
 
             <button
               onClick={resetTasbeeh}
@@ -1240,256 +911,10 @@ export default function App() {
         </div>
       )}
 
-      {/* --- نافذة الإحصاءات والأوسمة (Modal) --- */}
-      {showStatsModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-          <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl w-full max-w-lg p-6 md:p-8 relative border border-slate-200 dark:border-slate-700 flex flex-col items-center max-h-[90vh] overflow-y-auto">
-            <button 
-              onClick={() => setShowStatsModal(false)}
-              className="absolute top-4 left-4 p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 bg-slate-100 dark:bg-slate-700 rounded-full transition"
-            >
-              <X className="w-6 h-6" />
-            </button>
-            <h3 className="text-2xl font-bold mb-8 text-teal-700 dark:text-teal-400 flex items-center gap-2">
-              <BarChart2 className="w-7 h-7" />
-              إحصاءات المتابعة
-            </h3>
-
-            <div className="w-full space-y-4">
-              <div className="bg-amber-50 dark:bg-slate-700/50 p-4 rounded-2xl border border-amber-200 dark:border-slate-600 flex items-center gap-4">
-                <div className="bg-amber-100 dark:bg-slate-600 p-3 rounded-full text-amber-600 dark:text-amber-400">
-                  <Flame className="w-6 h-6" />
-                </div>
-                <div>
-                  <p className="text-sm text-slate-500 dark:text-slate-400">أيام المواظبة المتتالية</p>
-                  <p className="text-xl font-black text-slate-800 dark:text-slate-100">{streak} يوم</p>
-                </div>
-              </div>
-
-              <div className="bg-teal-50 dark:bg-slate-700/50 p-4 rounded-2xl border border-teal-200 dark:border-slate-600 flex items-center gap-4">
-                <div className="bg-teal-100 dark:bg-slate-600 p-3 rounded-full text-teal-600 dark:text-teal-400">
-                  <BookOpen className="w-6 h-6" />
-                </div>
-                <div>
-                  <p className="text-sm text-slate-500 dark:text-slate-400">إجمالي الأذكار المقروءة</p>
-                  <p className="text-xl font-black text-slate-800 dark:text-slate-100">{totalAdhkarRead}</p>
-                </div>
-              </div>
-
-              <div className="bg-indigo-50 dark:bg-slate-700/50 p-4 rounded-2xl border border-indigo-200 dark:border-slate-600 flex items-center gap-4">
-                <div className="bg-indigo-100 dark:bg-slate-600 p-3 rounded-full text-indigo-600 dark:text-indigo-400">
-                  <TasbeehIcon className="w-6 h-6" />
-                </div>
-                <div>
-                  <p className="text-sm text-slate-500 dark:text-slate-400">إجمالي التسبيحات</p>
-                  <p className="text-xl font-black text-slate-800 dark:text-slate-100">{totalTasbeehsMade}</p>
-                </div>
-              </div>
-
-              <div className="bg-rose-50 dark:bg-slate-700/50 p-4 rounded-2xl border border-rose-200 dark:border-slate-600 flex items-center gap-4">
-                <div className="bg-rose-100 dark:bg-slate-600 p-3 rounded-full text-rose-600 dark:text-rose-400">
-                  <Star className="w-6 h-6" />
-                </div>
-                <div>
-                  <p className="text-sm text-slate-500 dark:text-slate-400">أفضل مواظبة (Best Streak)</p>
-                  <p className="text-xl font-black text-slate-800 dark:text-slate-100">{bestStreak} يوم</p>
-                </div>
-              </div>
-            </div>
-
-            {/* قسم الأوسمة */}
-            <div className="w-full mt-8 border-t border-slate-200 dark:border-slate-700 pt-6">
-              <h4 className="text-xl font-bold mb-4 text-slate-800 dark:text-slate-100 flex items-center gap-2">
-                <Trophy className="w-6 h-6 text-yellow-500" />
-                الأوسمة والإنجازات
-              </h4>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 md:gap-4">
-                {badges.map(badge => (
-                  <div 
-                    key={badge.id} 
-                    className={`p-3 md:p-4 rounded-2xl flex flex-col items-center text-center transition-all duration-300 border ${
-                      badge.unlocked 
-                        ? 'bg-gradient-to-br from-yellow-50 to-amber-100 dark:from-yellow-900/20 dark:to-amber-900/30 border-yellow-200 dark:border-yellow-700/50 shadow-sm' 
-                        : 'bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 opacity-60 grayscale'
-                    }`}
-                  >
-                    <div className={`p-2 rounded-full mb-2 ${badge.unlocked ? 'bg-yellow-200 text-yellow-600 dark:bg-yellow-800 dark:text-yellow-300' : 'bg-slate-200 text-slate-400 dark:bg-slate-700 dark:text-slate-500'}`}>
-                      {badge.icon}
-                    </div>
-                    <p className={`font-bold text-sm mb-1 ${badge.unlocked ? 'text-slate-800 dark:text-slate-100' : 'text-slate-500 dark:text-slate-400'}`}>
-                      {badge.title}
-                    </p>
-                    <p className="text-[10px] md:text-xs text-slate-500 dark:text-slate-400">
-                      {badge.desc}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* --- نافذة الأذكار الحرة (Modal) --- */}
-      {showFreeAdhkarModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-          <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl w-full max-w-2xl p-6 md:p-8 relative border border-slate-200 dark:border-slate-700 max-h-[90vh] overflow-y-auto">
-            <button 
-              onClick={() => setShowFreeAdhkarModal(false)}
-              className="absolute top-4 left-4 p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 bg-slate-100 dark:bg-slate-700 rounded-full transition"
-            >
-              <X className="w-6 h-6" />
-            </button>
-            <h3 className="text-2xl font-bold mb-6 text-orange-600 dark:text-orange-400 flex items-center gap-2 border-b pb-4 dark:border-slate-700">
-              <Edit3 className="w-7 h-7" />
-              الأذكار الحرة المخصصة
-            </h3>
-
-            {/* زر إضافة ذكر حر جديد */}
-            <div className="mb-6">
-              {!showAddCustom ? (
-                <button 
-                  onClick={() => setShowAddCustom(true)}
-                  className="w-full py-3 bg-orange-50 hover:bg-orange-100 dark:bg-orange-950/20 dark:hover:bg-orange-950/30 text-orange-700 dark:text-orange-400 border border-dashed border-orange-300 dark:border-orange-900 rounded-2xl font-bold transition flex items-center justify-center gap-2 text-lg shadow-sm"
-                >
-                  <Plus className="w-5 h-5" />
-                  إضافة ذكر أو دعاء مخصص
-                </button>
-              ) : (
-                <div className="bg-slate-50 dark:bg-slate-900/60 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 animate-in slide-in-from-top-3 duration-200">
-                  <h4 className="font-bold text-slate-700 dark:text-slate-200 mb-3">ذكر جديد</h4>
-                  <textarea 
-                    value={newCustomText}
-                    onChange={(e) => setNewCustomText(e.target.value)}
-                    placeholder="اكتب الذكر أو الدعاء هنا..."
-                    className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3 min-h-[80px] mb-4 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-orange-500 focus:outline-none"
-                  ></textarea>
-                  
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="font-bold text-slate-600 dark:text-slate-300 text-sm">التكرار المطلوب:</span>
-                    <div className="flex items-center gap-2">
-                      <button 
-                        onClick={() => setNewCustomTarget(prev => Math.max(1, prev - 1))}
-                        className="w-8 h-8 rounded-full bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 flex items-center justify-center font-bold text-slate-700 dark:text-slate-200 transition"
-                      >
-                        <Minus className="w-4 h-4" />
-                      </button>
-                      <input 
-                        type="number" 
-                        value={newCustomTarget}
-                        onChange={(e) => setNewCustomTarget(Math.max(1, parseInt(e.target.value) || 1))}
-                        className="w-16 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-1 text-center font-bold text-slate-800 dark:text-slate-100"
-                      />
-                      <button 
-                        onClick={() => setNewCustomTarget(prev => prev + 1)}
-                        className="w-8 h-8 rounded-full bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 flex items-center justify-center font-bold text-slate-700 dark:text-slate-200 transition"
-                      >
-                        <Plus className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="flex gap-2">
-                    <button 
-                      onClick={addCustomDhikr}
-                      className="flex-1 py-2.5 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-xl transition shadow-md"
-                    >
-                      حفظ
-                    </button>
-                    <button 
-                      onClick={() => { setShowAddCustom(false); setNewCustomText(''); setNewCustomTarget(1); }}
-                      className="px-4 py-2.5 bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-bold rounded-xl transition"
-                    >
-                      إلغاء
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* قائمة الأذكار الحرة */}
-            <div className="space-y-4">
-              {customAdhkar.length === 0 ? (
-                <div className="text-center py-8 text-slate-400 dark:text-slate-500">
-                  <Edit3 className="w-12 h-12 mx-auto mb-3 opacity-30" />
-                  <p className="font-bold">لا توجد أذكار حرة مضافة بعد.</p>
-                  <p className="text-sm mt-1">أضف أذكارك وأدعيتك المفضلة هنا لقراءتها ومتابعة عدّها بسهولة!</p>
-                </div>
-              ) : (
-                customAdhkar.map(dhikr => {
-                  const key = `free-${dhikr.id}`;
-                  const currentCount = progress[key] || 0;
-                  const isCompleted = currentCount >= dhikr.target;
-                  const percentage = Math.min(100, Math.floor((currentCount / dhikr.target) * 100));
-
-                  return (
-                    <div 
-                      key={dhikr.id}
-                      className={`p-4 md:p-5 rounded-2xl border transition-all ${isCompleted ? 'bg-orange-50/50 dark:bg-orange-950/5 border-orange-200 dark:border-orange-900/50 opacity-90' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700'} shadow-sm hover:shadow-md flex flex-col md:flex-row justify-between items-start md:items-center gap-4`}
-                    >
-                      <div className="flex-1 w-full">
-                        <p className="font-bold text-slate-800 dark:text-slate-100 text-lg leading-relaxed whitespace-pre-line mb-3">
-                          {dhikr.textMorning}
-                        </p>
-                        {/* شريط التقدم الصغير */}
-                        <div className="w-full bg-slate-100 dark:bg-slate-900 h-2 rounded-full overflow-hidden mb-2">
-                          <div 
-                            className="bg-orange-500 h-full transition-all duration-300"
-                            style={{ width: `${percentage}%` }}
-                          ></div>
-                        </div>
-                        <div className="flex justify-between items-center text-xs text-slate-500 dark:text-slate-400 font-bold">
-                          <span>التقدم: {percentage}%</span>
-                          <span>الهدف: {dhikr.target}</span>
-                        </div>
-                      </div>
-
-                      {/* أزرار التحكم بالعد والحذف */}
-                      <div className="flex items-center gap-2 self-end md:self-center shrink-0">
-                        {/* زر العداد الدائري المميز */}
-                        <button
-                          onClick={() => handleDhikrClick(dhikr.id, dhikr.target)}
-                          disabled={isCompleted}
-                          className={`w-14 h-14 rounded-full font-black text-lg flex items-center justify-center transition-all ${
-                            isCompleted 
-                              ? 'bg-orange-100 dark:bg-orange-950/20 text-orange-600 border-2 border-orange-400 dark:border-orange-800'
-                              : 'bg-orange-500 hover:bg-orange-600 text-white shadow-lg active:scale-95'
-                          }`}
-                        >
-                          {currentCount}
-                        </button>
-
-                        {/* إعادة التصفير */}
-                        <button 
-                          onClick={() => resetSingleDhikr(dhikr.id)}
-                          className="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg transition"
-                          title="تصفير العداد"
-                        >
-                          <RotateCcw className="w-5 h-5" />
-                        </button>
-
-                        {/* حذف */}
-                        <button 
-                          onClick={() => deleteCustomDhikr(dhikr.id)}
-                          className="p-2 text-red-400 hover:text-red-600 dark:hover:text-red-400 rounded-lg transition"
-                          title="حذف الذكر"
-                        >
-                          <Trash2 className="w-5 h-5" />
-                        </button>
-                      </div>
-                    </div>
-                  );
-                })
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* --- نافذة الإعدادات --- */}
       {showSettingsModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-md p-6 relative border border-slate-200 dark:border-slate-700 max-h-[90vh] overflow-y-auto">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-md p-6 relative border border-slate-200 dark:border-slate-700">
             <button 
               onClick={() => setShowSettingsModal(false)}
               className="absolute top-4 left-4 p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 bg-slate-100 dark:bg-slate-700 rounded-full transition"
@@ -1521,34 +946,6 @@ export default function App() {
                 </button>
               </div>
 
-              {/* أزرار الإشعارات والاحتفال */}
-              <div className="grid grid-cols-2 gap-3 mb-2">
-                <button 
-                  onClick={() => {
-                    if (!notificationsEnabled && Notification.permission !== "granted") {
-                      Notification.requestPermission().then(perm => {
-                        if (perm === "granted") setNotificationsEnabled(true);
-                      });
-                    } else {
-                      setNotificationsEnabled(!notificationsEnabled);
-                    }
-                  }}
-                  className={`flex flex-col items-center justify-center p-3 rounded-xl border transition-all ${notificationsEnabled ? 'bg-teal-50 border-teal-200 text-teal-700 dark:bg-teal-900/30 dark:border-teal-800 dark:text-teal-300 shadow-sm' : 'bg-slate-50 border-slate-200 text-slate-400 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-500'}`}
-                >
-                  {notificationsEnabled ? <BellRing className="w-6 h-6 mb-2 text-teal-600 dark:text-teal-400" /> : <Bell className="w-6 h-6 mb-2 opacity-50" />}
-                  <span className="font-bold text-sm">التنبيهات</span>
-                  <span className="text-[10px] opacity-70 mt-1">(في المتصفح)</span>
-                </button>
-                <button 
-                  onClick={() => setCelebrationEnabled(!celebrationEnabled)}
-                  className={`flex flex-col items-center justify-center p-3 rounded-xl border transition-all ${celebrationEnabled ? 'bg-teal-50 border-teal-200 text-teal-700 dark:bg-teal-900/30 dark:border-teal-800 dark:text-teal-300 shadow-sm' : 'bg-slate-50 border-slate-200 text-slate-400 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-500'}`}
-                >
-                  <Star className="w-6 h-6 mb-2" />
-                  <span className="font-bold text-sm">الاحتفال بالنهاية</span>
-                  <span className="text-[10px] opacity-70 mt-1">(عند إتمام 100%)</span>
-                </button>
-              </div>
-
               <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-700/50 border border-slate-100 dark:border-slate-700">
                 <div className="flex items-center gap-2">
                   <Type className="w-5 h-5 text-teal-600 dark:text-teal-400" />
@@ -1573,46 +970,6 @@ export default function App() {
                 </div>
               </div>
 
-              {/* قسم اختيار الألوان */}
-              <div className="flex flex-col gap-3 p-4 rounded-xl bg-slate-50 dark:bg-slate-700/50 border border-slate-100 dark:border-slate-700">
-                <div className="flex items-center justify-between mb-2 border-b border-slate-200 dark:border-slate-600 pb-3">
-                  <div className="flex items-center gap-2">
-                    <Palette className="w-5 h-5 text-teal-600 dark:text-teal-400" />
-                    <span className="font-semibold text-lg text-slate-700 dark:text-slate-200">تخصيص الألوان</span>
-                  </div>
-                  <button 
-                    onClick={() => setThemeColors(defaultThemeColors)} 
-                    className="text-xs text-teal-600 dark:text-teal-400 hover:underline flex items-center gap-1"
-                    title="العودة للألوان الأصلية"
-                  >
-                    <RotateCcw className="w-3 h-3" /> الافتراضي
-                  </button>
-                </div>
-                
-                {Object.keys(defaultThemeColors).map(tab => (
-                  <div key={tab} className="flex items-center justify-between py-1">
-                    <span className="text-sm font-bold text-slate-600 dark:text-slate-400 w-20 shrink-0">
-                      {getTabLabel(tab)}
-                    </span>
-                    <div className="flex gap-1.5 flex-wrap justify-end">
-                      {Object.keys(colorMap).map(color => (
-                        <button
-                          key={color}
-                          onClick={() => setThemeColors({...themeColors, [tab]: color})}
-                          className={`w-6 h-6 rounded-full transition-all ${themeColors[tab] === color ? 'ring-2 ring-offset-2 ring-slate-400 dark:ring-slate-400 scale-110' : 'opacity-50 hover:opacity-100 hover:scale-110'}`}
-                          style={{ backgroundColor: colorMap[color].hex }}
-                          title={colorMap[color].name}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <label className="flex items-center space-x-4 space-x-reverse p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700/50 cursor-pointer transition border border-transparent">
-                <input type="checkbox" checked={celebrationEnabled} onChange={(e) => setCelebrationEnabled(e.target.checked)} className="w-5 h-5 text-teal-600 rounded focus:ring-teal-500" />
-                <span className="font-semibold text-lg text-slate-700 dark:text-slate-200">الاحتفال والدعاء عند الإنجاز</span>
-              </label>
               <label className="flex items-center space-x-4 space-x-reverse p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700/50 cursor-pointer transition border border-transparent">
                 <input type="checkbox" checked={showTakhreej} onChange={(e) => setShowTakhreej(e.target.checked)} className="w-5 h-5 text-teal-600 rounded focus:ring-teal-500" />
                 <span className="font-semibold text-lg text-slate-700 dark:text-slate-200">عرض تخريج الأحاديث</span>
@@ -1640,29 +997,35 @@ export default function App() {
       <main className="container mx-auto px-4 py-6 md:py-8 max-w-4xl">
         
         {/* --- تنبيه أوقات الأذكار --- */}
-        <div className="mb-8 p-5 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 transition-all duration-300">
+        <div className="mb-8 p-5 bg-teal-50 dark:bg-slate-800 rounded-2xl shadow-sm border border-teal-100 dark:border-slate-700 transition-all duration-300">
           <div className="flex items-start gap-3">
-            <TabIcon className={`w-6 h-6 ${currentTabTheme.icon} shrink-0 mt-1`} />
+            {activeTab === 'sleep' ? (
+                <Moon className="w-6 h-6 text-indigo-600 dark:text-indigo-400 shrink-0 mt-1" />
+            ) : activeTab === 'wake' ? (
+                <Sunrise className="w-6 h-6 text-sky-500 dark:text-sky-400 shrink-0 mt-1" />
+            ) : (
+                <Clock className="w-6 h-6 text-teal-600 dark:text-teal-400 shrink-0 mt-1" />
+            )}
             <div>
-              <h2 className="text-lg font-bold text-slate-800 dark:text-slate-200 mb-2">
+              <h2 className="text-lg font-bold text-teal-800 dark:text-teal-300 mb-2">
                 {activeTab === 'sleep' ? 'سنن وآداب النوم' : activeTab === 'wake' ? 'عند الاستيقاظ والتعار من الليل' : 'وقت الأذكار المفضل'}
               </h2>
-              <p className="text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
+              <p className="text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
                 {activeTab === 'sleep' ? (
                   <span>
-                    يُستحب للمسلم إذا أتى فراشه أن يكون على <strong className={currentTabTheme.icon}>طهارة</strong>، وأن <strong className={currentTabTheme.icon}>ينفض فراشه</strong> بداخلة إزاره، وأن يضطجع على <strong className={currentTabTheme.icon}>جنبه الأيمن</strong>، وأن يضع يده تحت خده الأيمن، ثم يأتي بالأذكار.
+                    يُستحب للمسلم إذا أتى فراشه أن يكون على <strong className="text-indigo-700 dark:text-indigo-400">طهارة</strong>، وأن <strong className="text-indigo-700 dark:text-indigo-400">ينفض فراشه</strong> بداخلة إزاره، وأن يضطجع على <strong className="text-indigo-700 dark:text-indigo-400">جنبه الأيمن</strong>، وأن يضع يده تحت خده الأيمن، ثم يأتي بالأذكار.
                   </span>
                 ) : activeTab === 'wake' ? (
                   <span>
-                    يُستحب للمسلم أول ما يستيقظ من نومه أن <strong className={currentTabTheme.icon}>يمسح النوم عن وجهه</strong> بيده، ثم يأتي بأذكار الاستيقاظ. ولمن استيقظ من الليل وتَقَلَّب أن يأتي بذكر <strong className={currentTabTheme.icon}>التعار من الليل</strong> فدعوته مستجابة.
+                    يُستحب للمسلم أول ما يستيقظ من نومه أن <strong className="text-sky-700 dark:text-sky-400">يمسح النوم عن وجهه</strong> بيده، ثم يأتي بأذكار الاستيقاظ. ولمن استيقظ من الليل وتَقَلَّب أن يأتي بذكر <strong className="text-sky-700 dark:text-sky-400">التعار من الليل</strong> فدعوته مستجابة.
                   </span>
                 ) : activeTab === 'morning' ? (
                   <span>
-                    <strong className={currentTabTheme.icon}>وقت الصباح:</strong> يبدأ من طلوع الفجر الصادق، ويمتد إلى شروق الشمس.
+                    <strong className="text-teal-700 dark:text-teal-400">وقت الصباح:</strong> يبدأ من طلوع الفجر الصادق، ويمتد إلى شروق الشمس.
                   </span>
                 ) : (
                   <span>
-                    <strong className={currentTabTheme.icon}>وقت المساء:</strong> يبدأ من بعد صلاة العصر، ويمتد إلى غروب الشمس.
+                    <strong className="text-teal-700 dark:text-teal-400">وقت المساء:</strong> يبدأ من بعد صلاة العصر، ويمتد إلى غروب الشمس.
                   </span>
                 )}
               </p>
@@ -1675,7 +1038,7 @@ export default function App() {
           <div className="mb-8">
             <button
               onClick={() => setShowTaarSection(!showTaarSection)}
-              className={`w-full p-5 rounded-3xl flex items-center justify-between transition-all shadow-lg active:scale-95 ${showTaarSection ? 'bg-slate-800 text-white' : `bg-gradient-to-r ${currentTabTheme.taarBtn} text-white`}`}
+              className={`w-full p-5 rounded-3xl flex items-center justify-between transition-all shadow-lg active:scale-95 ${showTaarSection ? 'bg-slate-800 text-white' : 'bg-gradient-to-r from-teal-600 to-teal-800 text-white'}`}
             >
               <div className="flex items-center gap-4">
                 <div className={`p-3 rounded-2xl ${showTaarSection ? 'bg-slate-700' : 'bg-white/20'}`}>
@@ -1702,9 +1065,7 @@ export default function App() {
                   const done = count >= dhikr.target;
                   return (
                     <div key={dhikr.id} className="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
-                      <p className={`font-bold leading-relaxed mb-4 ${fontSizes[fontSizeIndex]}`}>
-                        {dhikr.textMorning}
-                      </p>
+                      <p className={`font-bold leading-relaxed mb-4 ${fontSizes[fontSizeIndex]}`}>{dhikr.textMorning}</p>
                       
                       {showTakhreej && dhikr.takhreej && (
                         <div className="flex items-start gap-3 text-sm text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-900/50 p-3 rounded-xl mb-3 border border-slate-100 dark:border-slate-800">
@@ -1721,7 +1082,7 @@ export default function App() {
 
                       <button
                         onClick={() => handleDhikrClick(dhikr.id, dhikr.target)}
-                        className={`w-full py-4 rounded-xl font-black text-lg shadow-md transition-all flex items-center justify-center gap-2 ${done ? currentTabTheme.counterDone + ' cursor-default shadow-none' : 'bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200'}`}
+                        className={`w-full py-4 rounded-xl font-black text-lg shadow-md transition-all flex items-center justify-center gap-2 ${done ? 'bg-emerald-500 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200'}`}
                       >
                         {done ? <CheckCircle className="mx-auto" /> : `كرر: ${count} / ${dhikr.target}`}
                       </button>
@@ -1736,7 +1097,7 @@ export default function App() {
 
         {/* --- عنوان القسم وزر تصفير الكل --- */}
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl md:text-3xl font-bold text-slate-800 dark:text-slate-100 flex items-center gap-3">
+          <h2 className="text-2xl md:text-3xl font-bold text-slate-800 dark:text-slate-100">
             {activeTab === 'morning' && 'أذكار الصباح'}
             {activeTab === 'evening' && 'أذكار المساء'}
             {activeTab === 'sleep' && 'أذكار النوم'}
@@ -1751,7 +1112,6 @@ export default function App() {
           </button>
         </div>
 
-
         {/* --- قائمة الأذكار الرئيسية (تتغير حسب التبويب) --- */}
         <div className="space-y-6 md:space-y-8">
           {currentTabAdhkar.map((dhikr) => {
@@ -1761,20 +1121,34 @@ export default function App() {
             
             const displayText = (activeTab === 'evening' && dhikr.textEvening) ? dhikr.textEvening : dhikr.textMorning;
 
-            let counterBgClass = isCompleted 
-                ? currentTabTheme.counterDone + " cursor-default shadow-none" 
-                : percentage > 0.6 ? `${currentTabTheme.counterHigh} text-white shadow-lg dark:shadow-none` 
-                : percentage > 0.3 ? `${currentTabTheme.counterMed} text-white shadow-lg dark:shadow-none` 
-                : `${currentTabTheme.counterLow} text-white shadow-lg dark:shadow-none`;
+            let counterBgClass = "bg-sky-600 hover:bg-sky-700 dark:bg-sky-700 dark:hover:bg-sky-600 text-white shadow-lg";
+            
+            if (isCompleted) {
+              counterBgClass = "bg-emerald-100 text-emerald-800 border-2 border-emerald-400 dark:bg-emerald-900/50 dark:text-emerald-400 dark:border-emerald-600 cursor-default";
+            } else if (activeTab === 'sleep') {
+              if (percentage > 0.6) counterBgClass = "bg-purple-500 hover:bg-purple-600 dark:bg-purple-600 text-white shadow-lg";
+              else if (percentage > 0.3) counterBgClass = "bg-indigo-500 hover:bg-indigo-600 dark:bg-indigo-600 text-white shadow-lg";
+              else counterBgClass = "bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-700 text-white shadow-lg";
+            } else if (activeTab === 'wake') {
+              if (percentage > 0.6) counterBgClass = "bg-sky-400 hover:bg-sky-500 dark:bg-sky-500 text-white shadow-lg";
+              else if (percentage > 0.3) counterBgClass = "bg-blue-400 hover:bg-blue-500 dark:bg-blue-500 text-white shadow-lg";
+              else counterBgClass = "bg-sky-500 hover:bg-sky-600 dark:bg-sky-600 text-white shadow-lg";
+            } else {
+              if (percentage > 0.6) counterBgClass = "bg-emerald-500 hover:bg-emerald-600 dark:bg-emerald-600 text-white shadow-lg";
+              else if (percentage > 0.3) counterBgClass = "bg-teal-500 hover:bg-teal-600 dark:bg-teal-600 text-white shadow-lg";
+            }
 
             return (
               <div 
                 key={dhikr.id} 
                 id={`dhikr-${dhikr.id}`}
-                className={`card-hover group relative bg-white dark:bg-slate-800 rounded-3xl shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border ${isCompleted ? 'border-slate-200 dark:border-slate-700 opacity-90' : 'border-slate-200 dark:border-slate-700'} overflow-hidden scroll-mt-24`}
+                className={`card-hover relative bg-white dark:bg-slate-800 rounded-3xl shadow-sm border ${isCompleted ? 'border-emerald-300 dark:border-emerald-700/50 opacity-90' : 'border-slate-200 dark:border-slate-700'} overflow-hidden scroll-mt-24`}
               >
-                <div className={`py-3 px-6 text-sm md:text-base font-bold border-b border-slate-200 dark:border-slate-700 flex justify-between items-center ${currentTabTheme.cardHeader}`}>
-                  <span>{dhikr.category}</span>
+                <div className={`py-3 px-6 text-sm md:text-base font-bold border-b border-slate-200 dark:border-slate-700 
+                  ${activeTab === 'sleep' ? 'bg-indigo-50 dark:bg-indigo-900/20 text-indigo-800 dark:text-indigo-300' : 
+                    activeTab === 'wake' ? 'bg-sky-50 dark:bg-sky-900/20 text-sky-800 dark:text-sky-300' : 
+                    'bg-slate-100 dark:bg-slate-700/40 text-teal-700 dark:text-teal-300'}`}>
+                  {dhikr.category}
                 </div>
 
                 <div className="p-6 md:p-8">

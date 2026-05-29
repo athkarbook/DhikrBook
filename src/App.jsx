@@ -1410,20 +1410,20 @@ export default function App() {
             <div id="stats-export-area" className="w-full bg-white dark:bg-slate-800 p-2 rounded-2xl">
               
               {/* --- قسم مستوى المستخدم (RPG Leveling) --- */}
-              <div className={`w-full mb-6 relative overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 p-5 ${levelBg} bg-opacity-10 dark:bg-opacity-20`}>
+              <div className="w-full mb-6 relative overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 p-5 bg-slate-50 dark:bg-slate-800 shadow-sm">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-3">
-                    <div className={`p-2 rounded-xl bg-white dark:bg-slate-800 shadow-sm ${levelColor}`}>
+                    <div className={`p-2 rounded-xl bg-white dark:bg-slate-700 shadow-sm ${levelColor} border border-slate-100 dark:border-slate-600`}>
                       <Crown className="w-6 h-6" />
                     </div>
                     <div>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">المستوى الحالي</p>
-                      <h4 className={`text-xl font-black ${levelColor}`}>{currentLevel}</h4>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider mb-1">المستوى الحالي</p>
+                      <h4 className={`text-xl md:text-2xl font-black ${levelColor}`}>{currentLevel}</h4>
                     </div>
                   </div>
                   <div className="text-left">
-                    <p className="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">نقاط النور</p>
-                    <p className="text-xl font-black text-slate-800 dark:text-slate-100">{userXP} <span className="text-xs font-normal">XP</span></p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider mb-1">نقاط النور</p>
+                    <p className="text-xl md:text-2xl font-black text-slate-800 dark:text-slate-100">{userXP} <span className="text-xs font-bold text-slate-400">XP</span></p>
                   </div>
                 </div>
 

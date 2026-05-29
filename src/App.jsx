@@ -654,8 +654,12 @@ export default function App() {
             const btn = firstCard.querySelector('button.dhikr-increment-btn');
             if (btn) {
               btn.click();
-              // تمرير سلس وذكي ليصبح الكارت في منتصف الشاشة دائماً
-              firstCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              // تمرير سلس وذكي فقط إذا لم تكن البطاقة ظاهرة بوضوح
+              const rect = firstCard.getBoundingClientRect();
+              const isFullyVisible = (rect.top >= 120) && (rect.bottom <= window.innerHeight - 50);
+              if (!isFullyVisible) {
+                firstCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              }
             }
           }
         } else {

@@ -621,8 +621,30 @@ export default function App() {
         const current = event.resultIndex;
         const transcript = event.results[current][0].transcript.trim();
         if (transcript.length > 0) {
-           // Any spoken word will be counted as a tasbeeh
-           document.getElementById('hidden-tasbeeh-btn')?.click();
+           // Any spoken word will be counted
+           
+           const tasbeehBtn = document.getElementById('hidden-tasbeeh-btn');
+           if (document.getElementById('tasbeeh-modal-container')) {
+              tasbeehBtn?.click();
+              return;
+           }
+           
+           // Find first uncompleted dhikr
+           const uncompletedCards = document.querySelectorAll('.dhikr-card:not(.completed)');
+           if (uncompletedCards.length > 0) {
+             const firstCard = uncompletedCards[0];
+             const btn = firstCard.querySelector('button.dhikr-increment-btn');
+             if (btn) {
+               btn.click();
+               // Scroll if out of view
+               const rect = firstCard.getBoundingClientRect();
+               if(rect.top < 100 || rect.bottom > window.innerHeight - 100) {
+                 window.scrollBy({ top: rect.top - 120, behavior: 'smooth' });
+               }
+             }
+           } else {
+             tasbeehBtn?.click();
+           }
         }
       };
       
@@ -1349,6 +1371,17 @@ export default function App() {
               </div>
             )}
 
+            {/* المسبحة الصوتية العامة */}
+            {speechSupported && (
+              <button 
+                onClick={toggleVoiceTasbeeh}
+                className={`p-1.5 md:p-2 rounded-full transition relative flex items-center justify-center shadow-sm ${isListening ? 'bg-red-500 hover:bg-red-600 text-white animate-pulse' : 'bg-black/20 hover:bg-black/30 dark:bg-slate-700/50 dark:hover:bg-slate-700'}`}
+                title="المسبحة الصوتية (العد التلقائي بالصوت)"
+              >
+                {isListening ? <Mic className="w-4 h-4 md:w-5 md:h-5" /> : <MicOff className="w-4 h-4 md:w-5 md:h-5" />}
+              </button>
+            )}
+
             {/* المستوى الحالي (RPG) */}
             <div 
               className="flex items-center gap-1 bg-white/20 text-white px-2 py-1 rounded-full text-[10px] md:text-sm font-bold border border-white/30 cursor-pointer hover:bg-white/30 transition" 
@@ -1404,7 +1437,7 @@ export default function App() {
 
       {/* --- نافذة المسبحة الحرة (Modal) --- */}
       {showTasbeehModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+        <div id="tasbeeh-modal-container" className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
           <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl w-full max-w-sm p-8 relative border border-slate-200 dark:border-slate-700 flex flex-col items-center">
             <button 
               onClick={() => {
@@ -2156,7 +2189,7 @@ export default function App() {
                   const count = progress[`${activeTab}-${dhikr.id}`] || 0;
                   const done = count >= dhikr.target;
                   return (
-                    <div key={dhikr.id} className="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
+                    <div key={dhikr.id} className={`dhikr-card ${done ? 'completed' : ''} bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700`}>
                       <p className={`font-bold leading-relaxed mb-4 ${fontSizes[fontSizeIndex]}`}>
                         {dhikr.textMorning}
                       </p>
@@ -2176,7 +2209,7 @@ export default function App() {
 
                       <button
                         onClick={() => handleDhikrClick(dhikr.id, dhikr.target)}
-                        className={`w-full py-4 rounded-xl font-black text-lg shadow-md transition-all flex items-center justify-center gap-2 ${done ? currentTabTheme.counterDone + ' cursor-default shadow-none' : 'bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200'}`}
+                        className={`dhikr-increment-btn w-full py-4 rounded-xl font-black text-lg shadow-md transition-all flex items-center justify-center gap-2 ${done ? currentTabTheme.counterDone + ' cursor-default shadow-none' : 'bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200'}`}
                       >
                         {done ? <CheckCircle className="mx-auto" /> : `كرر: ${count} / ${dhikr.target}`}
                       </button>
@@ -2226,7 +2259,7 @@ export default function App() {
               <div 
                 key={dhikr.id} 
                 id={`dhikr-${dhikr.id}`}
-                className={`card-hover group relative bg-white dark:bg-slate-800 rounded-3xl shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border ${isCompleted ? 'border-slate-200 dark:border-slate-700 opacity-90' : 'border-slate-200 dark:border-slate-700'} overflow-hidden scroll-mt-24`}
+                className={`dhikr-card ${isCompleted ? 'completed' : ''} card-hover group relative bg-white dark:bg-slate-800 rounded-3xl shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border ${isCompleted ? 'border-slate-200 dark:border-slate-700 opacity-90' : 'border-slate-200 dark:border-slate-700'} overflow-hidden scroll-mt-24`}
               >
                 <div className={`py-3 px-6 text-sm md:text-base font-bold border-b border-slate-200 dark:border-slate-700 flex justify-between items-center ${currentTabTheme.cardHeader}`}>
                   <span>{dhikr.category}</span>
@@ -2270,7 +2303,7 @@ export default function App() {
                     <button
                       onClick={() => handleDhikrClick(dhikr.id, dhikr.target)}
                       disabled={isCompleted}
-                      className={`flex-1 relative overflow-hidden h-[120px] md:h-[140px] rounded-3xl font-bold text-2xl md:text-4xl transition-all duration-300 flex justify-center items-center gap-4 active:scale-95 ${counterBgClass}`}
+                      className={`dhikr-increment-btn flex-1 relative overflow-hidden h-[120px] md:h-[140px] rounded-3xl font-bold text-2xl md:text-4xl transition-all duration-300 flex justify-center items-center gap-4 active:scale-95 ${counterBgClass}`}
                     >
                       {isCompleted ? (
                         <>

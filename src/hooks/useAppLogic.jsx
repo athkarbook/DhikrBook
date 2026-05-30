@@ -2,7 +2,7 @@ import { usePrayerTimes } from './usePrayerTimes';
 import { useVoiceTasbeeh } from './useVoiceTasbeeh';
 import { useAudioVibration } from './useAudioVibration';
 import { useImageExport } from './useImageExport';
-import { Flame, Shield, Target, Trophy, Crown, CheckCircle, Star, MoonStar, Award, Sunrise, BookOpen, Sun, Edit3 } from 'lucide-react';
+import { Flame, Shield, Target, Trophy, Crown, CheckCircle, Star, MoonStar, Award, Sunrise, BookOpen, Sun, Edit3, Moon, Clock, Leaf, Sunset } from 'lucide-react';
 import { TasbeehIcon } from '../components/UI/Icons';
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { useRegisterSW } from 'virtual:pwa-register/react';

@@ -676,11 +676,29 @@ export default function App() {
   // -- حساب نقاط النور (XP) والمستوى (RPG Leveling) --
   const [activityHistory, setActivityHistory] = useState(() => {
     try {
-      return JSON.parse(localStorage.getItem('activityHistory')) || {};
+      const saved = JSON.parse(localStorage.getItem('activityHistory')) || {};
+      // تحويل البيانات القديمة (أرقام) إلى كائنات
+      for (const date in saved) {
+        if (typeof saved[date] === 'number') {
+          saved[date] = { tasbeeh: saved[date] };
+        }
+      }
+      return saved;
     } catch (e) {
       return {};
     }
   });
+
+  const recordActivity = (type, amount = 1) => {
+    const todayStr = new Date().toLocaleDateString('en-CA');
+    setActivityHistory(prev => {
+      const todayData = prev[todayStr] || {};
+      const updatedData = { ...todayData, [type]: (todayData[type] || 0) + amount };
+      const updated = { ...prev, [todayStr]: updatedData };
+      localStorage.setItem('activityHistory', JSON.stringify(updated));
+      return updated;
+    });
+  };
 
   const userXP = (totalTasbeehsMade * 1) + (totalAdhkarRead * 2) + (bestStreak * 50);
 
@@ -1210,14 +1228,6 @@ export default function App() {
 
   useEffect(() => {
     localStorage.setItem('todayTasbeehs', todayTasbeehs.toString());
-    
-    // تحديث سجل النشاط اليومي للرسم البياني الأسبوعي
-    const todayStr = new Date().toLocaleDateString('en-CA');
-    setActivityHistory(prev => {
-      const updated = { ...prev, [todayStr]: todayTasbeehs };
-      localStorage.setItem('activityHistory', JSON.stringify(updated));
-      return updated;
-    });
   }, [todayTasbeehs]);
 
   useEffect(() => {
@@ -1398,6 +1408,7 @@ export default function App() {
       const current = prev[key] || 0;
       if (current < target) {
         setTotalAdhkarRead(p => p + 1);
+        recordActivity(activeTab); // تسجيل نوع الذكر
         const newCount = current + 1;
         if (newCount === target) {
           triggerVibration([100, 50, 100]);
@@ -1440,6 +1451,7 @@ export default function App() {
     setTasbeehCount(prev => prev + 1);
     setTotalTasbeehsMade(prev => prev + 1);
     setTodayTasbeehs(prev => prev + 1);
+    recordActivity('tasbeeh');
     triggerVibration(50);
     playSound('click');
   };
@@ -1502,12 +1514,12 @@ export default function App() {
        return {
           date: dateStr,
           dayName: dayName,
-          value: activityHistory[dateStr] || 0
+          data: activityHistory[dateStr] || {}
        };
     });
   }, [activityHistory]);
 
-  const maxActivity = Math.max(...last7Days.map(d => d.value), 100);
+  const maxActivity = Math.max(...last7Days.map(d => Object.values(d.data).reduce((a, b) => a + b, 0)), 10);
 
   const exportStatsAsImage = async () => {
     setIsExporting(true);
@@ -1536,13 +1548,12 @@ export default function App() {
     setIsExporting(true);
     try {
       const element = document.getElementById('story-export-card');
-      if (!element) return setIsExporting(false);
+      const parent = element.parentElement;
+      if (!element || !parent) return setIsExporting(false);
       
       // إظهار العنصر مؤقتاً للتصوير
-      element.style.position = 'absolute';
-      element.style.left = '0';
-      element.style.top = '0';
-      element.style.zIndex = '-1';
+      parent.style.left = '0';
+      parent.style.zIndex = '-100';
       
       const canvas = await html2canvas(element, { 
         backgroundColor: '#0f172a',
@@ -1551,7 +1562,7 @@ export default function App() {
       });
       
       // إعادة إخفاء العنصر
-      element.style.left = '-9999px';
+      parent.style.left = '-9999px';
       
       const dataURL = canvas.toDataURL('image/jpeg', 0.9);
       const link = document.createElement('a');
@@ -1948,22 +1959,36 @@ export default function App() {
                   <BarChart2 className="w-6 h-6 text-indigo-500" />
                   النشاط الأسبوعي
                 </h4>
-                <div className="flex items-end justify-between gap-1 md:gap-2 h-40 mt-4 px-2">
+                <div className="flex items-end justify-between gap-1 md:gap-2 h-48 mt-4 px-2">
                   {last7Days.map((day, i) => {
-                     const heightPercent = Math.max(5, (day.value / maxActivity) * 100);
+                     const total = Object.values(day.data).reduce((a, b) => a + b, 0);
                      const isToday = i === 6;
                      return (
                        <div key={day.date} className="flex flex-col items-center gap-2 flex-1 group">
                          <div 
-                           className="w-full max-w-[2.5rem] rounded-t-lg transition-all duration-500 relative flex justify-center cursor-pointer hover:opacity-80"
-                           style={{ 
-                             height: `${heightPercent}%`,
-                             backgroundColor: isToday ? '#14b8a6' : (day.value > 0 ? '#6366f1' : '#cbd5e1')
-                           }}
+                           className="w-full max-w-[2.5rem] rounded-t-lg transition-all duration-500 relative flex flex-col justify-end cursor-pointer hover:opacity-80 overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
+                           style={{ height: '100%' }}
                          >
-                            <div className="absolute -top-8 bg-black/80 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none font-bold z-10">
-                               {day.value}
+                            <div className="absolute -top-8 bg-black/80 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none font-bold z-10 whitespace-nowrap">
+                               الإجمالي: {total}
                             </div>
+                            
+                            {/* Stacked bars */}
+                            {['free', 'prayer', 'sleep', 'evening', 'morning', 'wake', 'tasbeeh'].map(cat => {
+                               const val = day.data[cat] || 0;
+                               if (val === 0) return null;
+                               const heightPercent = (val / maxActivity) * 100;
+                               const colors = {
+                                  tasbeeh: '#14b8a6', // teal
+                                  morning: '#f59e0b', // amber
+                                  evening: '#f43f5e', // rose
+                                  sleep: '#6366f1', // indigo
+                                  wake: '#0ea5e9', // sky
+                                  prayer: '#3b82f6', // blue
+                                  free: '#8b5cf6' // violet
+                               };
+                               return <div key={cat} style={{ height: `${heightPercent}%`, backgroundColor: colors[cat] }} className="w-full" title={cat} />
+                            })}
                          </div>
                          <span className={`text-[10px] md:text-xs font-bold ${isToday ? 'text-teal-600 dark:text-teal-400' : 'text-slate-500 dark:text-slate-400'}`}>
                            {day.dayName}
@@ -1971,6 +1996,16 @@ export default function App() {
                        </div>
                      );
                   })}
+                </div>
+                {/* Legend */}
+                <div className="flex flex-wrap justify-center gap-3 mt-4 text-[10px] md:text-xs font-bold">
+                   <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-[#14b8a6]"></div>تسابيح</div>
+                   <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-[#f59e0b]"></div>صباح</div>
+                   <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-[#f43f5e]"></div>مساء</div>
+                   <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-[#6366f1]"></div>نوم</div>
+                   <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-[#0ea5e9]"></div>استيقاظ</div>
+                   <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-[#3b82f6]"></div>صلاة</div>
+                   <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-[#8b5cf6]"></div>حر</div>
                 </div>
               </div>
 

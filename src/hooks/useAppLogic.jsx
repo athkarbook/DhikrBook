@@ -1,3 +1,4 @@
+import { usePrayerTimes } from './usePrayerTimes';
 import { useVoiceTasbeeh } from './useVoiceTasbeeh';
 import { useAudioVibration } from './useAudioVibration';
 import { useImageExport } from './useImageExport';

@@ -697,8 +697,8 @@ export default function App() {
         const spokenWords = normalizeArabic(transcript).split(/\s+/).filter(w => w.length >= 2);
         window.voiceState[targetCard.id].push(...spokenWords);
 
-        // جلب نص الذكر الفعلي (من داخل الـ paragraph لتجنب قراءة نصوص التخريج والفوائد)
-        const pElem = targetCard.querySelector('p.font-bold');
+        // جلب نص الذكر الفعلي (من داخل أول paragraph لتجنب قراءة نصوص التخريج والفوائد)
+        const pElem = targetCard.querySelector('p');
         const cardText = pElem ? pElem.innerText : '';
         const cardWords = normalizeArabic(cardText).split(/\s+/).filter(w => w.length >= 2);
         
@@ -2290,7 +2290,7 @@ export default function App() {
                   const count = progress[`${activeTab}-${dhikr.id}`] || 0;
                   const done = count >= dhikr.target;
                   return (
-                    <div key={dhikr.id} className={`dhikr-card ${done ? 'completed' : ''} bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700`}>
+                    <div key={dhikr.id} id={`dhikr-${dhikr.id}`} className={`dhikr-card ${done ? 'completed' : ''} bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700`}>
                       <p className={`font-bold leading-relaxed mb-4 ${fontSizes[fontSizeIndex]}`}>
                         {dhikr.textMorning}
                       </p>

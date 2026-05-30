@@ -23,34 +23,34 @@ html, body {
   max-width: 100vw;
 }
 
-/* --- Live Mesh Gradient Animations --- */
+/* --- Live Mesh Gradient Animations (Cinematic & Organic) --- */
 @keyframes blob-bounce {
-  0% { transform: translate(0px, 0px) scale(1); }
-  33% { transform: translate(30px, -50px) scale(1.1); }
-  66% { transform: translate(-20px, 20px) scale(0.9); }
-  100% { transform: translate(0px, 0px) scale(1); }
+  0% { transform: translate(0px, 0px) scale(1) rotate(0deg); border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
+  33% { transform: translate(40px, -60px) scale(1.1) rotate(90deg); border-radius: 70% 30% 50% 50% / 30% 30% 70% 70%; }
+  66% { transform: translate(-30px, 30px) scale(0.9) rotate(180deg); border-radius: 100% 60% 60% 100% / 100% 100% 60% 60%; }
+  100% { transform: translate(0px, 0px) scale(1) rotate(360deg); border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
 }
 
 @keyframes blob-float {
-  0% { transform: translate(0px, 0px) scale(1); }
-  33% { transform: translate(-40px, 40px) scale(1.2); }
-  66% { transform: translate(30px, -20px) scale(0.8); }
-  100% { transform: translate(0px, 0px) scale(1); }
+  0% { transform: translate(0px, 0px) scale(1) rotate(0deg); border-radius: 50% 50% 50% 70% / 50% 50% 70% 50%; }
+  33% { transform: translate(-50px, 50px) scale(1.3) rotate(-90deg); border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+  66% { transform: translate(40px, -30px) scale(0.8) rotate(-180deg); border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+  100% { transform: translate(0px, 0px) scale(1) rotate(-360deg); border-radius: 50% 50% 50% 70% / 50% 50% 70% 50%; }
 }
 
 @keyframes blob-pulse {
-  0% { transform: translate(0px, 0px) scale(1); }
-  33% { transform: translate(20px, 30px) scale(0.95); }
-  66% { transform: translate(-30px, -30px) scale(1.05); }
-  100% { transform: translate(0px, 0px) scale(1); }
+  0% { transform: translate(0px, 0px) scale(1) rotate(0deg); border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+  33% { transform: translate(30px, 40px) scale(0.85) rotate(45deg); border-radius: 50% 50% 50% 70% / 50% 50% 70% 50%; }
+  66% { transform: translate(-40px, -40px) scale(1.15) rotate(135deg); border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+  100% { transform: translate(0px, 0px) scale(1) rotate(360deg); border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
 }
 
 .animate-blob1 {
-  animation: blob-bounce 15s infinite alternate ease-in-out;
+  animation: blob-bounce 20s infinite alternate ease-in-out;
 }
 .animate-blob2 {
-  animation: blob-float 18s infinite alternate-reverse ease-in-out;
+  animation: blob-float 22s infinite alternate-reverse ease-in-out;
 }
 .animate-blob3 {
-  animation: blob-pulse 20s infinite alternate ease-in-out;
+  animation: blob-pulse 25s infinite alternate ease-in-out;
 }

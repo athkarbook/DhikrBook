@@ -39,15 +39,31 @@ const LiveBackground = ({ colorTheme, isDarkMode, isInteracting }) => {
   const b1 = isDarkMode ? colorTheme.darkBlob1 : colorTheme.blob1;
   const b2 = isDarkMode ? colorTheme.darkBlob2 : colorTheme.blob2;
   const b3 = isDarkMode ? colorTheme.darkBlob3 : colorTheme.blob3;
+  const b4 = isDarkMode ? colorTheme.darkBlob1 : colorTheme.blob2; 
   
-  const interactionClass = isInteracting ? 'scale-110 opacity-80' : 'scale-100 opacity-60';
+  const interactionClass = isInteracting ? 'scale-110 opacity-100 blur-[40px] rotate-12' : 'scale-100 opacity-70 blur-[80px]';
 
   return (
     <div className="fixed inset-0 overflow-hidden pointer-events-none z-[-1] transition-colors duration-1000">
-      <div className="absolute inset-0 bg-slate-50 dark:bg-slate-900 transition-colors duration-700"></div>
-      <div className={`absolute top-[-10%] left-[-10%] w-[60vw] h-[60vw] md:w-[40vw] md:h-[40vw] rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[60px] md:blur-[100px] animate-blob1 ${b1} transition-all duration-500 ease-out ${interactionClass}`}></div>
-      <div className={`absolute top-[20%] right-[-10%] w-[55vw] h-[55vw] md:w-[35vw] md:h-[35vw] rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[60px] md:blur-[100px] animate-blob2 ${b2} transition-all duration-500 ease-out ${interactionClass}`}></div>
-      <div className={`absolute bottom-[-10%] left-[20%] w-[70vw] h-[70vw] md:w-[50vw] md:h-[50vw] rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[60px] md:blur-[100px] animate-blob3 ${b3} transition-all duration-500 ease-out ${interactionClass}`}></div>
+      <div className="absolute inset-0 bg-slate-100 dark:bg-slate-900 transition-colors duration-700"></div>
+      
+      {/* Noise Texture Layer للواقعية */}
+      <div 
+        className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] z-10"
+        style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`, backgroundRepeat: 'repeat' }}
+      ></div>
+
+      {/* Blob 1 */}
+      <div className={`absolute top-[-10%] left-[-10%] w-[70vw] h-[70vw] md:w-[45vw] md:h-[45vw] mix-blend-multiply dark:mix-blend-screen filter transition-all duration-700 ease-out animate-blob1 ${b1} ${interactionClass}`}></div>
+      {/* Blob 2 */}
+      <div className={`absolute top-[10%] right-[-10%] w-[65vw] h-[65vw] md:w-[40vw] md:h-[40vw] mix-blend-multiply dark:mix-blend-screen filter transition-all duration-700 ease-out animate-blob2 ${b2} ${interactionClass}`} style={{ animationDelay: '2s' }}></div>
+      {/* Blob 3 */}
+      <div className={`absolute bottom-[-10%] left-[10%] w-[80vw] h-[80vw] md:w-[55vw] md:h-[55vw] mix-blend-multiply dark:mix-blend-screen filter transition-all duration-700 ease-out animate-blob3 ${b3} ${interactionClass}`} style={{ animationDelay: '4s' }}></div>
+      {/* Blob 4 */}
+      <div className={`absolute bottom-[20%] right-[10%] w-[60vw] h-[60vw] md:w-[35vw] md:h-[35vw] mix-blend-multiply dark:mix-blend-screen filter transition-all duration-700 ease-out animate-blob1 ${b4} ${interactionClass}`} style={{ animationDelay: '6s', animationDirection: 'reverse' }}></div>
+
+      {/* وميض تفاعلي عند التسبيح */}
+      <div className={`absolute top-[40%] left-[20%] w-[100vw] h-[100vw] rounded-full bg-white mix-blend-overlay filter blur-[100px] transition-all duration-300 ${isInteracting ? 'opacity-40 scale-150' : 'opacity-0 scale-50'}`}></div>
     </div>
   );
 };

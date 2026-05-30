@@ -848,13 +848,15 @@ export function useAppLogic() {
     customAdhkar, setCustomAdhkar, progress, setProgress,
     handleDhikrClick, resetSingleDhikr, deleteCustomDhikr,
     showAddCustom, setShowAddCustom, newCustomText, setNewCustomText, newCustomTarget, setNewCustomTarget, addCustomDhikr,
-    tasbeehCount, setTasbeehCount, resetTasbeeh, handleTasbeehClick, dailyTasbeehGoal, todayTasbeehs,
-    bestStreak, streak, totalTasbeehsMade, totalAdhkarRead, roadmapDays,
+    tasbeehCount, setTasbeehCount, resetTasbeeh, handleTasbeehClick, dailyTasbeehGoal, setDailyTasbeehGoal, todayTasbeehs,
+    bestStreak, setBestStreak, streak, setStreak, totalTasbeehsMade, setTotalTasbeehsMade, totalAdhkarRead, setTotalAdhkarRead, roadmapDays,
     badges, exportStatsAsImage, exportStoryAsImage, isExporting,
-    devData, setDevData,
+    devData, setDevData, devClickCount, setDevClickCount,
     currentTabTheme, activeTab, setActiveTab, getTabClass, totalProgressPercentage,
     speechSupported, toggleVoiceTasbeeh, isListening, currentLevel,
     currentTabAdhkar, showConfetti, setShowConfetti, isInteracting, setIsInteracting,
-    shouldShowBeforeMood, shouldShowAfterMood, handleMoodSelect
+    shouldShowBeforeMood, shouldShowAfterMood, handleMoodSelect,
+    userXP, minXP, maxXP, levelColor, levelBg, levelProgressPercent,
+    chartFilter, setChartFilter, graphDays, maxActivity, moodLog
   };
 }

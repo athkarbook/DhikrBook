@@ -23,7 +23,7 @@ export function DevModal({ props }) {
     tasbeehCount, setTasbeehCount, resetTasbeeh, handleTasbeehClick, dailyTasbeehGoal, todayTasbeehs,
     bestStreak, streak, totalTasbeehsMade, totalAdhkarRead, roadmapDays,
     badges, exportStatsAsImage, isExporting,
-    devData, setDevData
+    devData, setDevData, setStreak, setBestStreak, setTotalAdhkarRead, setTotalTasbeehsMade
   } = props;
 
   return (

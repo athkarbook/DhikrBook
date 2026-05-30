@@ -23,7 +23,8 @@ export function SettingsModal({ props }) {
     tasbeehCount, setTasbeehCount, resetTasbeeh, handleTasbeehClick, dailyTasbeehGoal, todayTasbeehs,
     bestStreak, streak, totalTasbeehsMade, totalAdhkarRead, roadmapDays,
     badges, exportStatsAsImage, isExporting,
-    devData, setDevData
+    devData, setDevData,
+    activeTab, getTabClass
   } = props;
 
   return (

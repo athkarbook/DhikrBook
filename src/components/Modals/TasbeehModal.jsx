@@ -24,7 +24,8 @@ export function TasbeehModal({ props }) {
     tasbeehCount, setTasbeehCount, resetTasbeeh, handleTasbeehClick, dailyTasbeehGoal, todayTasbeehs,
     bestStreak, streak, totalTasbeehsMade, totalAdhkarRead, roadmapDays,
     badges, exportStatsAsImage, isExporting,
-    devData, setDevData
+    devData, setDevData,
+    speechSupported, toggleVoiceTasbeeh, isListening, setDailyTasbeehGoal
   } = props;
 
   return (

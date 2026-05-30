@@ -24,7 +24,10 @@ export function StatsModal({ props }) {
     tasbeehCount, setTasbeehCount, resetTasbeeh, handleTasbeehClick, dailyTasbeehGoal, todayTasbeehs,
     bestStreak, streak, totalTasbeehsMade, totalAdhkarRead, roadmapDays,
     badges, exportStatsAsImage, isExporting,
-    devData, setDevData
+    devData, setDevData,
+    devClickCount, setDevClickCount, setShowDevModal,
+    levelColor, currentLevel, userXP, levelBg, levelProgressPercent, minXP, maxXP,
+    setShowRoadmapModal, setChartFilter, chartFilter, graphDays, maxActivity, moodLog, exportStoryAsImage
   } = props;
 
   return (

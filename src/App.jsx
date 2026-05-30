@@ -736,7 +736,20 @@ export default function App() {
 
   useEffect(() => {
     if (location && !prayerTimes) {
-      fetchPrayerTimes(location);
+      const fetchSavedPrayerTimes = async () => {
+        try {
+          const prayerRes = await fetch(`https://api.aladhan.com/v1/timings?latitude=${location.lat}&longitude=${location.lng}&method=4`);
+          const prayerData = await prayerRes.json();
+          if (prayerData.code === 200 && prayerData.data && prayerData.data.timings) {
+            setPrayerTimes(prayerData.data.timings);
+            localStorage.setItem('prayerTimes', JSON.stringify(prayerData.data.timings));
+            localStorage.setItem('prayerTimesDate', new Date().toDateString());
+          }
+        } catch(e) {
+           console.error("Failed to fetch background prayer times", e);
+        }
+      };
+      fetchSavedPrayerTimes();
     }
   }, [location, prayerTimes]);
 

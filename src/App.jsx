@@ -2327,7 +2327,7 @@ export default function App() {
 
 
       {/* --- شريط التنقل العلوي --- */}
-      <header className={`sticky top-0 z-40 shadow-md transition-colors duration-500 ${currentTabTheme.header} dark:bg-slate-800 text-white`}>
+      <header className={`fixed top-0 left-0 right-0 z-40 shadow-md transition-colors duration-500 ${currentTabTheme.header} dark:bg-slate-800 text-white`}>
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center space-x-3 space-x-reverse">
             <BookOpen className="w-6 h-6 md:w-8 md:h-8" />
@@ -3332,7 +3332,7 @@ export default function App() {
         </div>
       )}
 
-      <main className="container mx-auto px-4 py-6 md:py-8 max-w-4xl">
+      <main className="container mx-auto px-4 py-6 md:py-8 max-w-4xl pt-[130px] md:pt-[140px]">
 
         {/* --- تنبيه أوقات الأذكار --- */}
         {activeTab !== 'garden' && (

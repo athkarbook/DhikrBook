@@ -66,7 +66,7 @@ export default function App() {
   props.fontSizes = fontSizes;
 
   const [showTaarSection, setShowTaarSection] = useState(false);
-  const taarAdhkar = adhkarData.filter(d => d.category === 'أذكار التعار من الليل');
+  const taarAdhkar = adhkarData.filter(d => d.category === 'الذكر الوارد إذا تعار من الليل (التقلب والانتباه)');
 
   const TabIcon = activeTab === 'morning' ? Flame : activeTab === 'evening' ? Moon : activeTab === 'sleep' ? MoonStar : activeTab === 'wake' ? Flame : Clock;
 

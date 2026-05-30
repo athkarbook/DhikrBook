@@ -2,6 +2,7 @@ import React, { useMemo, useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Sky, ContactShadows, Cloud, Float } from '@react-three/drei';
 import * as THREE from 'three';
+import { Leaf } from 'lucide-react';
 
 // --- Procedural Generation Utilities ---
 
@@ -225,6 +226,18 @@ export default function Garden3D({ totalXP }) {
 
   return (
     <div className="w-full h-full rounded-[3rem] overflow-hidden shadow-2xl border border-white/10 relative bg-sky-100 dark:bg-sky-900 transition-colors">
+      
+      {/* Overlay UI - Hadith and Title */}
+      <div className="absolute inset-0 pointer-events-none flex flex-col items-center z-10 p-6 md:p-8 mt-2">
+        <h4 className="text-3xl md:text-5xl font-black mb-4 text-emerald-300 drop-shadow-md flex items-center justify-center gap-3">
+          <Leaf className="w-8 h-8 md:w-12 md:h-12 text-emerald-400 animate-pulse" />
+          بستان الجنة
+        </h4>
+        <p className="text-xs md:text-base text-emerald-100/90 max-w-2xl mx-auto leading-relaxed font-medium px-4 text-center">
+          «ألَا أدُلُّكَ على غِراسٍ، هو خير مِنْ هذا؟ تقول: سبحان الله، والحمد لله، ولا إله إلا الله، والله أكبر، يُغرس لك بكل كلمةٍ منها شجرةٌ في الجنة»
+        </p>
+      </div>
+
       <Canvas shadows camera={{ position: [0, 8, 15], fov: 45 }}>
         {/* Environment and Lighting */}
         <Sky sunPosition={[10, 20, -10]} turbidity={0.1} rayleigh={0.5} />

@@ -1,8 +1,10 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useRef, Suspense, lazy } from 'react';
 import { useRegisterSW } from 'virtual:pwa-register/react';
 import { Sun, Moon, Settings, Info, BookOpen, CheckCircle, RotateCcw, Clock, Star, X, Plus, Minus, Type, Flame, Volume2, VolumeX, Vibrate, VibrateOff, Target, Sunrise, Sunset, MoonStar, ChevronDown, ChevronUp, Palette, Fingerprint, BarChart2, Edit3, Trash2, Award, Trophy, Bell, BellRing, Shield, Crown, RefreshCw, Share2, Map, Mic, MicOff, Leaf, Heart } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
+
+const Garden3D = lazy(() => import('./Garden3D'));
 
 // مكون أيقونة المسبحة الإسلامية المخصصة والجميلة
 const TasbeehIcon = ({ className = "w-6 h-6" }) => (
@@ -90,89 +92,10 @@ const CelestialElements = ({ activeTab }) => {
   return null;
 };
 
-// دالة مساعدة لتحديد ألوان الشجرة بناءً على المستوى
-const getTreeColors = (lvl) => {
-  if (lvl <= 2) return { trunk: '#5D4037', l1: '#4CAF50', l2: '#81C784' }; // أخضر فاتح
-  if (lvl === 3) return { trunk: '#4E342E', l1: '#2E7D32', l2: '#1B5E20' }; // أخضر داكن
-  if (lvl === 4) return { trunk: '#5D4037', l1: '#9E9D24', l2: '#827717' }; // زيتوني
-  if (lvl === 5) return { trunk: '#FBC02D', l1: '#FFEE58', l2: '#FFF176' }; // ذهبي
-  if (lvl === 6) return { trunk: '#FFF59D', l1: '#FFF9C4', l2: '#FFFDE7' }; // نور أبيض
-  if (lvl === 7) return { trunk: '#90CAF9', l1: '#42A5F5', l2: '#1E88E5' }; // ياقوت أزرق
-  if (lvl === 8) return { trunk: '#EF9A9A', l1: '#EF5350', l2: '#E53935' }; // ياقوت أحمر
-  if (lvl === 9) return { trunk: '#CE93D8', l1: '#AB47BC', l2: '#8E24AA' }; // جمشت (بنفسجي)
-  if (lvl === 10) return { trunk: '#80CBC4', l1: '#26A69A', l2: '#00897B' }; // زبرجد (أخضر مزرق)
-  if (lvl === 11) return { trunk: '#B2EBF2', l1: '#26C6DA', l2: '#00ACC1' }; // ألماس (سماوي)
-  if (lvl === 12) return { trunk: '#FFCC80', l1: '#FFA726', l2: '#FB8C00' }; // توباز (برتقالي)
-  if (lvl === 13) return { trunk: '#F48FB1', l1: '#EC407A', l2: '#D81B60' }; // عقيق (وردي)
-  if (lvl === 14) return { trunk: '#E0E0E0', l1: '#F5F5F5', l2: '#FFFFFF' }; // لؤلؤ نقي
-  return { trunk: '#FFD54F', l1: '#FFCA28', l2: '#FFC107' }; // ذهب خالص للفردوس
-};
-
-// مكون الشجرة الفردية بمستوياتها (نسخة محسنة الأداء مع 15 مستوى)
-const TreeSVG = ({ level, scale = 1 }) => {
-  if (level === 0) return null;
-
-  const { trunk, l1, l2 } = getTreeColors(level);
-  const isGlowing = level >= 5;
-
-  return (
-    <div className="transition-transform duration-700 ease-out absolute bottom-0 left-1/2 -translate-x-1/2 will-change-transform">
-      <svg viewBox="0 0 100 120" className="overflow-visible" style={{ width: `${40 * scale}px`, height: `${48 * scale}px` }}>
-        {/* الجذع */}
-        {level >= 2 && <path d="M45 120 Q 50 80 50 60 Q 50 80 55 120 Z" fill={trunk} />}
-
-        {/* الأوراق (للشجرة الكاملة) */}
-        {level >= 3 && (
-          <g>
-            <circle cx="50" cy="40" r="30" fill={l1} opacity="0.95" />
-            <circle cx="35" cy="50" r="20" fill={l2} opacity="0.9" />
-            <circle cx="65" cy="50" r="20" fill={l2} opacity="0.9" />
-            <circle cx="50" cy="20" r="25" fill={l1} opacity="0.98" />
-          </g>
-        )}
-
-        {/* الفسيلة / الشجرة الصغيرة (مستوى 1 و 2) */}
-        {level === 1 && <circle cx="50" cy="110" r="8" fill={l1} />}
-        {level === 2 && (
-          <g>
-            <circle cx="50" cy="80" r="15" fill={l1} />
-            <circle cx="42" cy="88" r="10" fill={l2} />
-            <circle cx="58" cy="88" r="10" fill={l2} />
-          </g>
-        )}
-
-        {/* الثمار المضيئة / التأثيرات للمستويات العالية */}
-        {isGlowing && (
-          <g>
-            <circle cx="40" cy="30" r="2.5" fill="#FFF" className="animate-pulse" />
-            <circle cx="60" cy="35" r="3" fill="#FFF" className="animate-pulse" style={{ animationDelay: '1s' }} />
-            <circle cx="50" cy="20" r="2" fill="#FFF" className="animate-pulse" style={{ animationDelay: '0.5s' }} />
-          </g>
-        )}
-      </svg>
-    </div>
-  );
-};
-
 const JannahGarden = ({ totalTasbeehs }) => {
   const TOTAL_TREES = 30; // تقليل عدد الأشجار من 50 إلى 30 لمنع التعليق
 
-  // توليد مواقع ثابتة للأشجار في البستان لتبدو كغابة عميقة
-  const treePositions = useMemo(() => {
-    const pos = [];
-    for (let i = 0; i < TOTAL_TREES; i++) {
-      // استخدام دوال جيبية كبديل للعشوائية للحفاظ على ثبات المواقع
-      const x = Math.abs(Math.sin(i * 12.34)) * 90 + 5; // 5% to 95% left
-      const y = Math.abs(Math.cos(i * 43.21)) * 60 + 5; // 5% to 65% bottom
 
-      // الأشجار الأقرب (y أقل) تبدو أكبر
-      const scale = 0.6 + (65 - y) / 35; // 0.6 to ~2.3
-
-      pos.push({ id: i, left: x, bottom: y, scale, zIndex: Math.floor(100 - y) });
-    }
-    // ترتيب الأشجار حسب zIndex بحيث تُطبع الأشجار الخلفية أولاً
-    return pos.sort((a, b) => a.zIndex - b.zIndex);
-  }, []);
 
   const fullLoops = Math.floor(totalTasbeehs / TOTAL_TREES);
   const remainder = totalTasbeehs % TOTAL_TREES;
@@ -232,37 +155,16 @@ const JannahGarden = ({ totalTasbeehs }) => {
         </p>
       </div>
 
-      {/* الغابة (مساحة العرض) */}
-      <div className="relative w-full max-w-3xl h-[40vh] md:h-[50vh] mt-8 z-10 flex-shrink-0 perspective-1000">
-        {/* الأرضية السفلية الممتدة */}
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[150%] h-1/3 bg-gradient-to-t from-emerald-950/80 to-transparent blur-md rounded-[100%]"></div>
-
-        {/* عرض الأشجار بناءً على عدد التسبيحات */}
-        {treePositions.map((pos) => {
-          const treeLevel = fullLoops + (pos.id < remainder ? 1 : 0);
-          const visualLevel = Math.min(treeLevel, 15); // زيادة أقصى مستوى بصري إلى 15
-
-          return (
-            <div
-              key={pos.id}
-              className="absolute will-change-transform"
-              style={{
-                left: `${pos.left}%`,
-                bottom: `${pos.bottom}%`,
-                zIndex: pos.zIndex
-              }}
-            >
-              {/* ظل الشجرة المخفف */}
-              {visualLevel > 0 && (
-                <div
-                  className="absolute bottom-[-2px] left-1/2 -translate-x-1/2 bg-black/30 rounded-[100%] blur-sm transition-transform duration-700"
-                  style={{ width: `${15 * pos.scale}px`, height: `${4 * pos.scale}px` }}
-                ></div>
-              )}
-              <TreeSVG level={visualLevel} scale={pos.scale} />
-            </div>
-          );
-        })}
+      {/* الغابة (مساحة العرض 3D) */}
+      <div className="relative w-full h-[40vh] md:h-[50vh] mt-8 z-10 flex-shrink-0">
+        <Suspense fallback={
+          <div className="w-full h-full flex flex-col items-center justify-center text-emerald-300">
+             <RefreshCw className="w-10 h-10 animate-spin mb-4" />
+             <p className="font-bold animate-pulse">جاري بناء البستان ثلاثي الأبعاد...</p>
+          </div>
+        }>
+          <Garden3D totalXP={totalTasbeehs} />
+        </Suspense>
       </div>
 
       {/* تأثير ضوئي كثيف عند المراحل المتقدمة (مخفف لتجنب التعليق) */}

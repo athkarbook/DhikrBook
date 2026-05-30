@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sun, Moon, Cloud, Star } from 'lucide-react';
+import { Sun, Moon, Cloud, Star, Leaf, RefreshCw } from 'lucide-react';
 
 export const CelestialElements = ({ activeTab }) => {
   if (activeTab === 'sleep') {
@@ -57,120 +57,6 @@ export const CelestialElements = ({ activeTab }) => {
   return null;
 };
 
-const JannahGarden = ({ totalTasbeehs }) => {
-  const TOTAL_TREES = 30; // تقليل عدد الأشجار من 50 إلى 30 لمنع التعليق
-
-
-
-  const fullLoops = Math.floor(totalTasbeehs / TOTAL_TREES);
-  const remainder = totalTasbeehs % TOTAL_TREES;
-
-  const stageNames = [
-    "أرض خصبة تنتظر غراسك", // 0
-    "فسائل الغراس", // 1
-    "البستان الأخضر", // 2
-    "أشجار الزيتون المباركة", // 3
-    "الأشجار الذهبية", // 4
-    "غابة النور النقي", // 5
-    "أشجار الياقوت الأزرق", // 6
-    "أشجار الياقوت الأحمر", // 7
-    "غابة الجمشت الملكية", // 8
-    "غابة الزبرجد", // 9
-    "غابة الألماس الساطعة", // 10
-    "أشجار التوباز الدافئة", // 11
-    "أشجار العقيق الوردي", // 12
-    "غابة اللؤلؤ المنثور", // 13
-    "سدرة المنتهى المضيئة", // 14
-    "بستان الفردوس الأعلى" // 15+
-  ];
-
-  const currentStageName = stageNames[Math.min(fullLoops, stageNames.length - 1)] || stageNames[0];
-
-  const nextStageThreshold = (fullLoops + 1) * TOTAL_TREES;
-  const progressToNext = (remainder / TOTAL_TREES) * 100;
-
-  return (
-    <div className="w-full flex flex-col items-center justify-center min-h-[70vh] p-4 md:p-8 bg-gradient-to-b from-teal-950 via-emerald-900 to-slate-900 rounded-[3rem] border border-white/10 shadow-2xl relative overflow-hidden transition-colors duration-1000 mb-8">
-      {/* سماء البستان */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(12)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute bg-white/30 rounded-full animate-pulse"
-            style={{
-              top: `${Math.random() * 80}%`,
-              left: `${Math.random() * 100}%`,
-              width: `${Math.random() * 3 + 1}px`,
-              height: `${Math.random() * 3 + 1}px`,
-              animationDelay: `${Math.random() * 5}s`,
-              animationDuration: `${Math.random() * 3 + 2}s`
-            }}
-          />
-        ))}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[150%] h-[50%] bg-gradient-to-b from-emerald-400/10 to-transparent blur-3xl"></div>
-      </div>
-
-      <div className="text-center z-20 mb-auto mt-4 md:mt-8">
-        <h4 className="text-3xl md:text-5xl font-black mb-4 text-emerald-300 drop-shadow-md flex items-center justify-center gap-3">
-          <Leaf className="w-8 h-8 md:w-12 md:h-12 text-emerald-400 animate-pulse" />
-          بستان الجنة
-        </h4>
-        <p className="text-xs md:text-base text-emerald-100/90 max-w-2xl mx-auto leading-relaxed font-medium px-4">
-          «ألَا أدُلُّكَ على غِراسٍ، هو خير مِنْ هذا؟ تقول: سبحان الله، والحمد لله، ولا إله إلا الله، والله أكبر، يُغرس لك بكل كلمةٍ منها شجرةٌ في الجنة»
-        </p>
-      </div>
-
-      {/* الغابة (مساحة العرض 3D) */}
-      <div className="relative w-full h-[40vh] md:h-[50vh] mt-8 z-10 flex-shrink-0">
-        <Suspense fallback={
-          <div className="w-full h-full flex flex-col items-center justify-center text-emerald-300">
-             <RefreshCw className="w-10 h-10 animate-spin mb-4" />
-             <p className="font-bold animate-pulse">جاري بناء البستان ثلاثي الأبعاد...</p>
-          </div>
-        }>
-          <Garden3D totalXP={totalTasbeehs} />
-        </Suspense>
-      </div>
-
-      {/* تأثير ضوئي كثيف عند المراحل المتقدمة (مخفف لتجنب التعليق) */}
-      {fullLoops >= 3 && (
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] h-[150%] bg-yellow-400/5 filter blur-3xl rounded-full pointer-events-none z-0"></div>
-      )}
-
-      {/* لوحة التحكم والإحصاءات للبستان */}
-      <div className="mt-8 w-full max-w-md z-20">
-        <div className="bg-black/30 backdrop-blur-xl rounded-3xl p-6 border border-white/10 shadow-2xl">
-          <div className="flex justify-between items-center mb-6">
-            <div>
-              <span className="block text-emerald-400/80 text-[10px] md:text-xs font-bold mb-1">المرحلة الحالية لغابتك</span>
-              <h5 className="text-emerald-100 font-bold text-lg md:text-xl">{currentStageName}</h5>
-            </div>
-            <div className="text-left bg-white/5 px-4 py-2 rounded-2xl border border-white/10">
-              <span className="text-3xl md:text-4xl font-black text-white drop-shadow-md">{totalTasbeehs.toLocaleString('ar-EG')}</span>
-              <span className="block text-emerald-300/80 text-[10px] font-bold mt-1">شجرة مغروسة</span>
-            </div>
-          </div>
-
-          <div className="mt-4">
-            <div className="flex justify-between text-[10px] md:text-xs text-emerald-200/80 mb-2 font-bold">
-              <span>الترقية الشاملة القادمة للأشجار</span>
-              <span>{nextStageThreshold - totalTasbeehs} شجرة متبقية</span>
-            </div>
-            <div className="w-full bg-black/50 h-3 md:h-4 rounded-full overflow-hidden border border-white/5 shadow-inner">
-              <div
-                className="h-full bg-gradient-to-r from-emerald-600 via-emerald-400 to-green-300 transition-all duration-700 ease-out relative"
-                style={{ width: `${progressToNext}%` }}
-              >
-                <div className="absolute top-0 right-0 bottom-0 w-6 bg-white/30 animate-[pulse_1s_ease-in-out_infinite] blur-[2px]"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
 // مكون الخلفية الحية التفاعلية
 export const LiveBackground = ({ colorTheme, isDarkMode, isInteracting, activeTab }) => {
   if (!colorTheme) return null;
@@ -199,4 +85,3 @@ export const LiveBackground = ({ colorTheme, isDarkMode, isInteracting, activeTa
     </div>
   );
 };
-

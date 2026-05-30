@@ -1800,10 +1800,10 @@ export default function App() {
 
       {/* --- إشعار تحديث التطبيق (PWA Update Prompt) --- */}
       {needRefresh && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] w-[90%] max-w-md bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-2xl border-2 border-teal-500 dark:border-teal-400 flex items-center justify-between gap-4 animate-in slide-in-from-bottom-8">
+        <div className={`fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] w-[90%] max-w-md bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-2xl border-2 ${currentTabTheme.header.replace('bg-', 'border-')} dark:border-slate-700 flex items-center justify-between gap-4 animate-in slide-in-from-bottom-8`}>
           <div className="flex items-center gap-3">
-            <div className="bg-teal-100 dark:bg-teal-900/30 p-2 rounded-full">
-              <RefreshCw className="w-6 h-6 text-teal-600 dark:text-teal-400 animate-spin" />
+            <div className={`p-2 rounded-full ${currentTabTheme.cardHeader}`}>
+              <RefreshCw className={`w-6 h-6 animate-spin ${currentTabTheme.icon}`} />
             </div>
             <div>
               <p className="font-bold text-slate-800 dark:text-slate-100 text-sm md:text-base">تحديث جديد متاح! ✨</p>
@@ -1812,7 +1812,7 @@ export default function App() {
           </div>
           <button
             onClick={() => updateServiceWorker(true)}
-            className="shrink-0 bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-xl font-bold transition shadow-md active:scale-95 text-sm md:text-base"
+            className={`shrink-0 ${currentTabTheme.header} hover:opacity-90 text-white px-4 py-2 rounded-xl font-bold transition shadow-md active:scale-95 text-sm md:text-base`}
           >
             تحديث الآن
           </button>
@@ -1856,21 +1856,7 @@ export default function App() {
         </div>
       )}
 
-      {/* --- إشعار تحديث التطبيق (PWA) --- */}
-      {needRefresh && (
-        <div className="fixed top-0 left-0 w-full z-[100] bg-indigo-600 text-white p-3 flex justify-between items-center shadow-lg">
-          <div className="flex items-center gap-2">
-            <Star className="w-5 h-5 animate-spin-slow" />
-            <span className="font-bold text-sm md:text-base">تحديث جديد متاح! أضفنا ميزات جديدة وحللنا المشاكل.</span>
-          </div>
-          <button 
-            onClick={() => updateServiceWorker(true)}
-            className="bg-white text-indigo-600 px-4 py-1.5 rounded-full font-bold text-sm hover:bg-indigo-50 transition"
-          >
-            تحديث الآن
-          </button>
-        </div>
-      )}
+
 
       {/* --- شريط التنقل العلوي --- */}
       <header className={`sticky top-0 z-40 shadow-md transition-colors duration-500 ${currentTabTheme.header} dark:bg-slate-800 text-white`}>

@@ -840,7 +840,7 @@ export function useAppLogic() {
     showFawaid, setShowFawaid,
     getTabLabel,
     customAdhkar, setCustomAdhkar, progress, setProgress,
-    handleDhikrClick, resetSingleDhikr, deleteCustomDhikr,
+    handleDhikrClick, resetSingleDhikr, resetAllProgress, deleteCustomDhikr,
     showAddCustom, setShowAddCustom, newCustomText, setNewCustomText, newCustomTarget, setNewCustomTarget, addCustomDhikr,
     tasbeehCount, setTasbeehCount, resetTasbeeh, handleTasbeehClick, dailyTasbeehGoal, setDailyTasbeehGoal, todayTasbeehs,
     bestStreak, setBestStreak, streak, setStreak, totalTasbeehsMade, setTotalTasbeehsMade, totalAdhkarRead, setTotalAdhkarRead, roadmapDays,

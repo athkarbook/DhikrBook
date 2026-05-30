@@ -694,13 +694,28 @@ export default function App() {
     return null;
   });
 
+  const [manualCity, setManualCity] = useState('');
+  const [manualCountry, setManualCountry] = useState('');
+  const [searchError, setSearchError] = useState('');
+  const [isSearching, setIsSearching] = useState(false);
+
   const fetchPrayerTimes = async (loc) => {
     try {
-      const response = await fetch(`https://api.aladhan.com/v1/timings?latitude=${loc.lat}&longitude=${loc.lng}&method=4`);
+      let url = '';
+      if (loc.lat && loc.lng) {
+        url = `https://api.aladhan.com/v1/timings?latitude=${loc.lat}&longitude=${loc.lng}&method=4`;
+      } else if (loc.city && loc.country) {
+        url = `https://api.aladhan.com/v1/timingsByCity?city=${encodeURIComponent(loc.city)}&country=${encodeURIComponent(loc.country)}&method=4`;
+      } else {
+        return;
+      }
+      const response = await fetch(url);
       const data = await response.json();
-      setPrayerTimes(data.data.timings);
-      localStorage.setItem('prayerTimes', JSON.stringify(data.data.timings));
-      localStorage.setItem('prayerTimesDate', new Date().toDateString());
+      if (data.code === 200 && data.data && data.data.timings) {
+        setPrayerTimes(data.data.timings);
+        localStorage.setItem('prayerTimes', JSON.stringify(data.data.timings));
+        localStorage.setItem('prayerTimesDate', new Date().toDateString());
+      }
     } catch (e) {
       console.error('Failed to fetch prayer times', e);
     }
@@ -715,10 +730,39 @@ export default function App() {
           localStorage.setItem('userLocation', JSON.stringify(loc));
           fetchPrayerTimes(loc);
         },
-        (error) => alert('عذراً، لم نتمكن من تحديد الموقع.')
+        (error) => alert('عذراً، لم نتمكن من تحديد الموقع. يمكنك إدخال مدينتك يدوياً بالأسفل.')
       );
     } else {
-      alert('المتصفح لا يدعم تحديد الموقع.');
+      alert('المتصفح لا يدعم تحديد الموقع. يمكنك إدخال مدينتك يدوياً بالأسفل.');
+    }
+  };
+
+  const fetchPrayerTimesByCity = async () => {
+    if (!manualCity.trim() || !manualCountry.trim()) {
+      setSearchError('الرجاء إدخال المدينة والدولة');
+      return;
+    }
+    setIsSearching(true);
+    setSearchError('');
+    try {
+      const response = await fetch(`https://api.aladhan.com/v1/timingsByCity?city=${encodeURIComponent(manualCity)}&country=${encodeURIComponent(manualCountry)}&method=4`);
+      const data = await response.json();
+      if (data.code === 200 && data.data && data.data.timings) {
+        const loc = { city: manualCity, country: manualCountry };
+        setPrayerTimes(data.data.timings);
+        setLocation(loc);
+        localStorage.setItem('userLocation', JSON.stringify(loc));
+        localStorage.setItem('prayerTimes', JSON.stringify(data.data.timings));
+        localStorage.setItem('prayerTimesDate', new Date().toDateString());
+        setManualCity('');
+        setManualCountry('');
+      } else {
+        setSearchError('لم نتمكن من العثور على المدينة. تأكد من تهجئة الاسم بشكل صحيح.');
+      }
+    } catch (e) {
+      setSearchError('حدث خطأ في الاتصال. الرجاء المحاولة لاحقاً.');
+    } finally {
+      setIsSearching(false);
     }
   };
 
@@ -2609,18 +2653,57 @@ export default function App() {
                 </div>
                 
                 {!prayerTimes ? (
-                  <div className="text-center py-4">
-                    <Map className="w-10 h-10 mx-auto text-slate-300 dark:text-slate-600 mb-3" />
-                    <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
-                      قم بتحديد موقعك لنجلب أوقات الصلاة الدقيقة، ونقترح لك الأذكار الصحيحة في وقتها المناسب.
-                    </p>
-                    <button
-                      onClick={requestLocation}
-                      className="w-full flex justify-center items-center gap-2 px-4 py-2.5 bg-teal-600 text-white dark:bg-teal-600 rounded-lg hover:bg-teal-700 transition font-bold shadow-md"
-                    >
-                      <Map className="w-5 h-5" />
-                      تحديد موقعي الآن
-                    </button>
+                  <div className="flex flex-col gap-4 py-2">
+                    <div className="text-center">
+                      <Map className="w-10 h-10 mx-auto text-slate-300 dark:text-slate-600 mb-2" />
+                      <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-3">
+                        حدد موقعك تلقائياً عبر المتصفح أو اكتب مدينتك بالأسفل للحصول على أوقات الصلاة بدقة.
+                      </p>
+                      <button
+                        onClick={requestLocation}
+                        className="w-full flex justify-center items-center gap-2 px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg transition font-bold shadow-sm text-sm"
+                      >
+                        <Map className="w-4 h-4" />
+                        تحديد موقعي التلقائي (GPS)
+                      </button>
+                    </div>
+
+                    <div className="relative flex py-2 items-center">
+                      <div className="flex-grow border-t border-slate-200 dark:border-slate-700"></div>
+                      <span className="flex-shrink mx-4 text-slate-400 text-[10px] font-bold">أو يدوياً</span>
+                      <div className="flex-grow border-t border-slate-200 dark:border-slate-700"></div>
+                    </div>
+
+                    <div className="space-y-3">
+                      <div className="grid grid-cols-2 gap-2">
+                        <input
+                          type="text"
+                          placeholder="المدينة (مثال: Amman)"
+                          value={manualCity}
+                          onChange={(e) => setManualCity(e.target.value)}
+                          className="w-full px-3 py-2 text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-teal-500"
+                        />
+                        <input
+                          type="text"
+                          placeholder="الدولة (مثال: Jordan)"
+                          value={manualCountry}
+                          onChange={(e) => setManualCountry(e.target.value)}
+                          className="w-full px-3 py-2 text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-teal-500"
+                        />
+                      </div>
+                      
+                      {searchError && (
+                        <p className="text-[11px] text-red-500 font-semibold">{searchError}</p>
+                      )}
+
+                      <button
+                        onClick={fetchPrayerTimesByCity}
+                        disabled={isSearching}
+                        className="w-full flex justify-center items-center gap-2 px-4 py-2 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600 transition font-bold text-sm disabled:opacity-50"
+                      >
+                        {isSearching ? 'جاري البحث...' : 'تأكيد ودراسة الأوقات'}
+                      </button>
+                    </div>
                   </div>
                 ) : (
                   <div className="flex flex-col gap-4">
@@ -2638,16 +2721,29 @@ export default function App() {
                         </div>
                       ))}
                     </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-                        <CheckCircle className="w-4 h-4" /> تم تحديث الأوقات
-                      </span>
-                      <button
-                        onClick={requestLocation}
-                        className="text-xs text-slate-500 hover:text-teal-600 dark:hover:text-teal-400 underline transition flex items-center gap-1"
-                      >
-                        <RotateCcw className="w-3 h-3" /> تحديث الموقع
-                      </button>
+                    <div className="flex flex-col gap-2">
+                      <p className="text-[11px] font-bold text-slate-500 dark:text-slate-400">
+                        موقعك الحالي: <span className="text-teal-600 dark:text-teal-400 font-extrabold">{location.city ? `${location.city}، ${location.country}` : 'تحديد تلقائي (GPS)'}</span>
+                      </p>
+                      <div className="flex items-center justify-between border-t border-slate-200 dark:border-slate-700 pt-2 mt-1">
+                        <button
+                          onClick={requestLocation}
+                          className="text-[11px] font-bold text-slate-600 dark:text-slate-300 hover:text-teal-600 dark:hover:text-teal-400 flex items-center gap-1 transition"
+                        >
+                          <RotateCcw className="w-3 h-3" /> تحديث GPS
+                        </button>
+                        <button
+                          onClick={() => {
+                            setPrayerTimes(null);
+                            setLocation(null);
+                            localStorage.removeItem('prayerTimes');
+                            localStorage.removeItem('userLocation');
+                          }}
+                          className="text-[11px] font-bold text-red-500 hover:underline transition"
+                        >
+                          مسح وتغيير الموقع
+                        </button>
+                      </div>
                     </div>
                   </div>
                 )}

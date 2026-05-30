@@ -5,14 +5,14 @@ import html2canvas from 'html2canvas';
 
 // مكون أيقونة المسبحة الإسلامية المخصصة والجميلة
 const TasbeehIcon = ({ className = "w-6 h-6" }) => (
-  <svg 
-    xmlns="http://www.w3.org/2000/svg" 
-    viewBox="0 0 24 24" 
-    fill="none" 
-    stroke="currentColor" 
-    strokeWidth="2" 
-    strokeLinecap="round" 
-    strokeLinejoin="round" 
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
     className={className}
   >
     {/* خرزات دائرية مرتبة بشكل مسبحة دائري */}
@@ -285,7 +285,7 @@ const adhkarData = [
     takhreej: 'رواه مسلم.',
     fadl: 'لم يأت أحد يوم القيامة بأفضل مما جاء به إلا أحد قال مثل ما قال أو زاد عليه.',
   },
-  
+
   // =====================
   // --- أذكار النوم ---
   // =====================
@@ -526,13 +526,13 @@ export default function App() {
   const [fontSizeIndex, setFontSizeIndex] = useState(() => {
     const saved = localStorage.getItem('fontSizeIndex');
     return saved !== null ? parseInt(saved) : 2;
-  }); 
+  });
   const [progress, setProgress] = useState({});
   const [themeColors, setThemeColors] = useState(() => {
     const saved = localStorage.getItem('themeColors');
     return saved !== null ? JSON.parse(saved) : defaultThemeColors;
   });
-  
+
   // -- الحالات الجديدة للصوت والاهتزاز والمواظبة والاحتفال والإشعارات --
   const [soundEnabled, setSoundEnabled] = useState(() => {
     const saved = localStorage.getItem('soundEnabled');
@@ -570,17 +570,17 @@ export default function App() {
   const [totalAdhkarRead, setTotalAdhkarRead] = useState(0);
   const [totalTasbeehsMade, setTotalTasbeehsMade] = useState(0);
   const [bestStreak, setBestStreak] = useState(0);
-  
+
   // -- نظام التحدي اليومي للتسبيح --
   const [todayTasbeehs, setTodayTasbeehs] = useState(0);
   const [dailyTasbeehGoal, setDailyTasbeehGoal] = useState(1000);
-  
+
   // -- تصدير الصورة --
   const [isExporting, setIsExporting] = useState(false);
 
   // -- حساب نقاط النور (XP) والمستوى (RPG Leveling) --
   const userXP = (totalTasbeehsMade * 1) + (totalAdhkarRead * 2) + (bestStreak * 50);
-  
+
   const getLevelInfo = (xp) => {
     if (xp < 500) return { title: 'مبتدئ', minXP: 0, maxXP: 500, color: 'text-slate-400', bg: 'bg-slate-400' };
     if (xp < 2000) return { title: 'طالب علم', minXP: 500, maxXP: 2000, color: 'text-emerald-500', bg: 'bg-emerald-500' };
@@ -589,7 +589,7 @@ export default function App() {
     if (xp < 25000) return { title: 'خاشع', minXP: 10000, maxXP: 25000, color: 'text-rose-500', bg: 'bg-rose-500' };
     return { title: 'نبراس', minXP: 25000, maxXP: 100000, color: 'text-amber-500', bg: 'bg-amber-500' };
   };
-  
+
   const { title: currentLevel, minXP, maxXP, color: levelColor, bg: levelBg } = getLevelInfo(userXP);
   const levelProgressPercent = Math.min(100, ((userXP - minXP) / (maxXP - minXP)) * 100);
 
@@ -605,12 +605,12 @@ export default function App() {
   // -- المسبحة الصوتية --
   const [isListening, setIsListening] = useState(false);
   const [speechSupported, setSpeechSupported] = useState(false);
-  
+
   useEffect(() => {
     if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
       setSpeechSupported(true);
     }
-    
+
     return () => {
       window.isIntentionallyListening = false;
       if (window.recognition) {
@@ -621,7 +621,7 @@ export default function App() {
 
   const toggleVoiceTasbeeh = () => {
     if (!speechSupported) return;
-    
+
     if (isListening) {
       window.isIntentionallyListening = false;
       setIsListening(false);
@@ -637,11 +637,11 @@ export default function App() {
       window.recognition.interimResults = false;
 
       window.recognition.onstart = () => setIsListening(true);
-      
+
       window.recognition.onresult = (event) => {
         const current = event.resultIndex;
         const transcript = event.results[current][0].transcript.trim();
-        
+
         if (transcript.length === 0) return;
 
         const tasbeehBtn = document.getElementById('hidden-tasbeeh-btn');
@@ -649,38 +649,38 @@ export default function App() {
 
         // الكلمات المفتاحية الشائعة للأذكار لتجنب عد الكلام العادي أو الضجيج
         const dhikrKeywords = ['الله', 'سبحان', 'حمد', 'إله', 'اله', 'اكبر', 'أكبر', 'استغفر', 'أستغفر', 'اللهم', 'رب', 'نبي', 'رسول', 'حول', 'قوة', 'بسم', 'أعوذ', 'اعوذ', 'تبارك', 'تعالى', 'عز', 'كريم', 'عظيم'];
-        
+
         const transcriptWords = transcript.split(' ');
-        const containsDhikr = transcriptWords.some(tw => 
+        const containsDhikr = transcriptWords.some(tw =>
           tw.length >= 2 && dhikrKeywords.some(keyword => tw.includes(keyword))
         );
-        
+
         if (isTasbeehModalOpen) {
-           if (containsDhikr || transcript.length > 5) {
-              tasbeehBtn?.click();
-           }
-           return;
+          if (containsDhikr || transcript.length > 5) {
+            tasbeehBtn?.click();
+          }
+          return;
         }
-        
+
         // جميع الأذكار غير المكتملة
         const uncompletedCards = Array.from(document.querySelectorAll('.dhikr-card:not(.completed)'));
         if (uncompletedCards.length === 0) {
-            // إذا اكتملت كل الأذكار في الصفحة، اجعلها مسبحة حرة عامة كخيار احتياطي
-            if (containsDhikr) tasbeehBtn?.click();
-            return;
+          // إذا اكتملت كل الأذكار في الصفحة، اجعلها مسبحة حرة عامة كخيار احتياطي
+          if (containsDhikr) tasbeehBtn?.click();
+          return;
         }
 
         // تحديد البطاقة المستهدفة (أول بطاقة ظاهرة أمامه)
         const visibleCards = uncompletedCards.filter(card => {
-             const rect = card.getBoundingClientRect();
-             return rect.top < window.innerHeight - 100 && rect.bottom > 100;
+          const rect = card.getBoundingClientRect();
+          return rect.top < window.innerHeight - 100 && rect.bottom > 100;
         });
         const targetCard = visibleCards.length > 0 ? visibleCards[0] : uncompletedCards[0];
-        
+
         // تهيئة أو استعادة السجل التراكمي للبطاقة الحالية لمنع المسح العشوائي عند التمرير
         window.voiceState = window.voiceState || {};
         if (!window.voiceState[targetCard.id]) {
-            window.voiceState[targetCard.id] = [];
+          window.voiceState[targetCard.id] = [];
         }
 
         // دالة لتنظيف النصوص العربية (إزالة التشكيل وتوحيد الهمزات والتاء) لتصبح المطابقة دقيقة
@@ -701,7 +701,7 @@ export default function App() {
         const pElem = targetCard.querySelector('p');
         const cardText = pElem ? pElem.innerText : '';
         const cardWords = normalizeArabic(cardText).split(/\s+/).filter(w => w.length >= 2);
-        
+
         if (cardWords.length === 0) return;
 
         let shouldIncrement = false;
@@ -711,87 +711,88 @@ export default function App() {
 
         // إذا كان الذكر قصيراً (مثل: سبحان الله، الحمد لله)
         if (cardWords.length <= 6) {
-           // نطلب أن يتطابق نصف كلمات الذكر على الأقل (لتجنب التساهل المفرط باحتساب كلمة واحدة)
-           const requiredShort = Math.ceil(cardWords.length * 0.5); 
-           let matches = 0;
-           for (const w of cardWords) {
-               // نتحقق من الكلمات المنطوقة مؤخراً فقط
-               if (spokenWords.includes(w)) matches++;
-           }
-           if (matches >= requiredShort) {
-              shouldIncrement = true;
-           }
+          // نطلب أن يتطابق نصف كلمات الذكر على الأقل (لتجنب التساهل المفرط باحتساب كلمة واحدة)
+          const requiredShort = Math.ceil(cardWords.length * 0.5);
+          let matches = 0;
+          for (const w of cardWords) {
+            // نتحقق من الكلمات المنطوقة مؤخراً فقط
+            if (spokenWords.includes(w)) matches++;
+          }
+          if (matches >= requiredShort) {
+            shouldIncrement = true;
+          }
         } else {
-           // الأذكار الطويلة (مثل آية الكرسي، سيد الاستغفار)
-           const uniqueCardWords = [...new Set(cardWords)];
-           const uniqueSpoken = [...new Set(window.voiceState[targetCard.id])];
-           
-           // تصفية الكلمات العامة
-           const specificCardWords = uniqueCardWords.filter(w => !stopWords.includes(w));
-           
-           let distinctMatches = 0;
-           for (const w of specificCardWords) {
-               if (uniqueSpoken.includes(w)) {
-                   distinctMatches++;
-               }
-           }
-           
-           // الشرط الأول (أكثر صرامة): قراءة 25% من الكلمات المميزة للذكر (أو 3 كلمات كحد أدنى)
-           const requiredMatches = Math.max(3, Math.floor(specificCardWords.length * 0.25));
-           
-           // الشرط الثاني: يجب أن يلتقط كلمة مميزة (أو كلمتين للختام الطويل) من آخر 30% من الذكر
-           // يجب التأكد أن هذه الكلمات الختامية لم تظهر أبداً في الجزء الأول من الذكر لضمان عدم الخداع!
-           const endIndex = Math.floor(cardWords.length * 0.70);
-           const startWords = cardWords.slice(0, endIndex);
-           const endWords = cardWords.slice(endIndex);
-           
-           const specificEndWords = [...new Set(endWords)].filter(w => 
-               !stopWords.includes(w) && !startWords.includes(w)
-           );
-           
-           const requiredEndMatches = specificEndWords.length >= 3 ? 2 : (specificEndWords.length > 0 ? 1 : 0);
-           const endMatches = specificEndWords.filter(w => uniqueSpoken.includes(w)).length;
-           
-           const hasReachedEnd = specificEndWords.length === 0 || endMatches >= requiredEndMatches;
+          // الأذكار الطويلة (مثل آية الكرسي، سيد الاستغفار)
+          const uniqueCardWords = [...new Set(cardWords)];
+          const uniqueSpoken = [...new Set(window.voiceState[targetCard.id])];
 
-           if (distinctMatches >= Math.min(requiredMatches, specificCardWords.length) && hasReachedEnd) {
-              shouldIncrement = true;
-           }
+          // تصفية الكلمات العامة
+          const specificCardWords = uniqueCardWords.filter(w => !stopWords.includes(w));
+
+          let distinctMatches = 0;
+          for (const w of specificCardWords) {
+            if (uniqueSpoken.includes(w)) {
+              distinctMatches++;
+            }
+          }
+
+          // الشرط الأول (أكثر صرامة): قراءة 25% من الكلمات المميزة للذكر (أو 3 كلمات كحد أدنى)
+          const requiredMatches = Math.max(3, Math.floor(specificCardWords.length * 0.25));
+
+          // الشرط الثاني (صارم جداً للنهاية): يجب أن يلتقط 40% من الكلمات المميزة الموجودة في آخر 30% من الذكر!
+          // يجب التأكد أن هذه الكلمات الختامية لم تظهر أبداً في الجزء الأول من الذكر لضمان عدم الخداع!
+          const endIndex = Math.floor(cardWords.length * 0.70);
+          const startWords = cardWords.slice(0, endIndex);
+          const endWords = cardWords.slice(endIndex);
+
+          const specificEndWords = [...new Set(endWords)].filter(w =>
+            !stopWords.includes(w) && !startWords.includes(w)
+          );
+
+          // نطلب 40% من الكلمات الختامية المميزة (بحد أدنى 1 إن وجدت)
+          const requiredEndMatches = specificEndWords.length > 0 ? Math.max(1, Math.ceil(specificEndWords.length * 0.40)) : 0;
+          const endMatches = specificEndWords.filter(w => uniqueSpoken.includes(w)).length;
+
+          const hasReachedEnd = specificEndWords.length === 0 || endMatches >= requiredEndMatches;
+
+          if (distinctMatches >= Math.min(requiredMatches, specificCardWords.length) && hasReachedEnd) {
+            shouldIncrement = true;
+          }
         }
 
         if (shouldIncrement) {
-            const btn = targetCard.querySelector('button.dhikr-increment-btn');
-            if (btn) {
-              btn.click();
-              window.voiceState[targetCard.id] = []; // تصفير الذاكرة لهذا الذكر استعداداً لتكراره
-              
-              // تمرير سلس بعد زيادة العداد لتجنب القفز المفاجئ
-              setTimeout(() => {
-                  // بعد 200 مللي ثانية، نتأكد هل اكتمل هذا الذكر أم لا يزال يحتاج تكرار؟
-                  const isCompletedNow = targetCard.classList.contains('completed');
-                  
-                  let elementToScroll = targetCard;
-                  
-                  if (isCompletedNow) {
-                      // إذا اكتمل، نبحث عن الذكر الذي يليه (أول ذكر غير مكتمل في الصفحة)
-                      const nextUncompleted = document.querySelector('.dhikr-card:not(.completed)');
-                      if (nextUncompleted) {
-                          elementToScroll = nextUncompleted;
-                      }
-                  }
+          const btn = targetCard.querySelector('button.dhikr-increment-btn');
+          if (btn) {
+            btn.click();
+            window.voiceState[targetCard.id] = []; // تصفير الذاكرة لهذا الذكر استعداداً لتكراره
 
-                  const rect = elementToScroll.getBoundingClientRect();
-                  const isFullyVisible = (rect.top >= 100) && (rect.bottom <= window.innerHeight - 50);
-                  
-                  // إذا لم يكن الذكر المقصود ظاهراً بالكامل، نمرر الشاشة إليه
-                  if (!isFullyVisible) {
-                    elementToScroll.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                  }
-              }, 200);
-            }
+            // تمرير سلس بعد زيادة العداد لتجنب القفز المفاجئ
+            setTimeout(() => {
+              // بعد 200 مللي ثانية، نتأكد هل اكتمل هذا الذكر أم لا يزال يحتاج تكرار؟
+              const isCompletedNow = targetCard.classList.contains('completed');
+
+              let elementToScroll = targetCard;
+
+              if (isCompletedNow) {
+                // إذا اكتمل، نبحث عن الذكر الذي يليه (أول ذكر غير مكتمل في الصفحة)
+                const nextUncompleted = document.querySelector('.dhikr-card:not(.completed)');
+                if (nextUncompleted) {
+                  elementToScroll = nextUncompleted;
+                }
+              }
+
+              const rect = elementToScroll.getBoundingClientRect();
+              const isFullyVisible = (rect.top >= 100) && (rect.bottom <= window.innerHeight - 50);
+
+              // إذا لم يكن الذكر المقصود ظاهراً بالكامل، نمرر الشاشة إليه
+              if (!isFullyVisible) {
+                elementToScroll.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              }
+            }, 200);
+          }
         }
       };
-      
+
       window.recognition.onerror = (event) => {
         if (event.error !== 'no-speech') {
           setIsListening(false);
@@ -801,17 +802,17 @@ export default function App() {
 
       window.recognition.onend = () => {
         if (window.isIntentionallyListening) {
-          try { window.recognition.start(); } catch(e){}
+          try { window.recognition.start(); } catch (e) { }
         } else {
           setIsListening(false);
         }
       };
     }
-    
+
     window.isIntentionallyListening = true;
     try {
       window.recognition.start();
-    } catch(e) {
+    } catch (e) {
       console.error(e);
       setIsListening(false);
     }
@@ -839,43 +840,43 @@ export default function App() {
       const AudioContext = window.AudioContext || window.webkitAudioContext;
       if (!window.audioCtx) window.audioCtx = new AudioContext();
       if (window.audioCtx.state === 'suspended') window.audioCtx.resume();
-      
+
       const now = window.audioCtx.currentTime;
-      
+
       if (type === 'click') {
         const osc = window.audioCtx.createOscillator();
         const gain = window.audioCtx.createGain();
         osc.connect(gain);
         gain.connect(window.audioCtx.destination);
-        
+
         osc.type = 'sine';
         osc.frequency.setValueAtTime(300, now);
         osc.frequency.exponentialRampToValueAtTime(100, now + 0.05);
-        
+
         gain.gain.setValueAtTime(0, now);
         gain.gain.linearRampToValueAtTime(0.1, now + 0.01);
         gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
-        
+
         osc.start(now);
         osc.stop(now + 0.05);
-        
+
       } else if (type === 'success') {
-        const frequencies = [523.25, 659.25, 783.99]; 
+        const frequencies = [523.25, 659.25, 783.99];
         frequencies.forEach((freq, index) => {
           const osc = window.audioCtx.createOscillator();
           const gain = window.audioCtx.createGain();
-          
+
           osc.connect(gain);
           gain.connect(window.audioCtx.destination);
-          
+
           osc.type = 'sine';
           osc.frequency.value = freq;
-          
+
           gain.gain.setValueAtTime(0, now);
           const attackTime = now + (index * 0.05) + 0.02;
           gain.gain.linearRampToValueAtTime(0.05, attackTime);
           gain.gain.exponentialRampToValueAtTime(0.001, now + 1.5);
-          
+
           osc.start(now);
           osc.stop(now + 1.5);
         });
@@ -886,15 +887,15 @@ export default function App() {
           const gain = window.audioCtx.createGain();
           osc.connect(gain);
           gain.connect(window.audioCtx.destination);
-          
+
           osc.type = 'triangle';
           osc.frequency.setValueAtTime(400, now + delay);
           osc.frequency.exponentialRampToValueAtTime(100, now + delay + 0.05);
-          
+
           gain.gain.setValueAtTime(0, now + delay);
           gain.gain.linearRampToValueAtTime(0.1, now + delay + 0.01);
           gain.gain.exponentialRampToValueAtTime(0.001, now + delay + 0.05);
-          
+
           osc.start(now + delay);
           osc.stop(now + delay + 0.05);
         });
@@ -921,25 +922,25 @@ export default function App() {
     // 1. تحديد الوقت المبدئي (في حال فشل جلب أوقات الصلاة)
     const hour = new Date().getHours();
     let initialPeriod = 'sleep';
-    
+
     // الخوارزمية القديمة كبديل
     if (hour >= 3 && hour < 6) {
-        initialPeriod = 'wake'; // من 3 الفجر إلى 6 صباحاً استيقاظ
+      initialPeriod = 'wake'; // من 3 الفجر إلى 6 صباحاً استيقاظ
     } else if (hour >= 6 && hour < 15) {
-        initialPeriod = 'morning'; // من 6 صباحاً إلى 3 عصراً صباح
-    } else if (hour >= 15 && hour < 22) { 
-        initialPeriod = 'evening'; // من 3 عصراً إلى 10 مساءً مساء (تمديد المساء)
-    } else { 
-        initialPeriod = 'sleep'; // من 10 مساءً فصاعداً نوم
+      initialPeriod = 'morning'; // من 6 صباحاً إلى 3 عصراً صباح
+    } else if (hour >= 15 && hour < 22) {
+      initialPeriod = 'evening'; // من 3 عصراً إلى 10 مساءً مساء (تمديد المساء)
+    } else {
+      initialPeriod = 'sleep'; // من 10 مساءً فصاعداً نوم
     }
-    
+
     // دالة لتطبيق الفترة وتصفير التقدم إذا لزم الأمر
     const applyPeriod = (period) => {
       setActiveTab(period);
       const lastPeriod = localStorage.getItem('lastSavedPeriod');
       if (lastPeriod && lastPeriod !== period) {
-        localStorage.removeItem('adhkarProgress'); 
-        setProgress({}); 
+        localStorage.removeItem('adhkarProgress');
+        setProgress({});
       }
       localStorage.setItem('lastSavedPeriod', period);
 
@@ -992,20 +993,20 @@ export default function App() {
         });
 
         let accuratePeriod = 'sleep';
-        
+
         // تقسيم الفترات بناءً على أوقات الصلاة:
         // الاستيقاظ: من منتصف الليل إلى الفجر
         // الصباح: من الفجر إلى العصر
         // المساء: من العصر إلى ما بعد العشاء بساعة ونصف
         // النوم: بعد العشاء بساعة ونصف إلى منتصف الليل
         if (nowMins >= 0 && nowMins < fajrMins) {
-           accuratePeriod = 'wake';
+          accuratePeriod = 'wake';
         } else if (nowMins >= fajrMins && nowMins < asrMins) {
-           accuratePeriod = 'morning';
+          accuratePeriod = 'morning';
         } else if (nowMins >= asrMins && nowMins < (ishaMins + 90)) {
-           accuratePeriod = 'evening';
+          accuratePeriod = 'evening';
         } else {
-           accuratePeriod = 'sleep';
+          accuratePeriod = 'sleep';
         }
 
         if (accuratePeriod !== initialPeriod) {
@@ -1024,18 +1025,18 @@ export default function App() {
     const todayStr = new Date().toLocaleDateString('en-CA');
     const lastActive = localStorage.getItem('lastActiveDate');
     let currentStreak = parseInt(localStorage.getItem('streakCount') || '0', 10);
-    
+
     if (lastActive !== todayStr) {
       if (lastActive) {
         const lastDate = new Date(lastActive);
         const todayDate = new Date(todayStr);
         const diffTime = Math.abs(todayDate - lastDate);
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        
+
         if (diffDays === 1) currentStreak += 1;
-        else currentStreak = 1; 
+        else currentStreak = 1;
       } else {
-        currentStreak = 1; 
+        currentStreak = 1;
       }
       localStorage.setItem('lastActiveDate', todayStr);
       localStorage.setItem('streakCount', currentStreak.toString());
@@ -1141,17 +1142,17 @@ export default function App() {
   useEffect(() => {
     if (!notificationsEnabled) return;
     if (!("Notification" in window)) return;
-    
+
     if (Notification.permission !== "granted" && Notification.permission !== "denied") {
       Notification.requestPermission();
     }
-    
+
     const checkTimeForNotification = () => {
       if (Notification.permission === "granted") {
         const now = new Date();
         const h = now.getHours();
         const m = now.getMinutes();
-        
+
         // استخدام أوقات الصلاة الدقيقة لو تم جلبها، وإلا 5 الفجر و4 العصر كافتراضي
         let fajrH = 5, fajrM = 0;
         let asrH = 16, asrM = 0;
@@ -1162,31 +1163,31 @@ export default function App() {
           asrH = prayerTimes.asr.h;
           asrM = prayerTimes.asr.m;
         }
-        
+
         // إشعار الصباح وقت الفجر
         if (h === fajrH && m === fajrM) {
-          new Notification("أذكار الصباح", { 
-            body: "حان الآن موعد قراءة أذكار الصباح، ابدأ يومك بذكر الله وحصّن نفسك.", 
-            icon: "/icon-192x192.png" 
+          new Notification("أذكار الصباح", {
+            body: "حان الآن موعد قراءة أذكار الصباح، ابدأ يومك بذكر الله وحصّن نفسك.",
+            icon: "/icon-192x192.png"
           });
-        } 
+        }
         // إشعار المساء وقت العصر
         else if (h === asrH && m === asrM) {
-          new Notification("أذكار المساء", { 
-            body: "حان الآن موعد قراءة أذكار المساء، اختم نهارك بذكر الله وطمأنينته.", 
-            icon: "/icon-192x192.png" 
+          new Notification("أذكار المساء", {
+            body: "حان الآن موعد قراءة أذكار المساء، اختم نهارك بذكر الله وطمأنينته.",
+            icon: "/icon-192x192.png"
           });
         }
         // إشعار النوم (في الساعة 10:00 مساءً)
         else if (h === 22 && m === 0) {
-          new Notification("أذكار النوم", { 
-            body: "هل تستعد للنوم؟ لا تنسَ قراءة أذكار النوم لتكن في حفظ الله حتى تصبح.", 
-            icon: "/icon-192x192.png" 
+          new Notification("أذكار النوم", {
+            body: "هل تستعد للنوم؟ لا تنسَ قراءة أذكار النوم لتكن في حفظ الله حتى تصبح.",
+            icon: "/icon-192x192.png"
           });
         }
       }
     };
-    
+
     // التحقق كل دقيقة
     const intervalId = setInterval(checkTimeForNotification, 60000);
     return () => clearInterval(intervalId);
@@ -1240,10 +1241,10 @@ export default function App() {
   // حساب النسبة المئوية للتقدم الكلي في التبويب الحالي بطريقة نفسية (كل بطاقة لها وزن متساوٍ)
   const totalProgressPercentage = useMemo(() => {
     if (currentTabAdhkar.length === 0) return 0;
-    
+
     const totalCards = currentTabAdhkar.length;
     let isAllCompleted = true;
-    
+
     const currentProgress = currentTabAdhkar.reduce((acc, curr) => {
       const count = progress[`${activeTab}-${curr.id}`] || 0;
       if (count < curr.target) {
@@ -1253,9 +1254,9 @@ export default function App() {
       const cardCompletion = Math.min(count, curr.target) / curr.target;
       return acc + cardCompletion;
     }, 0);
-    
+
     if (isAllCompleted) return 100;
-    
+
     // النسبة النهائية هي مجموع إنجاز البطاقات مقسوماً على عددها واستخدام floor لتجنب التقريب لـ 100
     return Math.floor((currentProgress / totalCards) * 100);
   }, [currentTabAdhkar, progress, activeTab]);
@@ -1266,12 +1267,12 @@ export default function App() {
       setShowConfetti(true);
       playSound('celebration');
       // اهتزاز مميز للاحتفال
-      triggerVibration([100, 50, 100, 50, 100, 50, 200]); 
-      
+      triggerVibration([100, 50, 100, 50, 100, 50, 200]);
+
       const timer = setTimeout(() => {
         setShowConfetti(false);
       }, 7000); // إخفاء التأثير والنافذة بعد 7 ثوانٍ
-      
+
       return () => clearTimeout(timer);
     } else {
       setShowConfetti(false);
@@ -1287,7 +1288,7 @@ export default function App() {
         setTotalAdhkarRead(p => p + 1);
         const newCount = current + 1;
         if (newCount === target) {
-          triggerVibration([100, 50, 100]); 
+          triggerVibration([100, 50, 100]);
           playSound('success');
         } else {
           triggerVibration(50);
@@ -1363,11 +1364,10 @@ export default function App() {
     const isActive = activeTab === tabId;
     const tabTheme = colorMap[themeColors[tabId]] || colorMap.teal;
 
-    return `flex-1 py-3 text-center font-bold text-xs sm:text-sm md:text-xl transition-colors ${
-      isActive 
+    return `flex-1 py-3 text-center font-bold text-xs sm:text-sm md:text-xl transition-colors ${isActive
         ? `${tabTheme.tabActive} dark:bg-slate-700 text-white border-b-4 ${tabTheme.tabBorder}`
         : 'text-white/70 hover:bg-white/10 dark:hover:bg-slate-600'
-    }`;
+      }`;
   };
 
   const getTabLabel = (tabId) => {
@@ -1385,13 +1385,13 @@ export default function App() {
       const element = document.getElementById('stats-export-area');
       if (!element) return setIsExporting(false);
       try {
-        const canvas = await html2canvas(element, { 
+        const canvas = await html2canvas(element, {
           backgroundColor: isDarkMode ? '#0f172a' : '#f8fafc',
-          scale: 2 
+          scale: 2
         });
         const dataURL = canvas.toDataURL('image/png');
         const link = document.createElement('a');
-        link.download = `DhikrBook-Stats-${new Date().toISOString().slice(0,10)}.png`;
+        link.download = `DhikrBook-Stats-${new Date().toISOString().slice(0, 10)}.png`;
         link.href = dataURL;
         link.click();
       } catch (e) {
@@ -1405,7 +1405,7 @@ export default function App() {
   return (
     <div dir="rtl" className={`min-h-screen font-cairo transition-colors duration-300 ${isDarkMode ? 'dark bg-slate-900 text-slate-100' : 'bg-slate-50 text-slate-900'}`}>
       <style dangerouslySetInnerHTML={globalStyles} />
-      
+
       {/* --- إشعار تحديث التطبيق (PWA Update Prompt) --- */}
       {needRefresh && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] w-[90%] max-w-md bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-2xl border-2 border-teal-500 dark:border-teal-400 flex items-center justify-between gap-4 animate-in slide-in-from-bottom-8">
@@ -1418,7 +1418,7 @@ export default function App() {
               <p className="text-xs text-slate-500 dark:text-slate-400">انقر لتحديث التطبيق والحصول على أحدث الميزات.</p>
             </div>
           </div>
-          <button 
+          <button
             onClick={() => updateServiceWorker(true)}
             className="shrink-0 bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-xl font-bold transition shadow-md active:scale-95 text-sm md:text-base"
           >
@@ -1454,7 +1454,7 @@ export default function App() {
             <p className="text-lg font-bold text-slate-600 dark:text-slate-300 leading-relaxed">
               تقبل الله طاعتكم، وجعلها في ميزان حسناتكم، وكتب لكم الأجر العظيم.
             </p>
-            <button 
+            <button
               onClick={() => setShowConfetti(false)}
               className="mt-6 px-6 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 rounded-full font-bold transition"
             >
@@ -1472,10 +1472,10 @@ export default function App() {
             <h1 className="text-xl md:text-2xl font-bold tracking-wide">الأذكار</h1>
           </div>
           <div className="flex items-center space-x-1.5 space-x-reverse md:space-x-3">
-            
+
             {/* مؤشر الهدف اليومي للمسبحة */}
-            <div 
-              className="hidden sm:flex items-center gap-1 bg-white/20 text-white px-2 py-1 rounded-full text-xs md:text-base font-bold border border-white/30 cursor-pointer hover:bg-white/30 transition" 
+            <div
+              className="hidden sm:flex items-center gap-1 bg-white/20 text-white px-2 py-1 rounded-full text-xs md:text-base font-bold border border-white/30 cursor-pointer hover:bg-white/30 transition"
               title="الهدف اليومي للتسبيح"
               onClick={() => setShowTasbeehModal(true)}
             >
@@ -1484,9 +1484,9 @@ export default function App() {
             </div>
 
             {/* خريطة التحدي */}
-            <button 
-              onClick={() => setShowRoadmapModal(true)} 
-              className="p-1.5 md:p-2 rounded-full bg-black/20 hover:bg-black/30 dark:bg-slate-700/50 dark:hover:bg-slate-700 transition relative group" 
+            <button
+              onClick={() => setShowRoadmapModal(true)}
+              className="p-1.5 md:p-2 rounded-full bg-black/20 hover:bg-black/30 dark:bg-slate-700/50 dark:hover:bg-slate-700 transition relative group"
               title="خريطة الـ 40 يوماً"
             >
               <Map className="w-4 h-4 md:w-5 md:h-5 text-amber-200" />
@@ -1496,9 +1496,9 @@ export default function App() {
 
             {/* شعلة المواظبة اليومية */}
             {streak > 0 && (
-              <div 
-                className="flex items-center gap-1 bg-yellow-400/20 text-yellow-100 px-2 py-1 rounded-full text-xs md:text-base font-bold border border-yellow-400/30 cursor-pointer hover:bg-yellow-400/30 transition" 
-                title="أيام المواظبة المتتالية" 
+              <div
+                className="flex items-center gap-1 bg-yellow-400/20 text-yellow-100 px-2 py-1 rounded-full text-xs md:text-base font-bold border border-yellow-400/30 cursor-pointer hover:bg-yellow-400/30 transition"
+                title="أيام المواظبة المتتالية"
                 onClick={() => setShowStatsModal(true)}
               >
                 <Flame className="w-3.5 h-3.5 md:w-5 md:h-5 text-yellow-400" />
@@ -1508,7 +1508,7 @@ export default function App() {
 
             {/* المسبحة الصوتية العامة */}
             {speechSupported && (
-              <button 
+              <button
                 onClick={toggleVoiceTasbeeh}
                 className={`p-1.5 md:p-2 rounded-full transition relative flex items-center justify-center shadow-sm ${isListening ? 'bg-red-500 hover:bg-red-600 text-white animate-pulse' : 'bg-black/20 hover:bg-black/30 dark:bg-slate-700/50 dark:hover:bg-slate-700'}`}
                 title="المسبحة الصوتية (العد التلقائي بالصوت)"
@@ -1518,8 +1518,8 @@ export default function App() {
             )}
 
             {/* المستوى الحالي (RPG) */}
-            <div 
-              className="flex items-center gap-1 bg-white/20 text-white px-2 py-1 rounded-full text-[10px] md:text-sm font-bold border border-white/30 cursor-pointer hover:bg-white/30 transition" 
+            <div
+              className="flex items-center gap-1 bg-white/20 text-white px-2 py-1 rounded-full text-[10px] md:text-sm font-bold border border-white/30 cursor-pointer hover:bg-white/30 transition"
               title={`المستوى الحالي: ${currentLevel}`}
               onClick={() => setShowStatsModal(true)}
             >
@@ -1528,8 +1528,8 @@ export default function App() {
             </div>
 
             {/* زر المسبحة الحرة */}
-            <button 
-              onClick={() => setShowTasbeehModal(true)} 
+            <button
+              onClick={() => setShowTasbeehModal(true)}
               className="flex items-center gap-1 md:gap-2 p-1.5 md:p-2 md:px-3 rounded-full md:rounded-xl bg-black/20 hover:bg-black/30 dark:bg-slate-700/50 dark:hover:bg-slate-700 transition text-white font-bold shadow-sm"
               title="المسبحة الحرة"
             >
@@ -1537,9 +1537,9 @@ export default function App() {
               <span className="hidden md:inline text-sm">المسبحة</span>
             </button>
 
-            <button 
-              onClick={() => setShowSettingsModal(true)} 
-              className="p-2 rounded-full bg-black/20 hover:bg-black/30 dark:bg-slate-700/50 dark:hover:bg-slate-700 transition" 
+            <button
+              onClick={() => setShowSettingsModal(true)}
+              className="p-2 rounded-full bg-black/20 hover:bg-black/30 dark:bg-slate-700/50 dark:hover:bg-slate-700 transition"
               aria-label="إعدادات التطبيق"
             >
               <Settings className="w-5 h-5 md:w-6 md:h-6" />
@@ -1554,10 +1554,10 @@ export default function App() {
           <button onClick={() => setActiveTab('evening')} className={getTabClass('evening')}>المساء</button>
           <button onClick={() => setActiveTab('sleep')} className={getTabClass('sleep')}>النوم</button>
         </div>
-        
+
         {/* --- شريط التقدم --- */}
         <div className="w-full bg-black/20 dark:bg-black/30 h-1.5 shadow-inner">
-          <div 
+          <div
             className={`h-full transition-all duration-500 ease-out flex justify-end items-center ${currentTabTheme.progress}`}
             style={{ width: `${totalProgressPercentage}%` }}
           >
@@ -1574,7 +1574,7 @@ export default function App() {
       {showTasbeehModal && (
         <div id="tasbeeh-modal-container" className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
           <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl w-full max-w-sm p-8 relative border border-slate-200 dark:border-slate-700 flex flex-col items-center">
-            <button 
+            <button
               onClick={() => {
                 setShowTasbeehModal(false);
                 if (isListening) toggleVoiceTasbeeh();
@@ -1586,7 +1586,7 @@ export default function App() {
 
             {/* المسبحة الصوتية */}
             {speechSupported && (
-              <button 
+              <button
                 onClick={toggleVoiceTasbeeh}
                 className={`absolute top-4 right-4 p-2.5 rounded-full transition flex items-center justify-center ${isListening ? 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400 animate-pulse border border-red-200 dark:border-red-800' : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 bg-slate-100 dark:bg-slate-700'}`}
                 title="المسبحة الصوتية (تحدث ليتم العد تلقائياً)"
@@ -1630,17 +1630,17 @@ export default function App() {
                 <span className="text-sm font-bold text-teal-600 dark:text-teal-400">{todayTasbeehs} / {dailyTasbeehGoal}</span>
               </div>
               <div className="w-full bg-slate-200 dark:bg-slate-600 h-2.5 rounded-full overflow-hidden mb-4">
-                <div 
-                  className="bg-teal-500 h-full transition-all duration-500" 
+                <div
+                  className="bg-teal-500 h-full transition-all duration-500"
                   style={{ width: `${Math.min(100, (todayTasbeehs / dailyTasbeehGoal) * 100)}%` }}
                 ></div>
               </div>
-              
+
               <div className="flex gap-2 items-center">
                 <span className="text-xs text-slate-500 w-16">تعديل الهدف</span>
-                <input 
-                  type="number" 
-                  value={dailyTasbeehGoal} 
+                <input
+                  type="number"
+                  value={dailyTasbeehGoal}
                   onChange={(e) => setDailyTasbeehGoal(Math.max(1, parseInt(e.target.value) || 1000))}
                   className="flex-1 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-1.5 text-sm text-center outline-none focus:border-teal-500 text-slate-800 dark:text-slate-200"
                   placeholder="الهدف"
@@ -1656,13 +1656,13 @@ export default function App() {
       {showStatsModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
           <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl w-full max-w-lg p-6 md:p-8 relative border border-slate-200 dark:border-slate-700 flex flex-col items-center max-h-[90vh] overflow-y-auto">
-            <button 
+            <button
               onClick={() => setShowStatsModal(false)}
               className="absolute top-4 left-4 p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 bg-slate-100 dark:bg-slate-700 rounded-full transition"
             >
               <X className="w-6 h-6" />
             </button>
-            <h3 
+            <h3
               onClick={() => {
                 const newCount = devClickCount + 1;
                 setDevClickCount(newCount);
@@ -1679,7 +1679,7 @@ export default function App() {
             </h3>
 
             <div id="stats-export-area" className="w-full bg-white dark:bg-slate-800 p-2 rounded-2xl">
-              
+
               {/* --- قسم مستوى المستخدم (RPG Leveling) --- */}
               <div className="w-full mb-6 relative overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 p-5 bg-slate-50 dark:bg-slate-800 shadow-sm">
                 <div className="flex items-center justify-between mb-4">
@@ -1699,7 +1699,7 @@ export default function App() {
                 </div>
 
                 <div className="w-full bg-slate-200 dark:bg-slate-700 h-2.5 rounded-full overflow-hidden shadow-inner">
-                  <div 
+                  <div
                     className={`h-full ${levelBg} transition-all duration-1000 ease-out`}
                     style={{ width: `${levelProgressPercent}%` }}
                   />
@@ -1708,7 +1708,7 @@ export default function App() {
                   <span>{minXP} XP</span>
                   <span>الهدف القادم: {maxXP} XP</span>
                 </div>
-                
+
                 {/* شرح كيفية حساب النقاط */}
                 <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-600/50">
                   <div className="flex items-start gap-2 text-xs text-slate-600 dark:text-slate-400 font-medium">
@@ -1726,93 +1726,92 @@ export default function App() {
               </div>
 
               <div className="w-full space-y-4">
-              <div className="bg-amber-50 dark:bg-slate-700/50 p-4 rounded-2xl border border-amber-200 dark:border-slate-600 flex items-center justify-between gap-4 relative overflow-hidden group">
-                <div className="flex items-center gap-4">
-                  <div className="bg-amber-100 dark:bg-slate-600 p-3 rounded-full text-amber-600 dark:text-amber-400">
-                    <Flame className="w-6 h-6" />
+                <div className="bg-amber-50 dark:bg-slate-700/50 p-4 rounded-2xl border border-amber-200 dark:border-slate-600 flex items-center justify-between gap-4 relative overflow-hidden group">
+                  <div className="flex items-center gap-4">
+                    <div className="bg-amber-100 dark:bg-slate-600 p-3 rounded-full text-amber-600 dark:text-amber-400">
+                      <Flame className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-slate-500 dark:text-slate-400">أيام المواظبة المتتالية</p>
+                      <p className="text-xl font-black text-slate-800 dark:text-slate-100">{streak} يوم</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setShowRoadmapModal(true)}
+                    className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-4 py-2.5 rounded-xl shadow-md transition active:scale-95 flex items-center gap-2 font-bold"
+                    title="خريطة الـ 40 يوماً"
+                  >
+                    <Map className="w-5 h-5" />
+                    <span className="hidden sm:inline">افتح الخريطة</span>
+                  </button>
+                </div>
+
+                <div className="bg-teal-50 dark:bg-slate-700/50 p-4 rounded-2xl border border-teal-200 dark:border-slate-600 flex items-center gap-4">
+                  <div className="bg-teal-100 dark:bg-slate-600 p-3 rounded-full text-teal-600 dark:text-teal-400">
+                    <BookOpen className="w-6 h-6" />
                   </div>
                   <div>
-                    <p className="text-sm text-slate-500 dark:text-slate-400">أيام المواظبة المتتالية</p>
-                    <p className="text-xl font-black text-slate-800 dark:text-slate-100">{streak} يوم</p>
+                    <p className="text-sm text-slate-500 dark:text-slate-400">إجمالي الأذكار المقروءة</p>
+                    <p className="text-xl font-black text-slate-800 dark:text-slate-100">{totalAdhkarRead}</p>
                   </div>
                 </div>
-                <button 
-                  onClick={() => setShowRoadmapModal(true)}
-                  className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-4 py-2.5 rounded-xl shadow-md transition active:scale-95 flex items-center gap-2 font-bold"
-                  title="خريطة الـ 40 يوماً"
-                >
-                  <Map className="w-5 h-5" />
-                  <span className="hidden sm:inline">افتح الخريطة</span>
-                </button>
-              </div>
 
-              <div className="bg-teal-50 dark:bg-slate-700/50 p-4 rounded-2xl border border-teal-200 dark:border-slate-600 flex items-center gap-4">
-                <div className="bg-teal-100 dark:bg-slate-600 p-3 rounded-full text-teal-600 dark:text-teal-400">
-                  <BookOpen className="w-6 h-6" />
+                <div className="bg-indigo-50 dark:bg-slate-700/50 p-4 rounded-2xl border border-indigo-200 dark:border-slate-600 flex items-center gap-4">
+                  <div className="bg-indigo-100 dark:bg-slate-600 p-3 rounded-full text-indigo-600 dark:text-indigo-400">
+                    <TasbeehIcon className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-slate-500 dark:text-slate-400">إجمالي التسبيحات</p>
+                    <p className="text-xl font-black text-slate-800 dark:text-slate-100">{totalTasbeehsMade}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm text-slate-500 dark:text-slate-400">إجمالي الأذكار المقروءة</p>
-                  <p className="text-xl font-black text-slate-800 dark:text-slate-100">{totalAdhkarRead}</p>
-                </div>
-              </div>
 
-              <div className="bg-indigo-50 dark:bg-slate-700/50 p-4 rounded-2xl border border-indigo-200 dark:border-slate-600 flex items-center gap-4">
-                <div className="bg-indigo-100 dark:bg-slate-600 p-3 rounded-full text-indigo-600 dark:text-indigo-400">
-                  <TasbeehIcon className="w-6 h-6" />
-                </div>
-                <div>
-                  <p className="text-sm text-slate-500 dark:text-slate-400">إجمالي التسبيحات</p>
-                  <p className="text-xl font-black text-slate-800 dark:text-slate-100">{totalTasbeehsMade}</p>
+                <div className="bg-rose-50 dark:bg-slate-700/50 p-4 rounded-2xl border border-rose-200 dark:border-slate-600 flex items-center gap-4">
+                  <div className="bg-rose-100 dark:bg-slate-600 p-3 rounded-full text-rose-600 dark:text-rose-400">
+                    <Star className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-slate-500 dark:text-slate-400">أفضل مواظبة (Best Streak)</p>
+                    <p className="text-xl font-black text-slate-800 dark:text-slate-100">{bestStreak} يوم</p>
+                  </div>
                 </div>
               </div>
 
-              <div className="bg-rose-50 dark:bg-slate-700/50 p-4 rounded-2xl border border-rose-200 dark:border-slate-600 flex items-center gap-4">
-                <div className="bg-rose-100 dark:bg-slate-600 p-3 rounded-full text-rose-600 dark:text-rose-400">
-                  <Star className="w-6 h-6" />
-                </div>
-                <div>
-                  <p className="text-sm text-slate-500 dark:text-slate-400">أفضل مواظبة (Best Streak)</p>
-                  <p className="text-xl font-black text-slate-800 dark:text-slate-100">{bestStreak} يوم</p>
-                </div>
-              </div>
-            </div>
-
-            {/* قسم الأوسمة */}
-            <div className="w-full mt-8 border-t border-slate-200 dark:border-slate-700 pt-6">
-              <h4 className="text-xl font-bold mb-4 text-slate-800 dark:text-slate-100 flex items-center gap-2">
-                <Trophy className="w-6 h-6 text-yellow-500" />
-                الأوسمة والإنجازات
-              </h4>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 md:gap-4">
-                {badges.map(badge => (
-                  <div 
-                    key={badge.id} 
-                    className={`p-3 md:p-4 rounded-2xl flex flex-col items-center text-center transition-all duration-300 border ${
-                      badge.unlocked 
-                        ? 'bg-gradient-to-br from-yellow-50 to-amber-100 dark:from-yellow-900/20 dark:to-amber-900/30 border-yellow-200 dark:border-yellow-700/50 shadow-sm' 
-                        : 'bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 opacity-60 grayscale'
-                    }`}
-                  >
-                    <div className={`p-2 rounded-full mb-2 ${badge.unlocked ? 'bg-yellow-200 text-yellow-600 dark:bg-yellow-800 dark:text-yellow-300' : 'bg-slate-200 text-slate-400 dark:bg-slate-700 dark:text-slate-500'}`}>
-                      {badge.icon}
+              {/* قسم الأوسمة */}
+              <div className="w-full mt-8 border-t border-slate-200 dark:border-slate-700 pt-6">
+                <h4 className="text-xl font-bold mb-4 text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                  <Trophy className="w-6 h-6 text-yellow-500" />
+                  الأوسمة والإنجازات
+                </h4>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 md:gap-4">
+                  {badges.map(badge => (
+                    <div
+                      key={badge.id}
+                      className={`p-3 md:p-4 rounded-2xl flex flex-col items-center text-center transition-all duration-300 border ${badge.unlocked
+                          ? 'bg-gradient-to-br from-yellow-50 to-amber-100 dark:from-yellow-900/20 dark:to-amber-900/30 border-yellow-200 dark:border-yellow-700/50 shadow-sm'
+                          : 'bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 opacity-60 grayscale'
+                        }`}
+                    >
+                      <div className={`p-2 rounded-full mb-2 ${badge.unlocked ? 'bg-yellow-200 text-yellow-600 dark:bg-yellow-800 dark:text-yellow-300' : 'bg-slate-200 text-slate-400 dark:bg-slate-700 dark:text-slate-500'}`}>
+                        {badge.icon}
+                      </div>
+                      <p className={`font-bold text-sm mb-1 ${badge.unlocked ? 'text-slate-800 dark:text-slate-100' : 'text-slate-500 dark:text-slate-400'}`}>
+                        {badge.title}
+                      </p>
+                      <p className="text-[10px] md:text-xs text-slate-500 dark:text-slate-400">
+                        {badge.desc}
+                      </p>
                     </div>
-                    <p className={`font-bold text-sm mb-1 ${badge.unlocked ? 'text-slate-800 dark:text-slate-100' : 'text-slate-500 dark:text-slate-400'}`}>
-                      {badge.title}
-                    </p>
-                    <p className="text-[10px] md:text-xs text-slate-500 dark:text-slate-400">
-                      {badge.desc}
-                    </p>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
-            
-            {/* إغلاق مساحة التصدير */}
+
+              {/* إغلاق مساحة التصدير */}
             </div>
 
             {/* أزرار الإجراءات */}
             <div className="w-full mt-6 flex gap-3">
-              <button 
+              <button
                 onClick={exportStatsAsImage}
                 disabled={isExporting}
                 className="flex-1 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition shadow-md flex items-center justify-center gap-2 disabled:opacity-50"
@@ -1829,13 +1828,13 @@ export default function App() {
       {showRoadmapModal && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 animate-in zoom-in-95 duration-300">
           <div className="bg-[#0f172a] rounded-3xl shadow-2xl w-full max-w-md p-6 md:p-8 relative border-2 border-indigo-500/50 max-h-[90vh] overflow-y-auto hide-scrollbar">
-            <button 
+            <button
               onClick={() => setShowRoadmapModal(false)}
               className="absolute top-4 left-4 p-2 text-slate-400 hover:text-white bg-slate-800 rounded-full transition z-10"
             >
               <X className="w-6 h-6" />
             </button>
-            
+
             <div className="text-center mb-8 pt-2">
               <div className="inline-flex items-center justify-center p-3 bg-indigo-500/20 rounded-2xl mb-4 text-indigo-400">
                 <Map className="w-8 h-8" />
@@ -1848,15 +1847,15 @@ export default function App() {
               {roadmapDays.map((row, rowIndex) => (
                 <div key={rowIndex} className="flex justify-between relative z-10">
                   {row.map((day) => {
-                    const isCompleted = day <= bestStreak; 
+                    const isCompleted = day <= bestStreak;
                     const isCurrent = day === bestStreak + 1;
-                    
+
                     let bgClass = "bg-slate-800 border-slate-700 text-slate-500";
                     if (isCompleted) bgClass = "bg-indigo-500 border-indigo-400 text-white shadow-[0_0_15px_rgba(99,102,241,0.5)]";
                     if (isCurrent) bgClass = "bg-amber-400 border-amber-300 text-amber-900 shadow-[0_0_20px_rgba(251,191,36,0.6)] animate-pulse scale-110 z-20";
-                    
+
                     return (
-                      <div 
+                      <div
                         key={day}
                         className={`w-11 h-11 md:w-14 md:h-14 flex items-center justify-center rounded-2xl border-2 font-black text-sm md:text-lg transition-all duration-500 ${bgClass}`}
                       >
@@ -1867,7 +1866,7 @@ export default function App() {
                 </div>
               ))}
             </div>
-            
+
             <div className="mt-8 text-center bg-slate-800/50 p-4 rounded-2xl border border-slate-700/50">
               <p className="text-white font-bold mb-1">تقدمك الحالي: {bestStreak} / 40</p>
               {bestStreak >= 40 ? (
@@ -1888,7 +1887,7 @@ export default function App() {
               <Settings className="w-5 h-5 animate-spin" />
               Developer Override
             </h3>
-            
+
             <div className="space-y-4 mb-6">
               {[
                 { key: 'streak', label: 'Current Streak' },
@@ -1898,10 +1897,10 @@ export default function App() {
               ].map(field => (
                 <div key={field.key} className="flex flex-col gap-1">
                   <label className="text-xs uppercase">{field.label}:</label>
-                  <input 
-                    type="number" 
-                    value={devData[field.key]} 
-                    onChange={e => setDevData({...devData, [field.key]: parseInt(e.target.value) || 0})}
+                  <input
+                    type="number"
+                    value={devData[field.key]}
+                    onChange={e => setDevData({ ...devData, [field.key]: parseInt(e.target.value) || 0 })}
                     className="bg-black border border-green-700 text-green-300 p-2 rounded focus:outline-none focus:border-green-400"
                   />
                 </div>
@@ -1909,25 +1908,25 @@ export default function App() {
             </div>
 
             <div className="flex gap-3">
-              <button 
+              <button
                 onClick={() => {
                   setStreak(devData.streak);
                   setBestStreak(devData.bestStreak);
                   setTotalAdhkarRead(devData.totalAdhkarRead);
                   setTotalTasbeehsMade(devData.totalTasbeehsMade);
-                  
+
                   localStorage.setItem('streakCount', devData.streak);
                   localStorage.setItem('bestStreak', devData.bestStreak);
                   localStorage.setItem('totalAdhkarRead', devData.totalAdhkarRead);
                   localStorage.setItem('totalTasbeehsMade', devData.totalTasbeehsMade);
-                  
+
                   setShowDevModal(false);
                 }}
                 className="flex-1 bg-green-700 hover:bg-green-600 text-white font-bold py-2 rounded transition"
               >
                 SAVE DATA
               </button>
-              <button 
+              <button
                 onClick={() => setShowDevModal(false)}
                 className="px-4 border border-green-700 text-green-500 hover:bg-green-900/50 py-2 rounded transition"
               >
@@ -1942,7 +1941,7 @@ export default function App() {
       {showFreeAdhkarModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
           <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl w-full max-w-2xl p-6 md:p-8 relative border border-slate-200 dark:border-slate-700 max-h-[90vh] overflow-y-auto">
-            <button 
+            <button
               onClick={() => setShowFreeAdhkarModal(false)}
               className="absolute top-4 left-4 p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 bg-slate-100 dark:bg-slate-700 rounded-full transition"
             >
@@ -1956,7 +1955,7 @@ export default function App() {
             {/* زر إضافة ذكر حر جديد */}
             <div className="mb-6">
               {!showAddCustom ? (
-                <button 
+                <button
                   onClick={() => setShowAddCustom(true)}
                   className="w-full py-3 bg-orange-50 hover:bg-orange-100 dark:bg-orange-950/20 dark:hover:bg-orange-950/30 text-orange-700 dark:text-orange-400 border border-dashed border-orange-300 dark:border-orange-900 rounded-2xl font-bold transition flex items-center justify-center gap-2 text-lg shadow-sm"
                 >
@@ -1966,29 +1965,29 @@ export default function App() {
               ) : (
                 <div className="bg-slate-50 dark:bg-slate-900/60 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 animate-in slide-in-from-top-3 duration-200">
                   <h4 className="font-bold text-slate-700 dark:text-slate-200 mb-3">ذكر جديد</h4>
-                  <textarea 
+                  <textarea
                     value={newCustomText}
                     onChange={(e) => setNewCustomText(e.target.value)}
                     placeholder="اكتب الذكر أو الدعاء هنا..."
                     className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3 min-h-[80px] mb-4 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-orange-500 focus:outline-none"
                   ></textarea>
-                  
+
                   <div className="flex items-center justify-between mb-4">
                     <span className="font-bold text-slate-600 dark:text-slate-300 text-sm">التكرار المطلوب:</span>
                     <div className="flex items-center gap-2">
-                      <button 
+                      <button
                         onClick={() => setNewCustomTarget(prev => Math.max(1, prev - 1))}
                         className="w-8 h-8 rounded-full bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 flex items-center justify-center font-bold text-slate-700 dark:text-slate-200 transition"
                       >
                         <Minus className="w-4 h-4" />
                       </button>
-                      <input 
-                        type="number" 
+                      <input
+                        type="number"
                         value={newCustomTarget}
                         onChange={(e) => setNewCustomTarget(Math.max(1, parseInt(e.target.value) || 1))}
                         className="w-16 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-1 text-center font-bold text-slate-800 dark:text-slate-100"
                       />
-                      <button 
+                      <button
                         onClick={() => setNewCustomTarget(prev => prev + 1)}
                         className="w-8 h-8 rounded-full bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 flex items-center justify-center font-bold text-slate-700 dark:text-slate-200 transition"
                       >
@@ -1998,13 +1997,13 @@ export default function App() {
                   </div>
 
                   <div className="flex gap-2">
-                    <button 
+                    <button
                       onClick={addCustomDhikr}
                       className="flex-1 py-2.5 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-xl transition shadow-md"
                     >
                       حفظ
                     </button>
-                    <button 
+                    <button
                       onClick={() => { setShowAddCustom(false); setNewCustomText(''); setNewCustomTarget(1); }}
                       className="px-4 py-2.5 bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-bold rounded-xl transition"
                     >
@@ -2031,7 +2030,7 @@ export default function App() {
                   const percentage = Math.min(100, Math.floor((currentCount / dhikr.target) * 100));
 
                   return (
-                    <div 
+                    <div
                       key={dhikr.id}
                       className={`p-4 md:p-5 rounded-2xl border transition-all ${isCompleted ? 'bg-orange-50/50 dark:bg-orange-950/5 border-orange-200 dark:border-orange-900/50 opacity-90' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700'} shadow-sm hover:shadow-md flex flex-col md:flex-row justify-between items-start md:items-center gap-4`}
                     >
@@ -2041,7 +2040,7 @@ export default function App() {
                         </p>
                         {/* شريط التقدم الصغير */}
                         <div className="w-full bg-slate-100 dark:bg-slate-900 h-2 rounded-full overflow-hidden mb-2">
-                          <div 
+                          <div
                             className="bg-orange-500 h-full transition-all duration-300"
                             style={{ width: `${percentage}%` }}
                           ></div>
@@ -2058,17 +2057,16 @@ export default function App() {
                         <button
                           onClick={() => handleDhikrClick(dhikr.id, dhikr.target)}
                           disabled={isCompleted}
-                          className={`w-14 h-14 rounded-full font-black text-lg flex items-center justify-center transition-all ${
-                            isCompleted 
+                          className={`w-14 h-14 rounded-full font-black text-lg flex items-center justify-center transition-all ${isCompleted
                               ? 'bg-orange-100 dark:bg-orange-950/20 text-orange-600 border-2 border-orange-400 dark:border-orange-800'
                               : 'bg-orange-500 hover:bg-orange-600 text-white shadow-lg active:scale-95'
-                          }`}
+                            }`}
                         >
                           {currentCount}
                         </button>
 
                         {/* إعادة التصفير */}
-                        <button 
+                        <button
                           onClick={() => resetSingleDhikr(dhikr.id)}
                           className="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg transition"
                           title="تصفير العداد"
@@ -2077,7 +2075,7 @@ export default function App() {
                         </button>
 
                         {/* حذف */}
-                        <button 
+                        <button
                           onClick={() => deleteCustomDhikr(dhikr.id)}
                           className="p-2 text-red-400 hover:text-red-600 dark:hover:text-red-400 rounded-lg transition"
                           title="حذف الذكر"
@@ -2098,7 +2096,7 @@ export default function App() {
       {showSettingsModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
           <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-md p-6 relative border border-slate-200 dark:border-slate-700 max-h-[90vh] overflow-y-auto">
-            <button 
+            <button
               onClick={() => setShowSettingsModal(false)}
               className="absolute top-4 left-4 p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 bg-slate-100 dark:bg-slate-700 rounded-full transition"
             >
@@ -2108,19 +2106,19 @@ export default function App() {
               <Settings className="w-6 h-6" />
               إعدادات التطبيق
             </h3>
-            
+
             <div className="space-y-4">
 
               {/* أزرار الصوت والاهتزاز */}
               <div className="grid grid-cols-2 gap-3 mb-2">
-                <button 
+                <button
                   onClick={() => setSoundEnabled(!soundEnabled)}
                   className={`flex flex-col items-center justify-center p-3 rounded-xl border transition-all ${soundEnabled ? 'bg-teal-50 border-teal-200 text-teal-700 dark:bg-teal-900/30 dark:border-teal-800 dark:text-teal-300 shadow-sm' : 'bg-slate-50 border-slate-200 text-slate-400 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-500'}`}
                 >
                   {soundEnabled ? <Volume2 className="w-6 h-6 mb-2" /> : <VolumeX className="w-6 h-6 mb-2 opacity-50" />}
                   <span className="font-bold text-sm">الصوت</span>
                 </button>
-                <button 
+                <button
                   onClick={() => setVibrationEnabled(!vibrationEnabled)}
                   className={`flex flex-col items-center justify-center p-3 rounded-xl border transition-all ${vibrationEnabled ? 'bg-teal-50 border-teal-200 text-teal-700 dark:bg-teal-900/30 dark:border-teal-800 dark:text-teal-300 shadow-sm' : 'bg-slate-50 border-slate-200 text-slate-400 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-500'}`}
                 >
@@ -2131,7 +2129,7 @@ export default function App() {
 
               {/* أزرار الإشعارات والاحتفال */}
               <div className="grid grid-cols-2 gap-3 mb-2">
-                <button 
+                <button
                   onClick={() => {
                     if (!notificationsEnabled && Notification.permission !== "granted") {
                       Notification.requestPermission().then(perm => {
@@ -2147,7 +2145,7 @@ export default function App() {
                   <span className="font-bold text-sm">التنبيهات</span>
                   <span className="text-[10px] opacity-70 mt-1">(في المتصفح)</span>
                 </button>
-                <button 
+                <button
                   onClick={() => setCelebrationEnabled(!celebrationEnabled)}
                   className={`flex flex-col items-center justify-center p-3 rounded-xl border transition-all ${celebrationEnabled ? 'bg-teal-50 border-teal-200 text-teal-700 dark:bg-teal-900/30 dark:border-teal-800 dark:text-teal-300 shadow-sm' : 'bg-slate-50 border-slate-200 text-slate-400 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-500'}`}
                 >
@@ -2163,7 +2161,7 @@ export default function App() {
                   <Palette className="w-5 h-5 text-teal-600 dark:text-teal-400" />
                   <span className="font-semibold text-lg text-slate-700 dark:text-slate-200">مظهر التطبيق</span>
                 </div>
-                <button 
+                <button
                   onClick={toggleDarkMode}
                   className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-600 font-bold transition shadow-sm active:scale-95"
                 >
@@ -2178,7 +2176,7 @@ export default function App() {
                   <span className="font-semibold text-lg text-slate-700 dark:text-slate-200">حجم الخط</span>
                 </div>
                 <div className="flex items-center gap-4 bg-white dark:bg-slate-800 rounded-lg p-1 border border-slate-200 dark:border-slate-600">
-                  <button 
+                  <button
                     onClick={() => setFontSizeIndex(p => Math.min(p + 1, fontSizes.length - 1))}
                     disabled={fontSizeIndex === fontSizes.length - 1}
                     className="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-30 rounded-md transition"
@@ -2186,7 +2184,7 @@ export default function App() {
                     <Plus className="w-5 h-5" />
                   </button>
                   <span className="font-bold text-lg min-w-[20px] text-center">{fontSizeIndex + 1}</span>
-                  <button 
+                  <button
                     onClick={() => setFontSizeIndex(p => Math.max(p - 1, 0))}
                     disabled={fontSizeIndex === 0}
                     className="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-30 rounded-md transition"
@@ -2203,15 +2201,15 @@ export default function App() {
                     <Palette className="w-5 h-5 text-teal-600 dark:text-teal-400" />
                     <span className="font-semibold text-lg text-slate-700 dark:text-slate-200">تخصيص الألوان</span>
                   </div>
-                  <button 
-                    onClick={() => setThemeColors(defaultThemeColors)} 
+                  <button
+                    onClick={() => setThemeColors(defaultThemeColors)}
                     className="text-xs text-teal-600 dark:text-teal-400 hover:underline flex items-center gap-1"
                     title="العودة للألوان الأصلية"
                   >
                     <RotateCcw className="w-3 h-3" /> الافتراضي
                   </button>
                 </div>
-                
+
                 {Object.keys(defaultThemeColors).map(tab => (
                   <div key={tab} className="flex items-center justify-between py-1">
                     <span className="text-sm font-bold text-slate-600 dark:text-slate-400 w-20 shrink-0">
@@ -2221,7 +2219,7 @@ export default function App() {
                       {Object.keys(colorMap).map(color => (
                         <button
                           key={color}
-                          onClick={() => setThemeColors({...themeColors, [tab]: color})}
+                          onClick={() => setThemeColors({ ...themeColors, [tab]: color })}
                           className={`w-6 h-6 rounded-full transition-all ${themeColors[tab] === color ? 'ring-2 ring-offset-2 ring-slate-400 dark:ring-slate-400 scale-110' : 'opacity-50 hover:opacity-100 hover:scale-110'}`}
                           style={{ backgroundColor: colorMap[color].hex }}
                           title={colorMap[color].name}
@@ -2249,8 +2247,8 @@ export default function App() {
                 <span className="font-semibold text-lg text-slate-700 dark:text-slate-200">عرض الفوائد اللغوية</span>
               </label>
             </div>
-            
-            <button 
+
+            <button
               onClick={() => setShowSettingsModal(false)}
               className="mt-8 w-full py-3 bg-teal-600 hover:bg-teal-700 text-white rounded-xl font-bold text-lg transition shadow-md"
             >
@@ -2261,7 +2259,7 @@ export default function App() {
       )}
 
       <main className="container mx-auto px-4 py-6 md:py-8 max-w-4xl">
-        
+
         {/* --- تنبيه أوقات الأذكار --- */}
         <div className="mb-8 p-5 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 transition-all duration-300">
           <div className="flex items-start gap-3">
@@ -2319,7 +2317,7 @@ export default function App() {
                   <Info className="w-5 h-5 shrink-0" />
                   <p>هذه الأذكار لها فضل عظيم جداً؛ فمن قالها ثم دعا استُجيب له، وإن توضأ وصلى قُبلت صلاته.</p>
                 </div>
-                
+
                 {taarAdhkar.map(dhikr => {
                   const count = progress[`${activeTab}-${dhikr.id}`] || 0;
                   const done = count >= dhikr.target;
@@ -2328,7 +2326,7 @@ export default function App() {
                       <p className={`font-bold leading-relaxed mb-4 ${fontSizes[fontSizeIndex]}`}>
                         {dhikr.textMorning}
                       </p>
-                      
+
                       {showTakhreej && dhikr.takhreej && (
                         <div className="flex items-start gap-3 text-sm text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-900/50 p-3 rounded-xl mb-3 border border-slate-100 dark:border-slate-800">
                           <BookOpen className="w-4 h-4 shrink-0 mt-0.5 text-slate-400" />
@@ -2365,7 +2363,7 @@ export default function App() {
             {activeTab === 'sleep' && 'أذكار النوم'}
             {activeTab === 'wake' && 'أذكار الاستيقاظ'}
           </h2>
-          <button 
+          <button
             onClick={resetAllProgress}
             className="flex items-center gap-2 px-4 py-2 bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 rounded-xl transition-colors text-sm md:text-base font-bold shadow-sm"
           >
@@ -2381,18 +2379,18 @@ export default function App() {
             const currentCount = progress[`${activeTab}-${dhikr.id}`] || 0;
             const isCompleted = currentCount >= dhikr.target;
             const percentage = dhikr.target > 1 ? (currentCount / dhikr.target) : (currentCount > 0 ? 1 : 0);
-            
+
             const displayText = (activeTab === 'evening' && dhikr.textEvening) ? dhikr.textEvening : dhikr.textMorning;
 
-            let counterBgClass = isCompleted 
-                ? currentTabTheme.counterDone + " cursor-default shadow-none" 
-                : percentage > 0.6 ? `${currentTabTheme.counterHigh} text-white shadow-lg dark:shadow-none` 
-                : percentage > 0.3 ? `${currentTabTheme.counterMed} text-white shadow-lg dark:shadow-none` 
-                : `${currentTabTheme.counterLow} text-white shadow-lg dark:shadow-none`;
+            let counterBgClass = isCompleted
+              ? currentTabTheme.counterDone + " cursor-default shadow-none"
+              : percentage > 0.6 ? `${currentTabTheme.counterHigh} text-white shadow-lg dark:shadow-none`
+                : percentage > 0.3 ? `${currentTabTheme.counterMed} text-white shadow-lg dark:shadow-none`
+                  : `${currentTabTheme.counterLow} text-white shadow-lg dark:shadow-none`;
 
             return (
-              <div 
-                key={dhikr.id} 
+              <div
+                key={dhikr.id}
                 id={`dhikr-${dhikr.id}`}
                 className={`dhikr-card ${isCompleted ? 'completed' : ''} card-hover group relative bg-white dark:bg-slate-800 rounded-3xl shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border ${isCompleted ? 'border-slate-200 dark:border-slate-700 opacity-90' : 'border-slate-200 dark:border-slate-700'} overflow-hidden scroll-mt-24`}
               >
@@ -2453,10 +2451,10 @@ export default function App() {
                           <span className="hidden md:inline text-white/90 z-10 font-semibold">اضغط للعد</span>
                         </>
                       )}
-                      
+
                       {!isCompleted && dhikr.target > 1 && currentCount > 0 && (
-                        <div 
-                          className="absolute top-0 right-0 h-full bg-black/10 z-0 transition-all duration-300" 
+                        <div
+                          className="absolute top-0 right-0 h-full bg-black/10 z-0 transition-all duration-300"
                           style={{ width: `${percentage * 100}%` }}
                         />
                       )}

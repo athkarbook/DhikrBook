@@ -53,14 +53,21 @@ export function Header({ props }) {
               </div>
             )}
 
-            {/* المسبحة الصوتية العامة */}
+            {/* المسبحة الصوتية الذكية */}
             {speechSupported && (
               <button
                 onClick={toggleVoiceTasbeeh}
-                className={`p-1.5 md:p-2 rounded-full transition relative flex items-center justify-center shadow-sm ${isListening ? 'bg-red-500 hover:bg-red-600 text-white animate-pulse' : 'bg-black/20 hover:bg-black/30 dark:bg-slate-700/50 dark:hover:bg-slate-700'}`}
+                className={`px-2 md:px-3 py-1.5 md:py-2 rounded-full transition-all relative flex items-center justify-center gap-2 shadow-sm ${isListening ? 'bg-red-500 hover:bg-red-600 text-white animate-pulse' : 'bg-black/20 hover:bg-black/30 dark:bg-slate-700/50 dark:hover:bg-slate-700'}`}
                 title="المسبحة الصوتية (العد التلقائي بالصوت)"
               >
-                {isListening ? <Mic className="w-4 h-4 md:w-5 md:h-5" /> : <MicOff className="w-4 h-4 md:w-5 md:h-5" />}
+                {isListening ? (
+                  <>
+                    <Mic className="w-4 h-4 md:w-5 md:h-5" />
+                    <span className="text-xs md:text-sm font-bold animate-pulse">يستمع.. اقرأ لينتقل</span>
+                  </>
+                ) : (
+                  <MicOff className="w-4 h-4 md:w-5 md:h-5" />
+                )}
               </button>
             )}
 

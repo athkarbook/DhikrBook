@@ -1,5 +1,5 @@
 import React from 'react';
-import { BookOpen, Star, Info, RotateCcw, CheckCircle } from 'lucide-react';
+import { BookOpen, Star, Info, RotateCcw, CheckCircle, Hand } from 'lucide-react';
 
 export function DhikrCard({
   dhikr,
@@ -36,11 +36,22 @@ export function DhikrCard({
       </div>
 
       <div className="p-6 md:p-8">
-        <p className={`font-cairo font-semibold leading-[2.4] md:leading-[2.6] text-slate-800 dark:text-slate-100 mb-8 whitespace-pre-line text-justify md:text-right ${fontSizes[fontSizeIndex]}`}>
-          {displayText}
-        </p>
+        <div 
+          onClick={() => !isCompleted && handleDhikrClick(dhikr.id, dhikr.target)}
+          className={`relative p-4 -mx-4 rounded-2xl transition-colors ${!isCompleted ? 'cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-700/30' : ''}`}
+        >
+          <p className={`font-cairo font-semibold leading-[2.4] md:leading-[2.6] text-slate-800 dark:text-slate-100 whitespace-pre-line text-justify md:text-right ${fontSizes[fontSizeIndex]} select-none`}>
+            {displayText}
+          </p>
+          {!isCompleted && (
+            <div className="flex items-center gap-1.5 mt-4 text-slate-400 dark:text-slate-500 text-sm justify-center md:justify-start opacity-70">
+              <Hand className="w-4 h-4 animate-bounce" />
+              <span>اضغط هنا أو على العداد بالأسفل للعد</span>
+            </div>
+          )}
+        </div>
 
-        <div className="space-y-3 mb-8">
+        <div className="space-y-3 mb-8 mt-4">
           {showTakhreej && dhikr.takhreej && (
             <div className="flex items-start gap-3 text-sm md:text-base text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-800">
               <BookOpen className="w-5 h-5 shrink-0 mt-0.5 text-slate-400" />

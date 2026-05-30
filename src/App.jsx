@@ -90,163 +90,185 @@ const CelestialElements = ({ activeTab }) => {
   return null;
 };
 
-const JannahGarden = ({ totalTasbeehs }) => {
-  const stages = [
-    { threshold: 0, name: "بذرة الإيمان", desc: "بذرة صغيرة في أرض خصبة.", next: 50 },
-    { threshold: 50, name: "الجذع الناشئ", desc: "بداية النمو والثبات.", next: 200 },
-    { threshold: 200, name: "تبرعم الفروع", desc: "تفرع الأغصان استعداداً للإيراق.", next: 500 },
-    { threshold: 500, name: "الإيراق الأخضر", desc: "أوراق خضراء يانعة تزين غراسك.", next: 1000 },
-    { threshold: 1000, name: "الظل الوريف", desc: "شجرة كثيفة الأوراق تسر الناظرين.", next: 5000 },
-    { threshold: 5000, name: "ثمار النور", desc: "أثمرت غراسك ثماراً من نور متلألئ.", next: null },
-  ];
-
-  let currentStageIndex = stages.length - 1;
-  for (let i = 0; i < stages.length; i++) {
-    if (totalTasbeehs < stages[i].next || stages[i].next === null) {
-      currentStageIndex = i;
-      break;
-    }
-  }
-
-  const currentStage = stages[currentStageIndex];
-  const nextStage = stages[currentStageIndex + 1];
-  const progressToNext = nextStage ? Math.min(100, Math.floor(((totalTasbeehs - currentStage.threshold) / (nextStage.threshold - currentStage.threshold)) * 100)) : 100;
+// مكون الشجرة الفردية بمستوياتها
+const TreeSVG = ({ level, scale = 1, delay = 0 }) => {
+  if (level === 0) return null;
+  
+  const trunkFill = level >= 4 ? '#FBC02D' : '#5D4037';
+  const leaf1 = level >= 5 ? '#FFF59D' : level === 4 ? '#FFEE58' : level === 3 ? '#2E7D32' : '#4CAF50';
+  const leaf2 = level >= 5 ? '#FFF9C4' : level === 4 ? '#FFF176' : level === 3 ? '#1B5E20' : '#81C784';
 
   return (
-    <div className="w-full flex flex-col items-center justify-center min-h-[70vh] p-8 md:p-12 bg-gradient-to-b from-teal-900 via-emerald-900 to-slate-900 rounded-[3rem] border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.3)] relative overflow-hidden transition-colors duration-1000 mb-8">
-      {/* نجوم/جزيئات ضوئية في الخلفية */}
+    <div className={`transition-all duration-1000 ease-out animate-in zoom-in absolute bottom-0 left-1/2 -translate-x-1/2`} style={{ animationDelay: `${delay}ms` }}>
+      <svg viewBox="0 0 100 120" className="overflow-visible" style={{ width: `${40 * scale}px`, height: `${48 * scale}px`, filter: level >= 4 ? 'drop-shadow(0 0 8px rgba(255,215,0,0.6))' : 'drop-shadow(0 4px 6px rgba(0,0,0,0.3))' }}>
+        {/* الجذع */}
+        {level >= 2 && <path d="M45 120 Q 50 80 50 60 Q 50 80 55 120 Z" fill={trunkFill} className="animate-in fade-in slide-in-from-bottom-2 duration-1000" />}
+        
+        {/* الأوراق (للشجرة الكاملة) */}
+        {level >= 3 && (
+          <g className="animate-in zoom-in duration-1000 delay-300 fill-mode-both">
+            <circle cx="50" cy="40" r="30" fill={leaf1} opacity="0.95" />
+            <circle cx="35" cy="50" r="20" fill={leaf2} opacity="0.9" />
+            <circle cx="65" cy="50" r="20" fill={leaf2} opacity="0.9" />
+            <circle cx="50" cy="20" r="25" fill={leaf1} opacity="0.98" />
+          </g>
+        )}
+        
+        {/* الفسيلة / الشجرة الصغيرة (مستوى 1 و 2) */}
+        {level === 1 && <circle cx="50" cy="110" r="8" fill={leaf1} className="animate-in zoom-in duration-700" />}
+        {level === 2 && (
+           <g className="animate-in zoom-in duration-700 delay-300 fill-mode-both">
+             <circle cx="50" cy="80" r="15" fill={leaf1} />
+             <circle cx="42" cy="88" r="10" fill={leaf2} />
+             <circle cx="58" cy="88" r="10" fill={leaf2} />
+           </g>
+        )}
+        
+        {/* الثمار المضيئة (مستوى 5) */}
+        {level >= 5 && (
+          <g className="animate-in zoom-in duration-1000 delay-700 fill-mode-both">
+            <circle cx="40" cy="30" r="2.5" fill="#FFF" className="animate-pulse" />
+            <circle cx="60" cy="35" r="3" fill="#FFF" className="animate-pulse" style={{ animationDelay: '1s' }} />
+            <circle cx="50" cy="20" r="2" fill="#FFF" className="animate-pulse" style={{ animationDelay: '0.5s' }} />
+          </g>
+        )}
+      </svg>
+    </div>
+  );
+};
+
+const JannahGarden = ({ totalTasbeehs }) => {
+  const TOTAL_TREES = 50; // الحد الأقصى للأشجار المرئية
+  
+  // توليد مواقع ثابتة للأشجار في البستان لتبدو كغابة عميقة
+  const treePositions = useMemo(() => {
+    const pos = [];
+    for(let i = 0; i < TOTAL_TREES; i++) {
+      // استخدام دوال جيبية كبديل للعشوائية للحفاظ على ثبات المواقع
+      const x = Math.abs(Math.sin(i * 12.34)) * 90 + 5; // 5% to 95% left
+      const y = Math.abs(Math.cos(i * 43.21)) * 60 + 5; // 5% to 65% bottom
+      
+      // الأشجار الأقرب (y أقل) تبدو أكبر
+      const scale = 0.6 + (65 - y) / 35; // 0.6 to ~2.3
+      const delay = Math.abs(Math.sin(i)) * 500; // تأخير حركي
+      
+      pos.push({ id: i, left: x, bottom: y, scale, delay, zIndex: Math.floor(100 - y) });
+    }
+    // ترتيب الأشجار حسب zIndex بحيث تُطبع الأشجار الخلفية أولاً
+    return pos.sort((a, b) => a.zIndex - b.zIndex);
+  }, []);
+
+  const fullLoops = Math.floor(totalTasbeehs / TOTAL_TREES);
+  const remainder = totalTasbeehs % TOTAL_TREES;
+
+  // تحديد اسم ووصف المرحلة بناءً على عدد دورات الترقية (كل دورة بـ 50 تسبيحة)
+  const currentStageName = 
+    fullLoops >= 4 ? "غابة النور" :
+    fullLoops === 3 ? "الأشجار الذهبية" :
+    fullLoops === 2 ? "البستان الأخضر" :
+    fullLoops === 1 ? "بداية التفرع" : 
+    totalTasbeehs > 0 ? "فسائل الغراس" : "أرض خصبة تنتظر غراسك";
+
+  const nextStageThreshold = (fullLoops + 1) * TOTAL_TREES;
+  const progressToNext = (remainder / TOTAL_TREES) * 100;
+
+  return (
+    <div className="w-full flex flex-col items-center justify-center min-h-[70vh] p-4 md:p-8 bg-gradient-to-b from-teal-950 via-emerald-900 to-slate-900 rounded-[3rem] border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.3)] relative overflow-hidden transition-colors duration-1000 mb-8">
+      {/* سماء البستان */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-         {[...Array(20)].map((_, i) => (
+         {[...Array(25)].map((_, i) => (
             <div 
               key={i}
-              className="absolute bg-white/40 rounded-full animate-pulse"
+              className="absolute bg-white/30 rounded-full animate-pulse"
               style={{
-                top: `${Math.random() * 100}%`,
+                top: `${Math.random() * 80}%`,
                 left: `${Math.random() * 100}%`,
-                width: `${Math.random() * 4 + 1}px`,
-                height: `${Math.random() * 4 + 1}px`,
+                width: `${Math.random() * 3 + 1}px`,
+                height: `${Math.random() * 3 + 1}px`,
                 animationDelay: `${Math.random() * 5}s`,
                 animationDuration: `${Math.random() * 3 + 2}s`
               }}
             />
          ))}
-         {/* شعاع نوراني علوي */}
-         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[150%] h-[50%] bg-gradient-to-b from-emerald-400/20 to-transparent blur-[80px]"></div>
+         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[200%] h-[60%] bg-gradient-to-b from-emerald-400/10 to-transparent blur-[100px]"></div>
       </div>
 
-      <div className="text-center z-10 mb-8 md:mb-12">
+      <div className="text-center z-20 mb-auto mt-4 md:mt-8">
         <h4 className="text-3xl md:text-5xl font-black mb-4 text-emerald-300 drop-shadow-md flex items-center justify-center gap-3">
           <Leaf className="w-8 h-8 md:w-12 md:h-12 text-emerald-400 animate-pulse" />
           بستان الجنة
         </h4>
-        <p className="text-sm md:text-lg text-emerald-100/90 max-w-xl mx-auto leading-relaxed font-medium">
-          "إن سبحان الله والحمد لله ولا إله إلا الله والله أكبر يغرسن لك بها شجراً في الجنة"
+        <p className="text-xs md:text-base text-emerald-100/90 max-w-2xl mx-auto leading-relaxed font-medium px-4">
+          «ألَا أدُلُّكَ على غِراسٍ، هو خير مِنْ هذا؟ تقول: سبحان الله، والحمد لله، ولا إله إلا الله، والله أكبر، يُغرس لك بكل كلمةٍ منها شجرةٌ في الجنة»
         </p>
       </div>
 
-      {/* الشجرة (SVG) */}
-      <div className="relative w-64 h-64 md:w-96 md:h-96 flex items-end justify-center z-10">
-        {/* الأرض */}
-        <div className="absolute bottom-[-10px] w-48 md:w-64 h-12 md:h-16 bg-emerald-500/20 rounded-[100%] blur-xl"></div>
-        <div className="absolute bottom-0 w-32 md:w-48 h-6 md:h-8 bg-emerald-400/30 rounded-[100%] blur-md"></div>
+      {/* الغابة (مساحة العرض) */}
+      <div className="relative w-full max-w-3xl h-[40vh] md:h-[50vh] mt-8 z-10 flex-shrink-0 perspective-1000">
+        {/* الأرضية السفلية الممتدة */}
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[150%] h-1/3 bg-gradient-to-t from-emerald-950/80 to-transparent blur-md rounded-[100%]"></div>
         
-        <svg viewBox="0 0 200 200" className="w-full h-full overflow-visible drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)]">
-          {/* الجذع الأساسي (المرحلة 1 وما فوق) */}
-          <path 
-            d="M95 200 C95 150, 90 100, 100 80 C110 100, 105 150, 105 200 Z" 
-            fill="#5D4037" 
-            className={`transition-all duration-[2000ms] ease-out origin-bottom ${currentStageIndex >= 1 ? 'scale-y-100 opacity-100' : 'scale-y-0 opacity-0'}`}
-          />
+        {/* عرض الأشجار بناءً على عدد التسبيحات */}
+        {treePositions.map((pos) => {
+          const treeLevel = fullLoops + (pos.id < remainder ? 1 : 0);
+          const visualLevel = Math.min(treeLevel, 5); // أقصى مستوى بصري هو 5
           
-          {/* الفروع (المرحلة 2) */}
-          <path 
-            d="M100 120 C80 100, 60 90, 40 70 M100 100 C120 80, 140 70, 160 50 M100 80 C90 60, 80 40, 90 20" 
-            stroke="#5D4037" 
-            strokeWidth="8" 
-            strokeLinecap="round" 
-            fill="none"
-            className={`transition-all duration-[2000ms] ease-out origin-bottom delay-300 ${currentStageIndex >= 2 ? 'scale-100 opacity-100' : 'scale-0 opacity-0'}`}
-          />
-
-          {/* الأوراق الأساسية (المرحلة 3) */}
-          <g className={`transition-all duration-[2000ms] ease-out origin-center delay-700 ${currentStageIndex >= 3 ? 'scale-100 opacity-100' : 'scale-0 opacity-0'}`}>
-            <circle cx="40" cy="70" r="28" fill="#2E7D32" opacity="0.95" />
-            <circle cx="160" cy="50" r="33" fill="#2E7D32" opacity="0.95" />
-            <circle cx="90" cy="20" r="40" fill="#1B5E20" opacity="0.98" />
-            <circle cx="100" cy="80" r="45" fill="#388E3C" opacity="0.9" />
-          </g>
-
-          {/* الكثافة والأوراق الإضافية (المرحلة 4) */}
-          <g className={`transition-all duration-[2000ms] ease-out origin-center delay-1000 ${currentStageIndex >= 4 ? 'scale-100 opacity-100' : 'scale-0 opacity-0'}`}>
-            <circle cx="70" cy="40" r="40" fill="#4CAF50" opacity="0.9" />
-            <circle cx="130" cy="30" r="45" fill="#00C853" opacity="0.85" />
-            <circle cx="100" cy="50" r="55" fill="#43A047" opacity="0.9" />
-          </g>
-
-          {/* الثمار المضيئة (المرحلة 5) */}
-          <g className={`transition-all duration-[2000ms] ease-out origin-top delay-[1500ms] ${currentStageIndex >= 5 ? 'scale-100 opacity-100' : 'scale-0 opacity-0'}`}>
-            <circle cx="60" cy="60" r="8" fill="#FDD835" className="animate-[pulse_2s_ease-in-out_infinite]" />
-            <circle cx="140" cy="40" r="9" fill="#FFF176" className="animate-[pulse_3s_ease-in-out_infinite]" />
-            <circle cx="90" cy="30" r="10" fill="#FDD835" className="animate-[pulse_2.5s_ease-in-out_infinite] shadow-[0_0_15px_#FDD835]" />
-            <circle cx="110" cy="80" r="8" fill="#FFEE58" className="animate-[pulse_4s_ease-in-out_infinite]" />
-            <circle cx="160" cy="60" r="7" fill="#FDD835" className="animate-[pulse_3.5s_ease-in-out_infinite]" />
-            <circle cx="45" cy="40" r="6" fill="#FFEE58" className="animate-[pulse_2.2s_ease-in-out_infinite]" />
-            <circle cx="120" cy="15" r="7" fill="#FDD835" className="animate-[pulse_3.2s_ease-in-out_infinite]" />
-          </g>
-
-          {/* البذرة (المرحلة 0 فقط) */}
-          <ellipse 
-            cx="100" cy="190" rx="10" ry="6" 
-            fill="#FFCA28" 
-            className={`transition-all duration-[1000ms] ease-out ${currentStageIndex === 0 ? 'opacity-100 scale-100 animate-pulse' : 'opacity-0 scale-0'}`} 
-          />
-        </svg>
+          return (
+            <div 
+              key={pos.id} 
+              className="absolute"
+              style={{
+                left: `${pos.left}%`,
+                bottom: `${pos.bottom}%`,
+                zIndex: pos.zIndex
+              }}
+            >
+              {/* ظل الشجرة */}
+              {visualLevel > 0 && (
+                <div 
+                   className="absolute bottom-[-2px] left-1/2 -translate-x-1/2 bg-black/40 rounded-[100%] blur-[2px] transition-all duration-1000"
+                   style={{ width: `${15 * pos.scale}px`, height: `${4 * pos.scale}px` }}
+                ></div>
+              )}
+              <TreeSVG level={visualLevel} scale={pos.scale} delay={pos.delay} />
+            </div>
+          );
+        })}
       </div>
       
-      {/* تأثير ضوئي خلفي للشجرة */}
-      {currentStageIndex >= 4 && (
-         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] h-[150%] md:w-[120%] md:h-[120%] bg-emerald-400/10 filter blur-[80px] rounded-full pointer-events-none z-0 animate-pulse duration-1000"></div>
+      {/* تأثير ضوئي كثيف عند المراحل المتقدمة */}
+      {fullLoops >= 3 && (
+         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-yellow-400/5 filter blur-[120px] rounded-full pointer-events-none z-0 animate-pulse duration-[3000ms]"></div>
       )}
 
       {/* لوحة التحكم والإحصاءات للبستان */}
-      <div className="mt-12 w-full max-w-md z-10">
-        <div className="bg-black/20 backdrop-blur-md rounded-3xl p-6 border border-white/10 shadow-xl">
-          <div className="flex justify-between items-end mb-4">
+      <div className="mt-8 w-full max-w-md z-20">
+        <div className="bg-black/30 backdrop-blur-xl rounded-3xl p-6 border border-white/10 shadow-2xl">
+          <div className="flex justify-between items-center mb-6">
             <div>
-              <h5 className="text-emerald-300 font-bold text-lg mb-1">{currentStage.name}</h5>
-              <p className="text-emerald-100/70 text-xs">{currentStage.desc}</p>
+              <span className="block text-emerald-400/80 text-[10px] md:text-xs font-bold mb-1">المرحلة الحالية لغابتك</span>
+              <h5 className="text-emerald-100 font-bold text-lg md:text-xl">{currentStageName}</h5>
             </div>
-            <div className="text-left">
-              <span className="text-3xl font-black text-white">{totalTasbeehs.toLocaleString('ar-EG')}</span>
-              <span className="block text-emerald-300/80 text-[10px]">إجمالي غراسك</span>
+            <div className="text-left bg-white/5 px-4 py-2 rounded-2xl border border-white/10">
+              <span className="text-3xl md:text-4xl font-black text-white drop-shadow-md">{totalTasbeehs.toLocaleString('ar-EG')}</span>
+              <span className="block text-emerald-300/80 text-[10px] font-bold mt-1">شجرة مغروسة</span>
             </div>
           </div>
           
-          {nextStage && (
-            <div className="mt-6">
-              <div className="flex justify-between text-[10px] text-emerald-200/80 mb-2 font-bold">
-                <span>المرحلة القادمة: {nextStage.name}</span>
-                <span>{nextStage.threshold - totalTasbeehs} متبقي</span>
-              </div>
-              <div className="w-full bg-black/40 h-3 rounded-full overflow-hidden border border-white/5">
-                <div 
-                  className="h-full bg-gradient-to-r from-emerald-500 to-green-300 transition-all duration-1000 ease-out relative"
-                  style={{ width: `${progressToNext}%` }}
-                >
-                  <div className="absolute top-0 right-0 bottom-0 w-4 bg-white/30 animate-pulse"></div>
-                </div>
+          <div className="mt-4">
+            <div className="flex justify-between text-[10px] md:text-xs text-emerald-200/80 mb-2 font-bold">
+              <span>الترقية الشاملة القادمة للأشجار</span>
+              <span>{nextStageThreshold - totalTasbeehs} شجرة متبقية</span>
+            </div>
+            <div className="w-full bg-black/50 h-3 md:h-4 rounded-full overflow-hidden border border-white/5 shadow-inner">
+              <div 
+                className="h-full bg-gradient-to-r from-emerald-600 via-emerald-400 to-green-300 transition-all duration-700 ease-out relative"
+                style={{ width: `${progressToNext}%` }}
+              >
+                <div className="absolute top-0 right-0 bottom-0 w-6 bg-white/30 animate-[pulse_1s_ease-in-out_infinite] blur-[2px]"></div>
               </div>
             </div>
-          )}
-          
-          {!nextStage && (
-            <div className="mt-4 p-3 bg-yellow-500/20 border border-yellow-500/30 rounded-xl text-center">
-              <p className="text-yellow-200 font-bold text-sm flex items-center justify-center gap-2">
-                <Crown className="w-5 h-5 text-yellow-400" />
-                ما شاء الله! غراسك في أبهى حلة.
-              </p>
-            </div>
-          )}
+          </div>
         </div>
       </div>
     </div>

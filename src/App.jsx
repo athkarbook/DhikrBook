@@ -3298,7 +3298,7 @@ export default function App() {
         {/* --- عرض بستان الجنة كـ Tab --- */}
         {activeTab === 'garden' && (
           <div className="w-full flex justify-center animate-in fade-in zoom-in-95 duration-500">
-            <JannahGarden totalTasbeehs={totalTasbeehsMade + totalAdhkarRead} />
+            <JannahGarden totalTasbeehs={totalTasbeehsMade} />
           </div>
         )}
 

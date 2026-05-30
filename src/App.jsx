@@ -2618,24 +2618,53 @@ export default function App() {
               {/* إعدادات الموقع وأوقات الصلاة */}
               <div className="flex flex-col gap-3 p-4 rounded-xl bg-slate-50 dark:bg-slate-700/50 border border-slate-100 dark:border-slate-700">
                 <div className="flex items-center gap-2 mb-2 border-b border-slate-200 dark:border-slate-600 pb-3">
-                  <Map className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+                  <Clock className="w-5 h-5 text-teal-600 dark:text-teal-400" />
                   <span className="font-semibold text-lg text-slate-700 dark:text-slate-200">أوقات الصلاة والتنبيهات الذكية</span>
                 </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                  احصل على تنبيهات دقيقة لأوقات الصلاة، واجعل التطبيق يقترح لك أذكار ما بعد الصلاة والصباح والمساء بناءً على توقيت منطقتك.
-                </p>
-                <div className="flex items-center justify-between mt-2">
-                  <span className="text-sm font-bold text-slate-700 dark:text-slate-300">
-                    {location && prayerTimes ? 'تم تحديد الموقع' : 'الموقع غير محدد'}
-                  </span>
-                  <button
-                    onClick={requestLocation}
-                    className="flex items-center gap-2 px-4 py-2 bg-teal-100 text-teal-700 dark:bg-teal-900/40 dark:text-teal-300 rounded-lg hover:bg-teal-200 dark:hover:bg-teal-800 transition font-bold shadow-sm"
-                  >
-                    <Map className="w-4 h-4" />
-                    {location ? 'تحديث الموقع' : 'تحديد موقعي'}
-                  </button>
-                </div>
+                
+                {!prayerTimes ? (
+                  <div className="text-center py-4">
+                    <Map className="w-10 h-10 mx-auto text-slate-300 dark:text-slate-600 mb-3" />
+                    <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
+                      قم بتحديد موقعك لنجلب أوقات الصلاة الدقيقة، ونقترح لك الأذكار الصحيحة في وقتها المناسب.
+                    </p>
+                    <button
+                      onClick={requestLocation}
+                      className="w-full flex justify-center items-center gap-2 px-4 py-2.5 bg-teal-600 text-white dark:bg-teal-600 rounded-lg hover:bg-teal-700 transition font-bold shadow-md"
+                    >
+                      <Map className="w-5 h-5" />
+                      تحديد موقعي الآن
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-4">
+                    <div className="grid grid-cols-5 gap-1 text-center bg-white dark:bg-slate-800 p-2 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm">
+                      {[
+                        { n: 'الفجر', t: prayerTimes.Fajr },
+                        { n: 'الظهر', t: prayerTimes.Dhuhr },
+                        { n: 'العصر', t: prayerTimes.Asr },
+                        { n: 'المغرب', t: prayerTimes.Maghrib },
+                        { n: 'العشاء', t: prayerTimes.Isha }
+                      ].map(p => (
+                        <div key={p.n} className="flex flex-col items-center">
+                          <span className="text-[10px] md:text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">{p.n}</span>
+                          <span className="text-[11px] md:text-sm font-black text-teal-700 dark:text-teal-400">{p.t?.split(' ')[0] || '--'}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                        <CheckCircle className="w-4 h-4" /> تم تحديث الأوقات
+                      </span>
+                      <button
+                        onClick={requestLocation}
+                        className="text-xs text-slate-500 hover:text-teal-600 dark:hover:text-teal-400 underline transition flex items-center gap-1"
+                      >
+                        <RotateCcw className="w-3 h-3" /> تحديث الموقع
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* أزرار الإشعارات والاحتفال */}

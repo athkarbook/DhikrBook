@@ -699,7 +699,8 @@ export default function App() {
 
   const calculatePrayerTimesLocally = (lat, lng) => {
     const coordinates = new Coordinates(lat, lng);
-    const params = CalculationMethod.UmmAlQura();
+    // التوقيت المصري معتمد بشكل واسع لبلاد الشام وفلسطين في حال عدم وجود توقيت محلي مخصص
+    const params = CalculationMethod.Egyptian();
     const date = new Date();
     const times = new PrayerTimes(coordinates, date, params);
     

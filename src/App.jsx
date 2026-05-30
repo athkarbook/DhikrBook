@@ -2420,7 +2420,7 @@ export default function App() {
         </div>
 
         {/* --- شريط التقدم --- */}
-        <div className="w-full bg-black/20 dark:bg-black/30 h-1.5 shadow-inner sticky top-0 z-10">
+        <div className="w-full bg-black/20 dark:bg-black/30 h-1.5 shadow-inner">
           <div
             className={`h-full transition-all duration-500 ease-out flex justify-end items-center ${currentTabTheme.progress}`}
             style={{ width: `${totalProgressPercentage}%` }}

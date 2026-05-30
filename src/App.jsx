@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useRegisterSW } from 'virtual:pwa-register/react';
 import { Sun, Moon, Settings, Info, BookOpen, CheckCircle, RotateCcw, Clock, Star, X, Plus, Minus, Type, Flame, Volume2, VolumeX, Vibrate, VibrateOff, Target, Sunrise, Sunset, MoonStar, ChevronDown, ChevronUp, Palette, Fingerprint, BarChart2, Edit3, Trash2, Award, Trophy, Bell, BellRing, Shield, Crown, RefreshCw, Share2, Map, Mic, MicOff } from 'lucide-react';
 import html2canvas from 'html2canvas';
@@ -678,7 +678,130 @@ export default function App() {
     return saved !== null ? saved === 'true' : false;
   });
   const [streak, setStreak] = useState(0);
-  const [prayerTimes, setPrayerTimes] = useState(null);
+  
+  // -- الموقع وأوقات الصلاة --
+  const [location, setLocation] = useState(() => {
+    const saved = localStorage.getItem('userLocation');
+    return saved ? JSON.parse(saved) : null;
+  });
+
+  const [prayerTimes, setPrayerTimes] = useState(() => {
+    const saved = localStorage.getItem('prayerTimes');
+    const savedDate = localStorage.getItem('prayerTimesDate');
+    if (saved && savedDate === new Date().toDateString()) {
+      return JSON.parse(saved);
+    }
+    return null;
+  });
+
+  const fetchPrayerTimes = async (loc) => {
+    try {
+      const response = await fetch(`https://api.aladhan.com/v1/timings?latitude=${loc.lat}&longitude=${loc.lng}&method=4`);
+      const data = await response.json();
+      setPrayerTimes(data.data.timings);
+      localStorage.setItem('prayerTimes', JSON.stringify(data.data.timings));
+      localStorage.setItem('prayerTimesDate', new Date().toDateString());
+    } catch (e) {
+      console.error('Failed to fetch prayer times', e);
+    }
+  };
+
+  const requestLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const loc = { lat: position.coords.latitude, lng: position.coords.longitude };
+          setLocation(loc);
+          localStorage.setItem('userLocation', JSON.stringify(loc));
+          fetchPrayerTimes(loc);
+        },
+        (error) => alert('عذراً، لم نتمكن من تحديد الموقع.')
+      );
+    } else {
+      alert('المتصفح لا يدعم تحديد الموقع.');
+    }
+  };
+
+  const notifsEnabledRef = useRef(notificationsEnabled);
+  useEffect(() => {
+    notifsEnabledRef.current = notificationsEnabled;
+  }, [notificationsEnabled]);
+
+  useEffect(() => {
+    if (location && !prayerTimes) {
+      fetchPrayerTimes(location);
+    }
+  }, [location, prayerTimes]);
+
+  useEffect(() => {
+    if (!prayerTimes) return;
+
+    // اقتراح التبويب بناءً على الوقت الحالي وأوقات الصلاة
+    const now = new Date();
+    const h = now.getHours();
+    const currentMins = h * 60 + now.getMinutes();
+
+    const parseTime = (t) => {
+      if (!t) return 0;
+      const [hours, mins] = t.split(':').map(Number);
+      return hours * 60 + mins;
+    };
+
+    const fajr = parseTime(prayerTimes.Fajr);
+    const sunrise = parseTime(prayerTimes.Sunrise);
+    const dhuhr = parseTime(prayerTimes.Dhuhr);
+    const asr = parseTime(prayerTimes.Asr);
+    const maghrib = parseTime(prayerTimes.Maghrib);
+    const isha = parseTime(prayerTimes.Isha);
+
+    let suggestedTab = 'morning';
+    
+    if (currentMins >= fajr - 60 && currentMins < fajr) suggestedTab = 'wake';
+    else if (currentMins >= fajr && currentMins < sunrise + 120) suggestedTab = 'morning';
+    else if (currentMins >= asr && currentMins < maghrib + 60) suggestedTab = 'evening';
+    else if (
+      (currentMins >= fajr && currentMins <= fajr + 30) ||
+      (currentMins >= dhuhr && currentMins <= dhuhr + 30) ||
+      (currentMins >= asr && currentMins <= asr + 30) ||
+      (currentMins >= maghrib && currentMins <= maghrib + 30) ||
+      (currentMins >= isha && currentMins <= isha + 30)
+    ) {
+      suggestedTab = 'prayer';
+    }
+    else if (currentMins >= isha + 120 || currentMins < fajr - 60) suggestedTab = 'sleep';
+    
+    setActiveTab(suggestedTab);
+
+    // فحص التنبيهات كل ثانية لمطابقة أوقات الصلاة
+    const intervalId = setInterval(() => {
+      const nowTime = new Date();
+      const timeStr = `${nowTime.getHours().toString().padStart(2, '0')}:${nowTime.getMinutes().toString().padStart(2, '0')}`;
+      
+      const prayers = [
+        { name: 'الفجر', time: prayerTimes.Fajr },
+        { name: 'الظهر', time: prayerTimes.Dhuhr },
+        { name: 'العصر', time: prayerTimes.Asr },
+        { name: 'المغرب', time: prayerTimes.Maghrib },
+        { name: 'العشاء', time: prayerTimes.Isha }
+      ];
+
+      for (const p of prayers) {
+        if (p.time && p.time === timeStr && nowTime.getSeconds() === 0) {
+          // حان وقت الصلاة!
+          if (notifsEnabledRef.current && Notification.permission === 'granted') {
+             new Notification(`حان الآن موعد صلاة ${p.name}`, {
+               body: 'لا تنس أذكار ما بعد الصلاة!',
+               icon: '/dhikr-book/pwa-192x192.png'
+             });
+          }
+          // التحويل التلقائي لتبويب أذكار الصلاة
+          setActiveTab('prayer');
+        }
+      }
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, [prayerTimes]);
 
   // -- القائمة السرية للمطور (لاستعادة البيانات) --
   const [devClickCount, setDevClickCount] = useState(0);
@@ -2445,6 +2568,29 @@ export default function App() {
                   {vibrationEnabled ? <Vibrate className="w-6 h-6 mb-2" /> : <VibrateOff className="w-6 h-6 mb-2 opacity-50" />}
                   <span className="font-bold text-sm">الاهتزاز</span>
                 </button>
+              </div>
+
+              {/* إعدادات الموقع وأوقات الصلاة */}
+              <div className="flex flex-col gap-3 p-4 rounded-xl bg-slate-50 dark:bg-slate-700/50 border border-slate-100 dark:border-slate-700">
+                <div className="flex items-center gap-2 mb-2 border-b border-slate-200 dark:border-slate-600 pb-3">
+                  <Map className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+                  <span className="font-semibold text-lg text-slate-700 dark:text-slate-200">أوقات الصلاة والتنبيهات الذكية</span>
+                </div>
+                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                  احصل على تنبيهات دقيقة لأوقات الصلاة، واجعل التطبيق يقترح لك أذكار ما بعد الصلاة والصباح والمساء بناءً على توقيت منطقتك.
+                </p>
+                <div className="flex items-center justify-between mt-2">
+                  <span className="text-sm font-bold text-slate-700 dark:text-slate-300">
+                    {location && prayerTimes ? 'تم تحديد الموقع' : 'الموقع غير محدد'}
+                  </span>
+                  <button
+                    onClick={requestLocation}
+                    className="flex items-center gap-2 px-4 py-2 bg-teal-100 text-teal-700 dark:bg-teal-900/40 dark:text-teal-300 rounded-lg hover:bg-teal-200 dark:hover:bg-teal-800 transition font-bold shadow-sm"
+                  >
+                    <Map className="w-4 h-4" />
+                    {location ? 'تحديث الموقع' : 'تحديد موقعي'}
+                  </button>
+                </div>
               </div>
 
               {/* أزرار الإشعارات والاحتفال */}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { BookOpen, Settings, Medal, RefreshCw, Target, Map, Flame, Mic, MicOff, Crown } from 'lucide-react';
+import { Leaf, Settings, Medal, RefreshCw, Target, Map, Flame, Mic, MicOff, Crown } from 'lucide-react';
 import { TasbeehIcon } from './Icons';
 
 export function Header({ props }) {
@@ -15,8 +15,8 @@ export function Header({ props }) {
     <header className={`fixed top-0 left-0 right-0 z-40 shadow-md transition-colors duration-500 ${currentTabTheme.header} dark:bg-slate-800 text-white`}>
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center space-x-3 space-x-reverse">
-            <BookOpen className="w-6 h-6 md:w-8 md:h-8" />
-            <h1 className="text-xl md:text-2xl font-bold tracking-wide">الأذكار</h1>
+            <Leaf className="w-6 h-6 md:w-8 md:h-8" />
+            <h1 className="text-xl md:text-2xl font-bold tracking-wide">غِراس</h1>
           </div>
           <div className="flex items-center space-x-1.5 space-x-reverse md:space-x-3">
 

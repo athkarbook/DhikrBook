@@ -9,29 +9,24 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: 'prompt',
-      includeAssets: ['icon-192x192.png', 'icon-512x512.png'], // الأيقونات التي أضفتها
+      includeAssets: ['ghiras-logo.svg'], 
       manifest: {
-        name: 'أذكار الصباح والمساء', // الاسم الكامل
-        short_name: 'الأذكار', // الاسم القصير الذي يظهر تحت الأيقونة في الهاتف
-        description: 'تطبيق أذكار الصباح والمساء لفضيلة د. مطلق الجاسر',
-        start_url: '/DhikrBook/', // هذا السطر هو الذي يوقظ زر التثبيت
-        theme_color: '#0d9488', // هذا لون التيل (Teal-600) ليتناسق مع تصميمك
-        background_color: '#ffffff',
-        display: 'standalone', // هذا الأمر يجعله يفتح كبرنامج مستقل بدون شريط المتصفح العلوي
+        name: 'غِراس - بستانك من الذكر', 
+        short_name: 'غِراس', 
+        description: 'تطبيق ذكي للأذكار اليومية يتطور مع تسبيحك ليغرس لك حديقة في الجنة.',
+        start_url: '/DhikrBook/', 
+        theme_color: '#0d9488', 
+        background_color: '#0f172a',
+        display: 'standalone', 
         icons: [
           {
-            src: 'icon-192x192.png',
-            sizes: '192x192',
-            type: 'image/png'
-          },
-          {
-            src: 'icon-512x512.png',
-            sizes: '512x512',
-            type: 'image/png'
+            src: 'ghiras-logo.svg',
+            sizes: 'any',
+            type: 'image/svg+xml'
           }
         ]
       }
     })
   ],
-  base: '/DhikrBook/',
+  base: '/DhikrBook/'
 })

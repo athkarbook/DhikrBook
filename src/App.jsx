@@ -3,6 +3,7 @@ import { adhkarData, prayerAdhkar } from './data/adhkar';
 import { colorMap, defaultThemeColors } from './utils/theme';
 import { LiveBackground } from './components/UI/LiveBackground';
 import { SettingsModal } from './components/Modals/SettingsModal';
+import { SplashScreen } from './components/UI/SplashScreen';
 import { TasbeehModal } from './components/Modals/TasbeehModal';
 import { StatsModal } from './components/Modals/StatsModal';
 import { RoadmapModal } from './components/Modals/RoadmapModal';
@@ -65,14 +66,18 @@ export default function App() {
   const props = appLogic;
   props.fontSizes = fontSizes;
 
+  const [showSplash, setShowSplash] = useState(true);
+
   const [showTaarSection, setShowTaarSection] = useState(false);
   const taarAdhkar = adhkarData.filter(d => d.category === 'الذكر الوارد إذا تعار من الليل (التقلب والانتباه)');
 
   const TabIcon = activeTab === 'morning' ? Flame : activeTab === 'evening' ? Moon : activeTab === 'sleep' ? MoonStar : activeTab === 'wake' ? Flame : Clock;
 
   return (
-    <div dir="rtl" className={`min-h-screen relative font-cairo transition-colors duration-300 ${isDarkMode ? 'dark text-slate-100' : 'text-slate-900'}`}>
-      <LiveBackground colorTheme={currentTabTheme} isDarkMode={isDarkMode} isInteracting={isInteracting} activeTab={activeTab} />
+    <>
+      {showSplash && <SplashScreen onComplete={() => setShowSplash(false)} />}
+      <div dir="rtl" className={`min-h-screen relative font-cairo transition-colors duration-300 ${isDarkMode ? 'dark text-slate-100' : 'text-slate-900'} ${showSplash ? 'hidden' : ''}`}>
+        <LiveBackground colorTheme={currentTabTheme} isDarkMode={isDarkMode} isInteracting={isInteracting} activeTab={activeTab} />
       <style dangerouslySetInnerHTML={globalStyles} />
 
       {needRefresh && (
@@ -286,5 +291,6 @@ export default function App() {
 
       <StoryExportCard streak={streak} totalTasbeehsMade={totalTasbeehsMade} totalAdhkarRead={totalAdhkarRead} />
     </div>
+    </>
   );
 }

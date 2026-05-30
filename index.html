@@ -1,16 +1,34 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ar" dir="rtl">
   <head>
-    <meta name="theme-color" content="#0d9488" />
-    <link rel="apple-touch-icon" href="/icon-192x192.png" />
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/ghiras-logo.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="theme-color" content="#ffffff" id="theme-color-meta" />
+    
+    <!-- SEO Optimization -->
+    <meta name="description" content="غِراس - بستانك من الذكر. تطبيق ذكي للأذكار اليومية يتطور مع تسبيحك ليغرس لك حديقة في الجنة." />
+    <meta name="keywords" content="غراس, أذكار, تسبيح, مسلم, حصن المسلم, مسبحة صوتية, بستان الجنة" />
+    
+    <!-- Open Graph for Social Sharing -->
+    <meta property="og:title" content="غِراس - بستانك من الذكر" />
+    <meta property="og:description" content="اقرأ أذكارك واغرس شجرتك في بستان الجنة، مع مسبحة صوتية ذكية وتتبع لحالتك الروحية." />
+    <meta property="og:image" content="/ghiras-logo.svg" />
+    
+    <!-- PWA iOS Support -->
+    <link rel="apple-touch-icon" href="/ghiras-logo.svg">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="غِراس">
+
+    <title>غِراس</title>
+    
+    <!-- Google Fonts: Cairo -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <title>الأذكار</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   </head>
-  <body>
+  <body class="bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 transition-colors duration-300 antialiased selection:bg-teal-500/30">
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

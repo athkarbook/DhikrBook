@@ -757,12 +757,27 @@ export default function App() {
               
               // تمرير سلس بعد زيادة العداد لتجنب القفز المفاجئ
               setTimeout(() => {
-                  const rect = targetCard.getBoundingClientRect();
-                  const isFullyVisible = (rect.top >= 100) && (rect.bottom <= window.innerHeight - 50);
-                  if (!isFullyVisible) {
-                    targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  // بعد 200 مللي ثانية، نتأكد هل اكتمل هذا الذكر أم لا يزال يحتاج تكرار؟
+                  const isCompletedNow = targetCard.classList.contains('completed');
+                  
+                  let elementToScroll = targetCard;
+                  
+                  if (isCompletedNow) {
+                      // إذا اكتمل، نبحث عن الذكر الذي يليه (أول ذكر غير مكتمل في الصفحة)
+                      const nextUncompleted = document.querySelector('.dhikr-card:not(.completed)');
+                      if (nextUncompleted) {
+                          elementToScroll = nextUncompleted;
+                      }
                   }
-              }, 150);
+
+                  const rect = elementToScroll.getBoundingClientRect();
+                  const isFullyVisible = (rect.top >= 100) && (rect.bottom <= window.innerHeight - 50);
+                  
+                  // إذا لم يكن الذكر المقصود ظاهراً بالكامل، نمرر الشاشة إليه
+                  if (!isFullyVisible) {
+                    elementToScroll.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  }
+              }, 200);
             }
         }
       };

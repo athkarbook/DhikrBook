@@ -1733,6 +1733,20 @@ export default function App() {
   // جلب إعدادات الألوان للتبويب النشط
   const currentTabTheme = colorMap[themeColors[activeTab]] || colorMap.teal;
 
+  // تحديث لون شريط حالة الجهاز (Status Bar theme-color) ديناميكياً ليطابق التبويب النشط أو الوضع الليلي
+  useEffect(() => {
+    const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+    const hexColor = isDarkMode ? '#1e293b' : (currentTabTheme?.hex || '#0d9488');
+    if (themeColorMeta) {
+      themeColorMeta.setAttribute('content', hexColor);
+    } else {
+      const meta = document.createElement('meta');
+      meta.name = 'theme-color';
+      meta.content = hexColor;
+      document.head.appendChild(meta);
+    }
+  }, [currentTabTheme, isDarkMode]);
+
   const getTabClass = (tabId) => {
     const isActive = activeTab === tabId;
     const tabTheme = colorMap[themeColors[tabId]] || colorMap.teal;

@@ -695,6 +695,38 @@ export default function App() {
     return null;
   });
 
+  const testHiddenNotification = async () => {
+    if (Notification.permission !== "granted") {
+      const perm = await Notification.requestPermission();
+      if (perm !== "granted") {
+        alert("التنبيهات غير مفعلة في المتصفح!");
+        return;
+      }
+    }
+    
+    try {
+      const registration = await navigator.serviceWorker.ready;
+      if ('showTrigger' in Notification.prototype && 'TimestampTrigger' in window) {
+        const triggerTime = Date.now() + 10 * 1000;
+        await registration.showNotification("تنبيه تجريبي سري 🤫", {
+          body: "التطبيق يعمل بالخلفية بكفاءة! 🚀",
+          icon: "/icon-192x192.png",
+          vibrate: [200, 100, 200],
+          showTrigger: new window.TimestampTrigger(triggerTime)
+        });
+        alert("✅ تريك مخفية: تم جدولة تنبيه سيظهر بعد 10 ثوانٍ! أغلق التطبيق وتوجه للشاشة الرئيسية لتتأكد أنه يعمل بالخلفية.");
+      } else {
+        registration.showNotification("تنبيه تجريبي مباشر 🤫", {
+          body: "متصفحك لا يدعم الجدولة في الخلفية وهو مغلق تماماً، لكن التنبيهات الفورية تعمل!",
+          icon: "/icon-192x192.png",
+        });
+        alert("✅ تريك مخفية: التنبيهات تعمل! (لكن متصفحك يفتقد لخاصية PWA Offline Background Scheduling).");
+      }
+    } catch (e) {
+      alert("حدث خطأ في خدمة التنبيهات: " + e.message);
+    }
+  };
+
   const [isLocating, setIsLocating] = useState(false);
 
   const calculatePrayerTimesLocally = (lat, lng) => {
@@ -2681,9 +2713,13 @@ export default function App() {
               {/* إعدادات الموقع وأوقات الصلاة */}
               <div className="flex flex-col gap-3 p-4 rounded-xl bg-slate-50 dark:bg-slate-700/50 border border-slate-100 dark:border-slate-700">
                 <div className="flex items-center justify-between mb-2 border-b border-slate-200 dark:border-slate-600 pb-3">
-                  <div className="flex items-center gap-2">
+                  <div 
+                    className="flex items-center gap-2 cursor-pointer" 
+                    onDoubleClick={testHiddenNotification}
+                    title="انقر نقراً مزدوجاً لاختبار التنبيهات المخفية"
+                  >
                     <Clock className="w-5 h-5 text-teal-600 dark:text-teal-400" />
-                    <span className="font-semibold text-lg text-slate-700 dark:text-slate-200">الأوقات الذكية</span>
+                    <span className="font-semibold text-lg text-slate-700 dark:text-slate-200 select-none">الأوقات الذكية</span>
                   </div>
                   {!prayerTimes ? (
                     <button

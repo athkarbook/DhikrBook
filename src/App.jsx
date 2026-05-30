@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useRegisterSW } from 'virtual:pwa-register/react';
-import { Sun, Moon, Settings, Info, BookOpen, CheckCircle, RotateCcw, Clock, Star, X, Plus, Minus, Type, Flame, Volume2, VolumeX, Vibrate, VibrateOff, Target, Sunrise, Sunset, MoonStar, ChevronDown, ChevronUp, Palette, Fingerprint, BarChart2, Edit3, Trash2, Award, Trophy, Bell, BellRing, Shield, Crown, RefreshCw, Share2, Map, Mic, MicOff, Leaf } from 'lucide-react';
+import { Sun, Moon, Settings, Info, BookOpen, CheckCircle, RotateCcw, Clock, Star, X, Plus, Minus, Type, Flame, Volume2, VolumeX, Vibrate, VibrateOff, Target, Sunrise, Sunset, MoonStar, ChevronDown, ChevronUp, Palette, Fingerprint, BarChart2, Edit3, Trash2, Award, Trophy, Bell, BellRing, Shield, Crown, RefreshCw, Share2, Map, Mic, MicOff, Leaf, Heart } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
 
@@ -1330,6 +1330,41 @@ export default function App() {
   // -- حالة إظهار قسم التعار --
   const [showTaarSection, setShowTaarSection] = useState(false);
 
+  // -- التتبع النفسي (Mood Tracker) --
+  const [moodLog, setMoodLog] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('moodLog')) || {}; } catch(e) { return {}; }
+  });
+  
+  const [pendingMoods, setPendingMoods] = useState({});
+
+  useEffect(() => {
+    localStorage.setItem('moodLog', JSON.stringify(moodLog));
+  }, [moodLog]);
+
+  const handleMoodSelect = (mood, type) => {
+    const d = new Date();
+    const todayStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    
+    if (type === 'before') {
+      setPendingMoods(prev => ({ ...prev, [activeTab]: mood }));
+    } else {
+      setMoodLog(prev => {
+        const todayData = prev[todayStr] || {};
+        const tabData = todayData[activeTab] || {};
+        const beforeMood = pendingMoods[activeTab] || 'unknown';
+        return {
+          ...prev,
+          [todayStr]: {
+            ...todayData,
+            [activeTab]: { ...tabData, before: beforeMood, after: mood }
+          }
+        };
+      });
+      setShowConfetti(true);
+      setTimeout(() => setShowConfetti(false), 3000);
+    }
+  };
+
   // -- المسبحة الصوتية --
   const [isListening, setIsListening] = useState(false);
   const [speechSupported, setSpeechSupported] = useState(false);
@@ -2213,6 +2248,17 @@ export default function App() {
     }
   };
 
+  // --- منطق التتبع النفسي (Mood Tracker) ---
+  const isTabCompleted = currentTabAdhkar.length > 0 && currentTabAdhkar.every(dhikr => (progress[`${activeTab}-${dhikr.id}`] || 0) >= dhikr.target);
+  
+  const moodDateObj = new Date();
+  const todayStr = `${moodDateObj.getFullYear()}-${String(moodDateObj.getMonth() + 1).padStart(2, '0')}-${String(moodDateObj.getDate()).padStart(2, '0')}`;
+  const todayMoodData = moodLog[todayStr]?.[activeTab] || {};
+  const hasAnsweredBefore = !!pendingMoods[activeTab] || !!todayMoodData.before;
+  const hasAnsweredAfter = !!todayMoodData.after;
+  const shouldShowBeforeMood = ['morning', 'evening', 'sleep', 'wake', 'prayer'].includes(activeTab) && !hasAnsweredBefore;
+  const shouldShowAfterMood = ['morning', 'evening', 'sleep', 'wake', 'prayer'].includes(activeTab) && isTabCompleted && hasAnsweredBefore && !hasAnsweredAfter;
+
   return (
     <div dir="rtl" className={`min-h-screen relative font-cairo transition-colors duration-300 ${isDarkMode ? 'dark text-slate-100' : 'text-slate-900'}`}>
       <LiveBackground colorTheme={currentTabTheme} isDarkMode={isDarkMode} isInteracting={isInteracting} activeTab={activeTab} />
@@ -2662,6 +2708,68 @@ export default function App() {
                    <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-[#8b5cf6]"></div>حر</div>
                 </div>
               </div>
+              {/* التتبع النفسي للذكر */}
+              <div className="w-full mt-8 border-t border-slate-200 dark:border-slate-700 pt-6">
+                <h4 className="text-xl font-bold mb-4 text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                  <Heart className="w-6 h-6 text-emerald-500" />
+                  أثر الذكر على قلبك
+                </h4>
+                <div className="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-2xl p-4 md:p-6 border border-emerald-200 dark:border-emerald-800/50 shadow-sm relative overflow-hidden">
+                   <Heart className="absolute -left-4 -top-4 w-24 h-24 text-emerald-500 opacity-5" />
+                   <p className="text-center font-bold text-emerald-700 dark:text-emerald-400 text-sm md:text-base mb-6 leading-relaxed">
+                     «أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ»
+                   </p>
+                   {(() => {
+                      let totalLogged = 0;
+                      let improvedCount = 0;
+                      const negativeMoods = ['sad', 'anxious', 'tired'];
+                      const positiveMoods = ['calm', 'peaceful'];
+                      
+                      Object.values(moodLog).forEach(day => {
+                         Object.values(day).forEach(session => {
+                            if (session.before && session.after) {
+                               totalLogged++;
+                               if (negativeMoods.includes(session.before) && positiveMoods.includes(session.after)) {
+                                  improvedCount++;
+                               } else if (session.before === 'calm' && session.after === 'peaceful') {
+                                  improvedCount++;
+                               } else if (positiveMoods.includes(session.before) && positiveMoods.includes(session.after)) {
+                                  improvedCount++; // Maintained good mood
+                               }
+                            }
+                         });
+                      });
+
+                      if (totalLogged === 0) {
+                        return <p className="text-center text-slate-500 dark:text-slate-400 text-xs font-bold">سجل شعورك قبل وبعد الأذكار لترى أثرها الطاهر على قلبك هنا.</p>;
+                      }
+
+                      const improvementRate = Math.round((improvedCount / totalLogged) * 100);
+
+                      return (
+                        <div className="text-center relative z-10">
+                          <p className="text-sm md:text-base text-slate-700 dark:text-slate-300 mb-3 font-bold">
+                            بناءً على تتبع مشاعرك، تحسنت واطمأنت حالتك النفسية بعد الذكر بنسبة:
+                          </p>
+                          <div className="flex justify-center items-end gap-2 text-emerald-600 dark:text-emerald-400 mb-2">
+                             <span className="text-5xl md:text-6xl font-black drop-shadow-sm">{improvementRate}%</span>
+                          </div>
+                          <div className="w-full bg-slate-200 dark:bg-slate-700 h-3 rounded-full overflow-hidden mt-4 max-w-[250px] mx-auto shadow-inner">
+                            <div className="bg-gradient-to-r from-emerald-400 to-teal-500 h-full transition-all duration-1000 relative" style={{ width: `${improvementRate}%` }}>
+                               <div className="absolute top-0 right-0 bottom-0 w-4 bg-white/30 animate-pulse"></div>
+                            </div>
+                          </div>
+                          {improvementRate > 70 && (
+                            <p className="mt-4 text-xs font-bold text-teal-600 dark:text-teal-400">
+                              ما شاء الله! هذا مصداق وعد الله للمستغفرين والذاكرين.
+                            </p>
+                          )}
+                        </div>
+                      );
+                   })()}
+                </div>
+              </div>
+
               {/* قسم الأوسمة */}
               <div className="w-full mt-8 border-t border-slate-200 dark:border-slate-700 pt-6">
                 <h4 className="text-xl font-bold mb-4 text-slate-800 dark:text-slate-100 flex items-center gap-2">
@@ -3352,6 +3460,64 @@ export default function App() {
               </button>
             </div>
 
+            {/* --- التتبع النفسي (Mood Tracker) --- */}
+            {shouldShowBeforeMood && (
+              <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl rounded-3xl p-6 md:p-8 mb-8 border border-slate-200 dark:border-slate-700 shadow-xl animate-in fade-in slide-in-from-top-4 duration-500">
+                <h3 className="text-xl md:text-2xl font-bold mb-2 flex items-center justify-center gap-2 text-indigo-600 dark:text-indigo-400">
+                  <Heart className="w-6 h-6 animate-[pulse_2s_ease-in-out_infinite]" />
+                  كيف حال قلبك الآن؟
+                </h3>
+                <p className="text-center text-slate-500 dark:text-slate-400 text-sm md:text-base mb-6">قبل أن تبدأ بذكر الله، سجل شعورك الحالي.</p>
+                
+                <div className="flex justify-center gap-3 md:gap-8 flex-wrap">
+                  {[
+                    { id: 'sad', icon: '😔', label: 'حزين' },
+                    { id: 'anxious', icon: '😟', label: 'قلق' },
+                    { id: 'tired', icon: '😩', label: 'متعب' },
+                    { id: 'calm', icon: '😌', label: 'هادئ' },
+                    { id: 'peaceful', icon: '🤍', label: 'مطمئن' }
+                  ].map(mood => (
+                    <button
+                      key={mood.id}
+                      onClick={() => handleMoodSelect(mood.id, 'before')}
+                      className="flex flex-col items-center gap-2 p-3 md:p-4 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-2xl transition-all hover:scale-110 active:scale-95"
+                    >
+                      <span className="text-4xl md:text-5xl">{mood.icon}</span>
+                      <span className="text-xs md:text-sm font-bold text-slate-600 dark:text-slate-300">{mood.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {shouldShowAfterMood && (
+              <div className="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/30 dark:to-teal-900/30 backdrop-blur-xl rounded-3xl p-6 md:p-8 mb-8 border border-emerald-200 dark:border-emerald-800/50 shadow-2xl animate-in zoom-in duration-500">
+                <h3 className="text-xl md:text-2xl font-bold mb-2 flex items-center justify-center gap-2 text-emerald-600 dark:text-emerald-400">
+                  <Heart className="w-6 h-6 animate-[pulse_2s_ease-in-out_infinite]" />
+                  كيف حال قلبك الآن بعد الذكر؟
+                </h3>
+                <p className="text-center text-emerald-600/80 dark:text-emerald-400/80 text-sm md:text-lg mb-6 font-bold">«أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ»</p>
+                
+                <div className="flex justify-center gap-3 md:gap-8 flex-wrap">
+                  {[
+                    { id: 'sad', icon: '😔', label: 'حزين' },
+                    { id: 'anxious', icon: '😟', label: 'قلق' },
+                    { id: 'tired', icon: '😩', label: 'متعب' },
+                    { id: 'calm', icon: '😌', label: 'هادئ' },
+                    { id: 'peaceful', icon: '🤍', label: 'مطمئن' }
+                  ].map(mood => (
+                    <button
+                      key={mood.id}
+                      onClick={() => handleMoodSelect(mood.id, 'after')}
+                      className="flex flex-col items-center gap-2 p-3 md:p-4 hover:bg-white dark:hover:bg-slate-800 rounded-2xl transition-all hover:scale-110 active:scale-95 shadow-sm hover:shadow-md"
+                    >
+                      <span className="text-4xl md:text-5xl">{mood.icon}</span>
+                      <span className="text-xs md:text-sm font-bold text-slate-600 dark:text-slate-300">{mood.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* --- قائمة الأذكار الرئيسية (تتغير حسب التبويب) --- */}
             <div className="space-y-6 md:space-y-8">

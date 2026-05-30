@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useRegisterSW } from 'virtual:pwa-register/react';
-import { Sun, Moon, Settings, Info, BookOpen, CheckCircle, RotateCcw, Clock, Star, X, Plus, Minus, Type, Flame, Volume2, VolumeX, Vibrate, VibrateOff, Target, Sunrise, Sunset, MoonStar, ChevronDown, ChevronUp, Palette, Fingerprint, BarChart2, Edit3, Trash2, Award, Trophy, Bell, BellRing, Shield, Crown, RefreshCw, Share2, Map, Mic, MicOff } from 'lucide-react';
+import { Sun, Moon, Settings, Info, BookOpen, CheckCircle, RotateCcw, Clock, Star, X, Plus, Minus, Type, Flame, Volume2, VolumeX, Vibrate, VibrateOff, Target, Sunrise, Sunset, MoonStar, ChevronDown, ChevronUp, Palette, Fingerprint, BarChart2, Edit3, Trash2, Award, Trophy, Bell, BellRing, Shield, Crown, RefreshCw, Share2, Map, Mic, MicOff, Maximize, Minimize2 } from 'lucide-react';
 import html2canvas from 'html2canvas';
 
 // مكون أيقونة المسبحة الإسلامية المخصصة والجميلة
@@ -638,6 +638,7 @@ export default function App() {
     return saved !== null ? saved === 'true' : true; // الافتراضي ليلي
   });
   const [activeTab, setActiveTab] = useState('morning');
+  const [isZenMode, setIsZenMode] = useState(false);
   const [chartFilter, setChartFilter] = useState('7');
   const [showTakhreej, setShowTakhreej] = useState(true);
   const [showFadl, setShowFadl] = useState(true);
@@ -1579,6 +1580,35 @@ export default function App() {
 
   const toggleDarkMode = () => setIsDarkMode(!isDarkMode);
 
+  const generateWhatsAppReport = () => {
+    let report = `*حصاد الأذكار - ${new Date().toLocaleDateString('ar-SA')}* 🌟\n\n`;
+    
+    if (todayTasbeehs > 0) report += `📿 التسبيح الحر: ${todayTasbeehs} تسبيحة\n`;
+    report += `🔥 المواظبة: ${streak} أيام\n`;
+    report += `👑 المستوى: ${currentLevel}\n\n`;
+    
+    const todayStr = new Date().toISOString().split('T')[0];
+    const todayStats = activityHistory[todayStr] || {};
+    
+    let hasAdhkar = false;
+    Object.entries(todayStats).forEach(([k, v]) => {
+      if (k === 'tasbeeh') return;
+      if (v > 0) {
+        hasAdhkar = true;
+        report += `📖 أذكار ${getTabLabel(k)}: ${v} ذكراً\n`;
+      }
+    });
+    
+    if (!hasAdhkar && todayTasbeehs === 0) {
+      report += "لم أبدأ بأذكاري اليوم بعد، أسأل الله التوفيق! 🤲\n";
+    }
+    
+    report += `\nاللهم تقبل منا ومنكم 🤲\n- من تطبيق حصن المسلم الذكي`;
+    
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(report)}`;
+    window.open(whatsappUrl, '_blank');
+  };
+
   // تعريف قائمة الأوسمة والإنجازات الشاملة (Gamification)
   const badges = [
     // أوسمة المواظبة (Streaks)
@@ -1930,7 +1960,19 @@ export default function App() {
 
 
 
+      {/* زر الخروج من وضع التركيز (Zen Mode) */}
+      {isZenMode && (
+        <button 
+          onClick={() => setIsZenMode(false)}
+          className="fixed top-4 left-4 z-50 p-3 bg-slate-800/80 text-white rounded-full shadow-lg backdrop-blur-md hover:bg-slate-700 transition animate-in zoom-in-75 duration-500"
+          title="الخروج من وضع التركيز"
+        >
+          <Minimize2 className="w-5 h-5 md:w-6 md:h-6" />
+        </button>
+      )}
+
       {/* --- شريط التنقل العلوي --- */}
+      {!isZenMode && (
       <header className={`sticky top-0 z-40 shadow-md transition-colors duration-500 ${currentTabTheme.header} dark:bg-slate-800 text-white`}>
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center space-x-3 space-x-reverse">
@@ -1938,6 +1980,15 @@ export default function App() {
             <h1 className="text-xl md:text-2xl font-bold tracking-wide">الأذكار</h1>
           </div>
           <div className="flex items-center space-x-1.5 space-x-reverse md:space-x-3">
+
+            {/* زر وضع التركيز (Zen Mode) */}
+            <button
+              onClick={() => setIsZenMode(true)}
+              className="p-1.5 md:p-2 rounded-full bg-black/20 hover:bg-black/30 dark:bg-slate-700/50 dark:hover:bg-slate-700 transition text-teal-100 shadow-sm"
+              title="وضع التركيز (إخفاء المشتتات)"
+            >
+              <Maximize className="w-4 h-4 md:w-5 md:h-5" />
+            </button>
 
             {/* مؤشر الهدف اليومي للمسبحة */}
             <div
@@ -2003,6 +2054,15 @@ export default function App() {
               <span className="hidden md:inline text-sm">المسبحة</span>
             </button>
 
+            {/* زر المشاركة عبر واتساب */}
+            <button
+              onClick={generateWhatsAppReport}
+              className="p-1.5 md:p-2 rounded-full bg-green-500/50 hover:bg-green-500/70 transition text-white shadow-sm"
+              title="مشاركة الحصاد عبر واتساب"
+            >
+              <Share2 className="w-4 h-4 md:w-5 md:h-5" />
+            </button>
+
             <button
               onClick={() => setShowSettingsModal(true)}
               className="p-2 rounded-full bg-black/20 hover:bg-black/30 dark:bg-slate-700/50 dark:hover:bg-slate-700 transition"
@@ -2020,6 +2080,7 @@ export default function App() {
           <button onClick={() => setActiveTab('evening')} className={getTabClass('evening')}>المساء</button>
           <button onClick={() => setActiveTab('sleep')} className={getTabClass('sleep')}>النوم</button>
           <button onClick={() => setActiveTab('prayer')} className={getTabClass('prayer')}>الصلاة</button>
+          <button onClick={() => setActiveTab('free')} className={getTabClass('free')}>حرة</button>
         </div>
 
         {/* --- شريط التقدم --- */}
@@ -2036,6 +2097,7 @@ export default function App() {
           </div>
         </div>
       </header>
+      )}
 
       {/* --- نافذة المسبحة الحرة (Modal) --- */}
       {showTasbeehModal && (

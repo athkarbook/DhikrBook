@@ -90,90 +90,165 @@ const CelestialElements = ({ activeTab }) => {
   return null;
 };
 
-// بستان الجنة البصري (Jannah Garden Visualizer)
 const JannahGarden = ({ totalTasbeehs }) => {
-  const stage = 
-    totalTasbeehs >= 5000 ? 5 :
-    totalTasbeehs >= 1000 ? 4 :
-    totalTasbeehs >= 500 ? 3 :
-    totalTasbeehs >= 200 ? 2 :
-    totalTasbeehs >= 50 ? 1 : 0;
+  const stages = [
+    { threshold: 0, name: "بذرة الإيمان", desc: "بذرة صغيرة في أرض خصبة.", next: 50 },
+    { threshold: 50, name: "الجذع الناشئ", desc: "بداية النمو والثبات.", next: 200 },
+    { threshold: 200, name: "تبرعم الفروع", desc: "تفرع الأغصان استعداداً للإيراق.", next: 500 },
+    { threshold: 500, name: "الإيراق الأخضر", desc: "أوراق خضراء يانعة تزين غراسك.", next: 1000 },
+    { threshold: 1000, name: "الظل الوريف", desc: "شجرة كثيفة الأوراق تسر الناظرين.", next: 5000 },
+    { threshold: 5000, name: "ثمار النور", desc: "أثمرت غراسك ثماراً من نور متلألئ.", next: null },
+  ];
+
+  let currentStageIndex = stages.length - 1;
+  for (let i = 0; i < stages.length; i++) {
+    if (totalTasbeehs < stages[i].next || stages[i].next === null) {
+      currentStageIndex = i;
+      break;
+    }
+  }
+
+  const currentStage = stages[currentStageIndex];
+  const nextStage = stages[currentStageIndex + 1];
+  const progressToNext = nextStage ? Math.min(100, Math.floor(((totalTasbeehs - currentStage.threshold) / (nextStage.threshold - currentStage.threshold)) * 100)) : 100;
 
   return (
-    <div className="w-full flex flex-col items-center justify-center p-6 bg-gradient-to-b from-sky-50 to-green-50 dark:from-slate-800 dark:to-emerald-900/20 rounded-3xl border-2 border-green-200 dark:border-emerald-800/50 relative overflow-hidden mt-8 transition-colors duration-1000 shadow-inner">
-      <h4 className="text-xl font-bold mb-2 text-green-800 dark:text-green-300 flex items-center gap-2 z-10">
-        <Leaf className="w-6 h-6 text-green-600 dark:text-green-400" />
-        بستان الجنة
-      </h4>
-      <p className="text-xs text-green-700/80 dark:text-green-400/80 mb-6 z-10 text-center max-w-sm">
-        "إن سبحان الله والحمد لله ولا إله إلا الله والله أكبر يغرسن لك بها شجراً في الجنة". راقب غراسك ينمو!
-      </p>
+    <div className="w-full flex flex-col items-center justify-center min-h-[70vh] p-8 md:p-12 bg-gradient-to-b from-teal-900 via-emerald-900 to-slate-900 rounded-[3rem] border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.3)] relative overflow-hidden transition-colors duration-1000 mb-8">
+      {/* نجوم/جزيئات ضوئية في الخلفية */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+         {[...Array(20)].map((_, i) => (
+            <div 
+              key={i}
+              className="absolute bg-white/40 rounded-full animate-pulse"
+              style={{
+                top: `${Math.random() * 100}%`,
+                left: `${Math.random() * 100}%`,
+                width: `${Math.random() * 4 + 1}px`,
+                height: `${Math.random() * 4 + 1}px`,
+                animationDelay: `${Math.random() * 5}s`,
+                animationDuration: `${Math.random() * 3 + 2}s`
+              }}
+            />
+         ))}
+         {/* شعاع نوراني علوي */}
+         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[150%] h-[50%] bg-gradient-to-b from-emerald-400/20 to-transparent blur-[80px]"></div>
+      </div>
+
+      <div className="text-center z-10 mb-8 md:mb-12">
+        <h4 className="text-3xl md:text-5xl font-black mb-4 text-emerald-300 drop-shadow-md flex items-center justify-center gap-3">
+          <Leaf className="w-8 h-8 md:w-12 md:h-12 text-emerald-400 animate-pulse" />
+          بستان الجنة
+        </h4>
+        <p className="text-sm md:text-lg text-emerald-100/90 max-w-xl mx-auto leading-relaxed font-medium">
+          "إن سبحان الله والحمد لله ولا إله إلا الله والله أكبر يغرسن لك بها شجراً في الجنة"
+        </p>
+      </div>
 
       {/* الشجرة (SVG) */}
-      <div className="relative w-48 h-48 md:w-64 md:h-64 flex items-end justify-center z-10">
+      <div className="relative w-64 h-64 md:w-96 md:h-96 flex items-end justify-center z-10">
         {/* الأرض */}
-        <div className="absolute bottom-0 w-32 h-6 bg-green-600/30 dark:bg-green-400/20 rounded-[100%] blur-[6px]"></div>
+        <div className="absolute bottom-[-10px] w-48 md:w-64 h-12 md:h-16 bg-emerald-500/20 rounded-[100%] blur-xl"></div>
+        <div className="absolute bottom-0 w-32 md:w-48 h-6 md:h-8 bg-emerald-400/30 rounded-[100%] blur-md"></div>
         
-        <svg viewBox="0 0 200 200" className="w-full h-full overflow-visible drop-shadow-2xl">
+        <svg viewBox="0 0 200 200" className="w-full h-full overflow-visible drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)]">
           {/* الجذع الأساسي (المرحلة 1 وما فوق) */}
           <path 
             d="M95 200 C95 150, 90 100, 100 80 C110 100, 105 150, 105 200 Z" 
-            fill="#78350f" 
-            className={`transition-all duration-1000 origin-bottom ${stage >= 1 ? 'scale-y-100 opacity-100' : 'scale-y-0 opacity-0'}`}
+            fill="#5D4037" 
+            className={`transition-all duration-[2000ms] ease-out origin-bottom ${currentStageIndex >= 1 ? 'scale-y-100 opacity-100' : 'scale-y-0 opacity-0'}`}
           />
           
           {/* الفروع (المرحلة 2) */}
           <path 
             d="M100 120 C80 100, 60 90, 40 70 M100 100 C120 80, 140 70, 160 50 M100 80 C90 60, 80 40, 90 20" 
-            stroke="#78350f" 
+            stroke="#5D4037" 
             strokeWidth="8" 
             strokeLinecap="round" 
             fill="none"
-            className={`transition-all duration-1000 origin-bottom delay-300 ${stage >= 2 ? 'scale-100 opacity-100' : 'scale-0 opacity-0'}`}
+            className={`transition-all duration-[2000ms] ease-out origin-bottom delay-300 ${currentStageIndex >= 2 ? 'scale-100 opacity-100' : 'scale-0 opacity-0'}`}
           />
 
           {/* الأوراق الأساسية (المرحلة 3) */}
-          <g className={`transition-all duration-1000 origin-center delay-500 ${stage >= 3 ? 'scale-100 opacity-100' : 'scale-0 opacity-0'}`}>
-            <circle cx="40" cy="70" r="25" fill="#16a34a" opacity="0.9" />
-            <circle cx="160" cy="50" r="30" fill="#16a34a" opacity="0.9" />
-            <circle cx="90" cy="20" r="35" fill="#15803d" opacity="0.95" />
-            <circle cx="100" cy="80" r="40" fill="#22c55e" opacity="0.8" />
+          <g className={`transition-all duration-[2000ms] ease-out origin-center delay-700 ${currentStageIndex >= 3 ? 'scale-100 opacity-100' : 'scale-0 opacity-0'}`}>
+            <circle cx="40" cy="70" r="28" fill="#2E7D32" opacity="0.95" />
+            <circle cx="160" cy="50" r="33" fill="#2E7D32" opacity="0.95" />
+            <circle cx="90" cy="20" r="40" fill="#1B5E20" opacity="0.98" />
+            <circle cx="100" cy="80" r="45" fill="#388E3C" opacity="0.9" />
           </g>
 
           {/* الكثافة والأوراق الإضافية (المرحلة 4) */}
-          <g className={`transition-all duration-1000 origin-center delay-700 ${stage >= 4 ? 'scale-100 opacity-100' : 'scale-0 opacity-0'}`}>
-            <circle cx="70" cy="40" r="35" fill="#10b981" opacity="0.85" />
-            <circle cx="130" cy="30" r="40" fill="#059669" opacity="0.9" />
-            <circle cx="100" cy="50" r="50" fill="#16a34a" opacity="0.85" />
+          <g className={`transition-all duration-[2000ms] ease-out origin-center delay-1000 ${currentStageIndex >= 4 ? 'scale-100 opacity-100' : 'scale-0 opacity-0'}`}>
+            <circle cx="70" cy="40" r="40" fill="#4CAF50" opacity="0.9" />
+            <circle cx="130" cy="30" r="45" fill="#00C853" opacity="0.85" />
+            <circle cx="100" cy="50" r="55" fill="#43A047" opacity="0.9" />
           </g>
 
           {/* الثمار المضيئة (المرحلة 5) */}
-          <g className={`transition-all duration-1000 origin-top delay-1000 ${stage >= 5 ? 'scale-100 opacity-100' : 'scale-0 opacity-0'}`}>
-            <circle cx="60" cy="60" r="6" fill="#fbbf24" className="animate-[pulse_2s_ease-in-out_infinite]" />
-            <circle cx="140" cy="40" r="7" fill="#fbbf24" className="animate-[pulse_3s_ease-in-out_infinite]" />
-            <circle cx="90" cy="30" r="8" fill="#fbbf24" className="animate-[pulse_2.5s_ease-in-out_infinite]" />
-            <circle cx="110" cy="80" r="6" fill="#fbbf24" className="animate-[pulse_4s_ease-in-out_infinite]" />
-            <circle cx="160" cy="60" r="5" fill="#fbbf24" className="animate-[pulse_3.5s_ease-in-out_infinite]" />
+          <g className={`transition-all duration-[2000ms] ease-out origin-top delay-[1500ms] ${currentStageIndex >= 5 ? 'scale-100 opacity-100' : 'scale-0 opacity-0'}`}>
+            <circle cx="60" cy="60" r="8" fill="#FDD835" className="animate-[pulse_2s_ease-in-out_infinite]" />
+            <circle cx="140" cy="40" r="9" fill="#FFF176" className="animate-[pulse_3s_ease-in-out_infinite]" />
+            <circle cx="90" cy="30" r="10" fill="#FDD835" className="animate-[pulse_2.5s_ease-in-out_infinite] shadow-[0_0_15px_#FDD835]" />
+            <circle cx="110" cy="80" r="8" fill="#FFEE58" className="animate-[pulse_4s_ease-in-out_infinite]" />
+            <circle cx="160" cy="60" r="7" fill="#FDD835" className="animate-[pulse_3.5s_ease-in-out_infinite]" />
+            <circle cx="45" cy="40" r="6" fill="#FFEE58" className="animate-[pulse_2.2s_ease-in-out_infinite]" />
+            <circle cx="120" cy="15" r="7" fill="#FDD835" className="animate-[pulse_3.2s_ease-in-out_infinite]" />
           </g>
 
           {/* البذرة (المرحلة 0 فقط) */}
           <ellipse 
-            cx="100" cy="190" rx="8" ry="5" 
-            fill="#a16207" 
-            className={`transition-all duration-500 ${stage === 0 ? 'opacity-100 scale-100' : 'opacity-0 scale-0'}`} 
+            cx="100" cy="190" rx="10" ry="6" 
+            fill="#FFCA28" 
+            className={`transition-all duration-[1000ms] ease-out ${currentStageIndex === 0 ? 'opacity-100 scale-100 animate-pulse' : 'opacity-0 scale-0'}`} 
           />
         </svg>
       </div>
       
-      {/* عداد البستان */}
-      <div className="mt-6 px-6 py-2 bg-white/60 dark:bg-slate-900/60 rounded-full text-sm font-bold text-green-800 dark:text-green-200 z-10 backdrop-blur-md border border-green-200 dark:border-green-800/50 shadow-sm">
-        غراسك الحالي: {totalTasbeehs.toLocaleString('ar-EG')} تسبيحة
-      </div>
-      
       {/* تأثير ضوئي خلفي للشجرة */}
-      {stage >= 4 && (
-         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-green-400/20 dark:bg-green-500/10 filter blur-[50px] rounded-full pointer-events-none z-0 animate-pulse"></div>
+      {currentStageIndex >= 4 && (
+         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] h-[150%] md:w-[120%] md:h-[120%] bg-emerald-400/10 filter blur-[80px] rounded-full pointer-events-none z-0 animate-pulse duration-1000"></div>
       )}
+
+      {/* لوحة التحكم والإحصاءات للبستان */}
+      <div className="mt-12 w-full max-w-md z-10">
+        <div className="bg-black/20 backdrop-blur-md rounded-3xl p-6 border border-white/10 shadow-xl">
+          <div className="flex justify-between items-end mb-4">
+            <div>
+              <h5 className="text-emerald-300 font-bold text-lg mb-1">{currentStage.name}</h5>
+              <p className="text-emerald-100/70 text-xs">{currentStage.desc}</p>
+            </div>
+            <div className="text-left">
+              <span className="text-3xl font-black text-white">{totalTasbeehs.toLocaleString('ar-EG')}</span>
+              <span className="block text-emerald-300/80 text-[10px]">إجمالي غراسك</span>
+            </div>
+          </div>
+          
+          {nextStage && (
+            <div className="mt-6">
+              <div className="flex justify-between text-[10px] text-emerald-200/80 mb-2 font-bold">
+                <span>المرحلة القادمة: {nextStage.name}</span>
+                <span>{nextStage.threshold - totalTasbeehs} متبقي</span>
+              </div>
+              <div className="w-full bg-black/40 h-3 rounded-full overflow-hidden border border-white/5">
+                <div 
+                  className="h-full bg-gradient-to-r from-emerald-500 to-green-300 transition-all duration-1000 ease-out relative"
+                  style={{ width: `${progressToNext}%` }}
+                >
+                  <div className="absolute top-0 right-0 bottom-0 w-4 bg-white/30 animate-pulse"></div>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          {!nextStage && (
+            <div className="mt-4 p-3 bg-yellow-500/20 border border-yellow-500/30 rounded-xl text-center">
+              <p className="text-yellow-200 font-bold text-sm flex items-center justify-center gap-2">
+                <Crown className="w-5 h-5 text-yellow-400" />
+                ما شاء الله! غراسك في أبهى حلة.
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
@@ -790,7 +865,7 @@ const colorMap = {
   purple: { id: 'purple', hex: '#9333ea', name: 'بنفسجي', header: 'bg-purple-600', tabActive: 'bg-purple-700', tabBorder: 'border-purple-300', progress: 'bg-purple-400 shadow-md shadow-purple-400/50', icon: 'text-purple-600 dark:text-purple-400', taarBtn: 'from-purple-600 to-purple-800', cardHeader: 'bg-purple-50 text-purple-800 dark:bg-purple-900/20 dark:text-purple-300', counterDone: 'bg-purple-50 border-2 border-purple-400 text-purple-700 dark:bg-purple-900/40 dark:border-purple-600 dark:text-purple-300', counterHigh: 'bg-purple-400 hover:bg-purple-500', counterMed: 'bg-purple-500 hover:bg-purple-600', counterLow: 'bg-purple-600 hover:bg-purple-700', blob1: 'bg-purple-300/40', blob2: 'bg-fuchsia-300/40', blob3: 'bg-violet-300/40', darkBlob1: 'bg-purple-900/40', darkBlob2: 'bg-fuchsia-900/40', darkBlob3: 'bg-violet-900/40' }
 };
 
-const defaultThemeColors = { wake: 'cyan', morning: 'teal', evening: 'red', sleep: 'indigo', prayer: 'blue', free: 'orange' };
+const defaultThemeColors = { wake: 'cyan', morning: 'teal', evening: 'red', sleep: 'indigo', prayer: 'blue', free: 'orange', garden: 'green' };
 
 export default function App() {
   // -- نظام التحديثات (PWA Update) --
@@ -1995,11 +2070,12 @@ export default function App() {
     if (tabId === 'morning') return 'الصباح';
     if (tabId === 'evening') return 'المساء';
     if (tabId === 'prayer') return 'الصلاة';
-    if (tabId === 'free') return 'المسبحة الحرة';
+    if (tabId === 'free') return 'المسبحة';
+    if (tabId === 'garden') return 'بستاني';
     return 'النوم';
   };
 
-  const TabIcon = activeTab === 'sleep' ? Moon : activeTab === 'wake' ? Sunrise : activeTab === 'morning' ? Sun : activeTab === 'prayer' ? Clock : Sunset;
+  const TabIcon = activeTab === 'sleep' ? Moon : activeTab === 'wake' ? Sunrise : activeTab === 'morning' ? Sun : activeTab === 'prayer' ? Clock : activeTab === 'garden' ? Leaf : Sunset;
 
   // توليد بيانات الرسم البياني
   const graphDays = useMemo(() => {
@@ -2240,6 +2316,7 @@ export default function App() {
           <button onClick={() => setActiveTab('evening')} className={getTabClass('evening')}>المساء</button>
           <button onClick={() => setActiveTab('sleep')} className={getTabClass('sleep')}>النوم</button>
           <button onClick={() => setActiveTab('prayer')} className={getTabClass('prayer')}>الصلاة</button>
+          <button onClick={() => setActiveTab('garden')} className={getTabClass('garden')}>بستاني</button>
         </div>
 
         {/* --- شريط التقدم --- */}
@@ -2533,10 +2610,6 @@ export default function App() {
                    <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-[#8b5cf6]"></div>حر</div>
                 </div>
               </div>
-              
-              {/* بستان الجنة البصري */}
-              <JannahGarden totalTasbeehs={totalTasbeehsMade} />
-
               {/* قسم الأوسمة */}
               <div className="w-full mt-8 border-t border-slate-200 dark:border-slate-700 pt-6">
                 <h4 className="text-xl font-bold mb-4 text-slate-800 dark:text-slate-100 flex items-center gap-2">
@@ -3100,39 +3173,41 @@ export default function App() {
       <main className="container mx-auto px-4 py-6 md:py-8 max-w-4xl">
 
         {/* --- تنبيه أوقات الأذكار --- */}
-        <div className="mb-8 p-5 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 transition-all duration-300">
-          <div className="flex items-start gap-3">
-            <TabIcon className={`w-6 h-6 ${currentTabTheme.icon} shrink-0 mt-1`} />
-            <div>
-              <h2 className="text-lg font-bold text-slate-800 dark:text-slate-200 mb-2">
-                {activeTab === 'sleep' ? 'سنن وآداب النوم' : activeTab === 'wake' ? 'عند الاستيقاظ والتعار من الليل' : activeTab === 'prayer' ? 'أذكار ما بعد الصلاة المفروضة' : 'وقت الأذكار المفضل'}
-              </h2>
-              <p className="text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
-                {activeTab === 'sleep' ? (
-                  <span>
-                    يُستحب للمسلم إذا أتى فراشه أن يكون على <strong className={currentTabTheme.icon}>طهارة</strong>، وأن <strong className={currentTabTheme.icon}>ينفض فراشه</strong> بداخلة إزاره، وأن يضطجع على <strong className={currentTabTheme.icon}>جنبه الأيمن</strong>، وأن يضع يده تحت خده الأيمن، ثم يأتي بالأذكار.
-                  </span>
-                ) : activeTab === 'wake' ? (
-                  <span>
-                    يُستحب للمسلم أول ما يستيقظ من نومه أن <strong className={currentTabTheme.icon}>يمسح النوم عن وجهه</strong> بيده، ثم يأتي بأذكار الاستيقاظ. ولمن استيقظ من الليل وتَقَلَّب أن يأتي بذكر <strong className={currentTabTheme.icon}>التعار من الليل</strong> فدعوته مستجابة.
-                  </span>
-                ) : activeTab === 'prayer' ? (
-                  <span>
-                    تُقرأ هذه الأذكار دبر كل <strong className={currentTabTheme.icon}>صلاة مكتوبة (مفروضة)</strong>، ويُسنّ للمسلم أن لا يبرح مكانه حتى ينهيها لينال أجرها العظيم.
-                  </span>
-                ) : activeTab === 'morning' ? (
-                  <span>
-                    <strong className={currentTabTheme.icon}>وقت الصباح:</strong> يبدأ من طلوع الفجر الصادق، ويمتد إلى شروق الشمس.
-                  </span>
-                ) : (
-                  <span>
-                    <strong className={currentTabTheme.icon}>وقت المساء:</strong> يبدأ من بعد صلاة العصر، ويمتد إلى غروب الشمس.
-                  </span>
-                )}
-              </p>
+        {activeTab !== 'garden' && (
+          <div className="mb-8 p-5 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 transition-all duration-300">
+            <div className="flex items-start gap-3">
+              <TabIcon className={`w-6 h-6 ${currentTabTheme.icon} shrink-0 mt-1`} />
+              <div>
+                <h2 className="text-lg font-bold text-slate-800 dark:text-slate-200 mb-2">
+                  {activeTab === 'sleep' ? 'سنن وآداب النوم' : activeTab === 'wake' ? 'عند الاستيقاظ والتعار من الليل' : activeTab === 'prayer' ? 'أذكار ما بعد الصلاة المفروضة' : 'وقت الأذكار المفضل'}
+                </h2>
+                <p className="text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
+                  {activeTab === 'sleep' ? (
+                    <span>
+                      يُستحب للمسلم إذا أتى فراشه أن يكون على <strong className={currentTabTheme.icon}>طهارة</strong>، وأن <strong className={currentTabTheme.icon}>ينفض فراشه</strong> بداخلة إزاره، وأن يضطجع على <strong className={currentTabTheme.icon}>جنبه الأيمن</strong>، وأن يضع يده تحت خده الأيمن، ثم يأتي بالأذكار.
+                    </span>
+                  ) : activeTab === 'wake' ? (
+                    <span>
+                      يُستحب للمسلم أول ما يستيقظ من نومه أن <strong className={currentTabTheme.icon}>يمسح النوم عن وجهه</strong> بيده، ثم يأتي بأذكار الاستيقاظ. ولمن استيقظ من الليل وتَقَلَّب أن يأتي بذكر <strong className={currentTabTheme.icon}>التعار من الليل</strong> فدعوته مستجابة.
+                    </span>
+                  ) : activeTab === 'prayer' ? (
+                    <span>
+                      تُقرأ هذه الأذكار دبر كل <strong className={currentTabTheme.icon}>صلاة مكتوبة (مفروضة)</strong>، ويُسنّ للمسلم أن لا يبرح مكانه حتى ينهيها لينال أجرها العظيم.
+                    </span>
+                  ) : activeTab === 'morning' ? (
+                    <span>
+                      <strong className={currentTabTheme.icon}>وقت الصباح:</strong> يبدأ من طلوع الفجر الصادق، ويمتد إلى شروق الشمس.
+                    </span>
+                  ) : (
+                    <span>
+                      <strong className={currentTabTheme.icon}>وقت المساء:</strong> يبدأ من بعد صلاة العصر، ويمتد إلى غروب الشمس.
+                    </span>
+                  )}
+                </p>
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* --- زر أذكار التعار - يظهر فقط في نافذة الاستيقاظ --- */}
         {activeTab === 'wake' && (
@@ -3198,27 +3273,36 @@ export default function App() {
           </div>
         )}
 
+        {/* --- عرض بستان الجنة كـ Tab --- */}
+        {activeTab === 'garden' && (
+          <div className="w-full flex justify-center animate-in fade-in zoom-in-95 duration-500">
+            <JannahGarden totalTasbeehs={totalTasbeehsMade + totalAdhkarRead} />
+          </div>
+        )}
+
         {/* --- عنوان القسم وزر تصفير الكل --- */}
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl md:text-3xl font-bold text-slate-800 dark:text-slate-100 flex items-center gap-3">
-            {activeTab === 'morning' && 'أذكار الصباح'}
-            {activeTab === 'evening' && 'أذكار المساء'}
-            {activeTab === 'sleep' && 'أذكار النوم'}
-            {activeTab === 'wake' && 'أذكار الاستيقاظ'}
-            {activeTab === 'prayer' && 'أذكار بعد الصلاة'}
-          </h2>
-          <button
-            onClick={resetAllProgress}
-            className="flex items-center gap-2 px-4 py-2 bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 rounded-xl transition-colors text-sm md:text-base font-bold shadow-sm"
-          >
-            <RotateCcw className="w-4 h-4" />
-            تصفير الكل
-          </button>
-        </div>
+        {activeTab !== 'garden' && (
+          <>
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl md:text-3xl font-bold text-slate-800 dark:text-slate-100 flex items-center gap-3">
+                {activeTab === 'morning' && 'أذكار الصباح'}
+                {activeTab === 'evening' && 'أذكار المساء'}
+                {activeTab === 'sleep' && 'أذكار النوم'}
+                {activeTab === 'wake' && 'أذكار الاستيقاظ'}
+                {activeTab === 'prayer' && 'أذكار بعد الصلاة'}
+              </h2>
+              <button
+                onClick={resetAllProgress}
+                className="flex items-center gap-2 px-4 py-2 bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 rounded-xl transition-colors text-sm md:text-base font-bold shadow-sm"
+              >
+                <RotateCcw className="w-4 h-4" />
+                تصفير الكل
+              </button>
+            </div>
 
 
-        {/* --- قائمة الأذكار الرئيسية (تتغير حسب التبويب) --- */}
-        <div className="space-y-6 md:space-y-8">
+            {/* --- قائمة الأذكار الرئيسية (تتغير حسب التبويب) --- */}
+            <div className="space-y-6 md:space-y-8">
           {currentTabAdhkar.map((dhikr) => {
             const currentCount = progress[`${activeTab}-${dhikr.id}`] || 0;
             const isCompleted = currentCount >= dhikr.target;
@@ -3308,7 +3392,9 @@ export default function App() {
               </div>
             );
           })}
-        </div>
+          </div>
+          </>
+        )}
       </main>
 
       <footer className="bg-slate-200 dark:bg-slate-950 py-8 text-center text-slate-600 dark:text-slate-400 mt-12 border-t border-slate-300 dark:border-slate-800">

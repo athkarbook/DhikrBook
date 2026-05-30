@@ -711,15 +711,18 @@ export default function App() {
 
         // إذا كان الذكر قصيراً (مثل: سبحان الله، الحمد لله)
         if (cardWords.length <= 6) {
-           // يكفي أن يتطابق أي جزء منه ليتم الحساب فوراً
-           const hasMatch = spokenWords.some(tw => cardWords.includes(tw));
-           if (hasMatch) {
+           // نطلب أن يتطابق نصف كلمات الذكر على الأقل (لتجنب التساهل المفرط باحتساب كلمة واحدة)
+           const requiredShort = Math.ceil(cardWords.length * 0.5); 
+           let matches = 0;
+           for (const w of cardWords) {
+               // نتحقق من الكلمات المنطوقة مؤخراً فقط
+               if (spokenWords.includes(w)) matches++;
+           }
+           if (matches >= requiredShort) {
               shouldIncrement = true;
            }
         } else {
            // الأذكار الطويلة (مثل آية الكرسي، سيد الاستغفار)
-           // الذكاء الاصطناعي يواجه صعوبة كبيرة في اللغة العربية الفصحى
-           // لذا سنبحث عن كلمات فريدة ومميزة (ليست من الكلمات العامة)
            const uniqueCardWords = [...new Set(cardWords)];
            const uniqueSpoken = [...new Set(window.voiceState[targetCard.id])];
            
@@ -733,18 +736,20 @@ export default function App() {
                }
            }
            
-           // الشرط الأول: قراءة 3 كلمات مميزة على الأقل (لضمان أنه يقرأ الذكر الصحيح وتجاوز أخطاء التعرف)
-           const requiredMatches = Math.min(3, specificCardWords.length);
+           // الشرط الأول (أكثر صرامة): قراءة 25% من الكلمات المميزة للذكر (أو 3 كلمات كحد أدنى)
+           const requiredMatches = Math.max(3, Math.floor(specificCardWords.length * 0.25));
            
-           // الشرط الثاني (الجديد): يجب أن يلتقط كلمة مميزة واحدة على الأقل من آخر 30% من الذكر!
-           // هذا يضمن أن المستخدم قد وصل فعلاً لنهاية الذكر ولم يقرأ بدايته فقط
+           // الشرط الثاني: يجب أن يلتقط كلمة مميزة (أو كلمتين للختام الطويل) من آخر 30% من الذكر
            const endIndex = Math.floor(cardWords.length * 0.70);
            const endWords = cardWords.slice(endIndex);
            const specificEndWords = [...new Set(endWords)].filter(w => !stopWords.includes(w));
            
-           const hasReachedEnd = specificEndWords.length === 0 || specificEndWords.some(w => uniqueSpoken.includes(w));
+           const requiredEndMatches = specificEndWords.length > 5 ? 2 : 1;
+           const endMatches = specificEndWords.filter(w => uniqueSpoken.includes(w)).length;
+           
+           const hasReachedEnd = specificEndWords.length === 0 || endMatches >= requiredEndMatches;
 
-           if (distinctMatches >= requiredMatches && hasReachedEnd) {
+           if (distinctMatches >= Math.min(requiredMatches, specificCardWords.length) && hasReachedEnd) {
               shouldIncrement = true;
            }
         }

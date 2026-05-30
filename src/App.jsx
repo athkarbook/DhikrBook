@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useRegisterSW } from 'virtual:pwa-register/react';
-import { Sun, Moon, Settings, Info, BookOpen, CheckCircle, RotateCcw, Clock, Star, X, Plus, Minus, Type, Flame, Volume2, VolumeX, Vibrate, VibrateOff, Target, Sunrise, Sunset, MoonStar, ChevronDown, ChevronUp, Palette, Fingerprint, BarChart2, Edit3, Trash2, Award, Trophy, Bell, BellRing, Shield, Crown, RefreshCw, Share2, Map, Mic, MicOff } from 'lucide-react';
+import { Sun, Moon, Settings, Info, BookOpen, CheckCircle, RotateCcw, Clock, Star, X, Plus, Minus, Type, Flame, Volume2, VolumeX, Vibrate, VibrateOff, Target, Sunrise, Sunset, MoonStar, ChevronDown, ChevronUp, Palette, Fingerprint, BarChart2, Edit3, Trash2, Award, Trophy, Bell, BellRing, Shield, Crown, RefreshCw, Share2, Map, Mic, MicOff, Leaf } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
 
@@ -88,6 +88,94 @@ const CelestialElements = ({ activeTab }) => {
   }
 
   return null;
+};
+
+// بستان الجنة البصري (Jannah Garden Visualizer)
+const JannahGarden = ({ totalTasbeehs }) => {
+  const stage = 
+    totalTasbeehs >= 5000 ? 5 :
+    totalTasbeehs >= 1000 ? 4 :
+    totalTasbeehs >= 500 ? 3 :
+    totalTasbeehs >= 200 ? 2 :
+    totalTasbeehs >= 50 ? 1 : 0;
+
+  return (
+    <div className="w-full flex flex-col items-center justify-center p-6 bg-gradient-to-b from-sky-50 to-green-50 dark:from-slate-800 dark:to-emerald-900/20 rounded-3xl border-2 border-green-200 dark:border-emerald-800/50 relative overflow-hidden mt-8 transition-colors duration-1000 shadow-inner">
+      <h4 className="text-xl font-bold mb-2 text-green-800 dark:text-green-300 flex items-center gap-2 z-10">
+        <Leaf className="w-6 h-6 text-green-600 dark:text-green-400" />
+        بستان الجنة
+      </h4>
+      <p className="text-xs text-green-700/80 dark:text-green-400/80 mb-6 z-10 text-center max-w-sm">
+        "إن سبحان الله والحمد لله ولا إله إلا الله والله أكبر يغرسن لك بها شجراً في الجنة". راقب غراسك ينمو!
+      </p>
+
+      {/* الشجرة (SVG) */}
+      <div className="relative w-48 h-48 md:w-64 md:h-64 flex items-end justify-center z-10">
+        {/* الأرض */}
+        <div className="absolute bottom-0 w-32 h-6 bg-green-600/30 dark:bg-green-400/20 rounded-[100%] blur-[6px]"></div>
+        
+        <svg viewBox="0 0 200 200" className="w-full h-full overflow-visible drop-shadow-2xl">
+          {/* الجذع الأساسي (المرحلة 1 وما فوق) */}
+          <path 
+            d="M95 200 C95 150, 90 100, 100 80 C110 100, 105 150, 105 200 Z" 
+            fill="#78350f" 
+            className={`transition-all duration-1000 origin-bottom ${stage >= 1 ? 'scale-y-100 opacity-100' : 'scale-y-0 opacity-0'}`}
+          />
+          
+          {/* الفروع (المرحلة 2) */}
+          <path 
+            d="M100 120 C80 100, 60 90, 40 70 M100 100 C120 80, 140 70, 160 50 M100 80 C90 60, 80 40, 90 20" 
+            stroke="#78350f" 
+            strokeWidth="8" 
+            strokeLinecap="round" 
+            fill="none"
+            className={`transition-all duration-1000 origin-bottom delay-300 ${stage >= 2 ? 'scale-100 opacity-100' : 'scale-0 opacity-0'}`}
+          />
+
+          {/* الأوراق الأساسية (المرحلة 3) */}
+          <g className={`transition-all duration-1000 origin-center delay-500 ${stage >= 3 ? 'scale-100 opacity-100' : 'scale-0 opacity-0'}`}>
+            <circle cx="40" cy="70" r="25" fill="#16a34a" opacity="0.9" />
+            <circle cx="160" cy="50" r="30" fill="#16a34a" opacity="0.9" />
+            <circle cx="90" cy="20" r="35" fill="#15803d" opacity="0.95" />
+            <circle cx="100" cy="80" r="40" fill="#22c55e" opacity="0.8" />
+          </g>
+
+          {/* الكثافة والأوراق الإضافية (المرحلة 4) */}
+          <g className={`transition-all duration-1000 origin-center delay-700 ${stage >= 4 ? 'scale-100 opacity-100' : 'scale-0 opacity-0'}`}>
+            <circle cx="70" cy="40" r="35" fill="#10b981" opacity="0.85" />
+            <circle cx="130" cy="30" r="40" fill="#059669" opacity="0.9" />
+            <circle cx="100" cy="50" r="50" fill="#16a34a" opacity="0.85" />
+          </g>
+
+          {/* الثمار المضيئة (المرحلة 5) */}
+          <g className={`transition-all duration-1000 origin-top delay-1000 ${stage >= 5 ? 'scale-100 opacity-100' : 'scale-0 opacity-0'}`}>
+            <circle cx="60" cy="60" r="6" fill="#fbbf24" className="animate-[pulse_2s_ease-in-out_infinite]" />
+            <circle cx="140" cy="40" r="7" fill="#fbbf24" className="animate-[pulse_3s_ease-in-out_infinite]" />
+            <circle cx="90" cy="30" r="8" fill="#fbbf24" className="animate-[pulse_2.5s_ease-in-out_infinite]" />
+            <circle cx="110" cy="80" r="6" fill="#fbbf24" className="animate-[pulse_4s_ease-in-out_infinite]" />
+            <circle cx="160" cy="60" r="5" fill="#fbbf24" className="animate-[pulse_3.5s_ease-in-out_infinite]" />
+          </g>
+
+          {/* البذرة (المرحلة 0 فقط) */}
+          <ellipse 
+            cx="100" cy="190" rx="8" ry="5" 
+            fill="#a16207" 
+            className={`transition-all duration-500 ${stage === 0 ? 'opacity-100 scale-100' : 'opacity-0 scale-0'}`} 
+          />
+        </svg>
+      </div>
+      
+      {/* عداد البستان */}
+      <div className="mt-6 px-6 py-2 bg-white/60 dark:bg-slate-900/60 rounded-full text-sm font-bold text-green-800 dark:text-green-200 z-10 backdrop-blur-md border border-green-200 dark:border-green-800/50 shadow-sm">
+        غراسك الحالي: {totalTasbeehs.toLocaleString('ar-EG')} تسبيحة
+      </div>
+      
+      {/* تأثير ضوئي خلفي للشجرة */}
+      {stage >= 4 && (
+         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-green-400/20 dark:bg-green-500/10 filter blur-[50px] rounded-full pointer-events-none z-0 animate-pulse"></div>
+      )}
+    </div>
+  );
 };
 
 // مكون الخلفية الحية التفاعلية
@@ -2445,6 +2533,9 @@ export default function App() {
                    <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-[#8b5cf6]"></div>حر</div>
                 </div>
               </div>
+              
+              {/* بستان الجنة البصري */}
+              <JannahGarden totalTasbeehs={totalTasbeehsMade} />
 
               {/* قسم الأوسمة */}
               <div className="w-full mt-8 border-t border-slate-200 dark:border-slate-700 pt-6">

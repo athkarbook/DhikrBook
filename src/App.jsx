@@ -33,6 +33,25 @@ const TasbeehIcon = ({ className = "w-6 h-6" }) => (
   </svg>
 );
 
+// مكون الخلفية الحية التفاعلية
+const LiveBackground = ({ colorTheme, isDarkMode, isInteracting }) => {
+  if (!colorTheme) return null;
+  const b1 = isDarkMode ? colorTheme.darkBlob1 : colorTheme.blob1;
+  const b2 = isDarkMode ? colorTheme.darkBlob2 : colorTheme.blob2;
+  const b3 = isDarkMode ? colorTheme.darkBlob3 : colorTheme.blob3;
+  
+  const interactionClass = isInteracting ? 'scale-110 opacity-80' : 'scale-100 opacity-60';
+
+  return (
+    <div className="fixed inset-0 overflow-hidden pointer-events-none z-[-1] transition-colors duration-1000">
+      <div className="absolute inset-0 bg-slate-50 dark:bg-slate-900 transition-colors duration-700"></div>
+      <div className={`absolute top-[-10%] left-[-10%] w-[60vw] h-[60vw] md:w-[40vw] md:h-[40vw] rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[60px] md:blur-[100px] animate-blob1 ${b1} transition-all duration-500 ease-out ${interactionClass}`}></div>
+      <div className={`absolute top-[20%] right-[-10%] w-[55vw] h-[55vw] md:w-[35vw] md:h-[35vw] rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[60px] md:blur-[100px] animate-blob2 ${b2} transition-all duration-500 ease-out ${interactionClass}`}></div>
+      <div className={`absolute bottom-[-10%] left-[20%] w-[70vw] h-[70vw] md:w-[50vw] md:h-[50vw] rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[60px] md:blur-[100px] animate-blob3 ${b3} transition-all duration-500 ease-out ${interactionClass}`}></div>
+    </div>
+  );
+};
+
 // --- البيانات المستخرجة حصرياً من ملف د. مطلق الجاسر ---
 const adhkarData = [
   // ========================================
@@ -604,17 +623,17 @@ const globalStyles = {
   `
 };
 
-// خريطة الألوان الديناميكية
+// خريطة الألوان الديناميكية مع ألوان الخلفيات الحية (Live Mesh Backgrounds)
 const colorMap = {
-  cyan: { id: 'cyan', hex: '#0891b2', name: 'سماوي', header: 'bg-cyan-600', tabActive: 'bg-cyan-700', tabBorder: 'border-cyan-300', progress: 'bg-cyan-400 shadow-md shadow-cyan-400/50', icon: 'text-cyan-600 dark:text-cyan-400', taarBtn: 'from-cyan-600 to-cyan-800', cardHeader: 'bg-cyan-50 text-cyan-800 dark:bg-cyan-900/20 dark:text-cyan-300', counterDone: 'bg-cyan-50 border-2 border-cyan-400 text-cyan-700 dark:bg-cyan-900/40 dark:border-cyan-600 dark:text-cyan-300', counterHigh: 'bg-cyan-400 hover:bg-cyan-500', counterMed: 'bg-cyan-500 hover:bg-cyan-600', counterLow: 'bg-cyan-600 hover:bg-cyan-700' },
-  green: { id: 'green', hex: '#16a34a', name: 'أخضر', header: 'bg-green-600', tabActive: 'bg-green-700', tabBorder: 'border-green-300', progress: 'bg-green-400 shadow-md shadow-green-400/50', icon: 'text-green-600 dark:text-green-400', taarBtn: 'from-green-600 to-green-800', cardHeader: 'bg-green-50 text-green-800 dark:bg-green-900/20 dark:text-green-300', counterDone: 'bg-green-50 border-2 border-green-400 text-green-700 dark:bg-green-900/40 dark:border-green-600 dark:text-green-300', counterHigh: 'bg-green-500 hover:bg-green-600', counterMed: 'bg-green-600 hover:bg-green-700', counterLow: 'bg-green-700 hover:bg-green-800' },
-  red: { id: 'red', hex: '#991b1b', name: 'خمري', header: 'bg-red-800', tabActive: 'bg-red-900', tabBorder: 'border-red-300', progress: 'bg-red-400 shadow-md shadow-red-400/50', icon: 'text-red-800 dark:text-red-400', taarBtn: 'from-red-700 to-red-900', cardHeader: 'bg-red-50 text-red-900 dark:bg-red-900/20 dark:text-red-300', counterDone: 'bg-red-50 border-2 border-red-400 text-red-800 dark:bg-red-900/40 dark:border-red-600 dark:text-red-300', counterHigh: 'bg-red-600 hover:bg-red-700', counterMed: 'bg-red-700 hover:bg-red-800', counterLow: 'bg-red-800 hover:bg-red-900' },
-  indigo: { id: 'indigo', hex: '#4f46e5', name: 'نيلي', header: 'bg-indigo-600', tabActive: 'bg-indigo-700', tabBorder: 'border-indigo-300', progress: 'bg-indigo-400 shadow-md shadow-indigo-400/50', icon: 'text-indigo-600 dark:text-indigo-400', taarBtn: 'from-indigo-600 to-indigo-800', cardHeader: 'bg-indigo-50 text-indigo-800 dark:bg-indigo-900/20 dark:text-indigo-300', counterDone: 'bg-indigo-50 border-2 border-indigo-400 text-indigo-700 dark:bg-indigo-900/40 dark:border-indigo-600 dark:text-indigo-300', counterHigh: 'bg-indigo-400 hover:bg-indigo-500', counterMed: 'bg-indigo-500 hover:bg-indigo-600', counterLow: 'bg-indigo-600 hover:bg-indigo-700' },
-  blue: { id: 'blue', hex: '#2563eb', name: 'أزرق', header: 'bg-blue-600', tabActive: 'bg-blue-700', tabBorder: 'border-blue-300', progress: 'bg-blue-400 shadow-md shadow-blue-400/50', icon: 'text-blue-600 dark:text-blue-400', taarBtn: 'from-blue-600 to-blue-800', cardHeader: 'bg-blue-50 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300', counterDone: 'bg-blue-50 border-2 border-blue-400 text-blue-700 dark:bg-blue-900/40 dark:border-blue-600 dark:text-blue-300', counterHigh: 'bg-blue-400 hover:bg-blue-500', counterMed: 'bg-blue-500 hover:bg-blue-600', counterLow: 'bg-blue-600 hover:bg-blue-700' },
-  teal: { id: 'teal', hex: '#0d9488', name: 'تيل', header: 'bg-teal-600', tabActive: 'bg-teal-700', tabBorder: 'border-teal-300', progress: 'bg-teal-400 shadow-md shadow-teal-400/50', icon: 'text-teal-600 dark:text-teal-400', taarBtn: 'from-teal-600 to-teal-800', cardHeader: 'bg-teal-50 text-teal-800 dark:bg-teal-900/20 dark:text-teal-300', counterDone: 'bg-teal-50 border-2 border-teal-400 text-teal-700 dark:bg-teal-900/40 dark:border-teal-600 dark:text-teal-300', counterHigh: 'bg-teal-400 hover:bg-teal-500', counterMed: 'bg-teal-500 hover:bg-teal-600', counterLow: 'bg-teal-600 hover:bg-teal-700' },
-  orange: { id: 'orange', hex: '#f97316', name: 'برتقالي', header: 'bg-orange-500', tabActive: 'bg-orange-600', tabBorder: 'border-orange-300', progress: 'bg-orange-400 shadow-md shadow-orange-400/50', icon: 'text-orange-600 dark:text-orange-400', taarBtn: 'from-orange-500 to-orange-700', cardHeader: 'bg-orange-50 text-orange-800 dark:bg-orange-900/20 dark:text-orange-300', counterDone: 'bg-orange-50 border-2 border-orange-400 text-orange-700 dark:bg-orange-900/40 dark:border-orange-600 dark:text-orange-300', counterHigh: 'bg-orange-400 hover:bg-orange-500', counterMed: 'bg-orange-500 hover:bg-orange-600', counterLow: 'bg-orange-600 hover:bg-orange-700' },
-  rose: { id: 'rose', hex: '#e11d48', name: 'وردي', header: 'bg-rose-600', tabActive: 'bg-rose-700', tabBorder: 'border-rose-300', progress: 'bg-rose-400 shadow-md shadow-rose-400/50', icon: 'text-rose-600 dark:text-rose-400', taarBtn: 'from-rose-600 to-rose-800', cardHeader: 'bg-rose-50 text-rose-800 dark:bg-rose-900/20 dark:text-rose-300', counterDone: 'bg-rose-50 border-2 border-rose-400 text-rose-700 dark:bg-rose-900/40 dark:border-rose-600 dark:text-rose-300', counterHigh: 'bg-rose-400 hover:bg-rose-500', counterMed: 'bg-rose-500 hover:bg-rose-600', counterLow: 'bg-rose-600 hover:bg-rose-700' },
-  purple: { id: 'purple', hex: '#9333ea', name: 'بنفسجي', header: 'bg-purple-600', tabActive: 'bg-purple-700', tabBorder: 'border-purple-300', progress: 'bg-purple-400 shadow-md shadow-purple-400/50', icon: 'text-purple-600 dark:text-purple-400', taarBtn: 'from-purple-600 to-purple-800', cardHeader: 'bg-purple-50 text-purple-800 dark:bg-purple-900/20 dark:text-purple-300', counterDone: 'bg-purple-50 border-2 border-purple-400 text-purple-700 dark:bg-purple-900/40 dark:border-purple-600 dark:text-purple-300', counterHigh: 'bg-purple-400 hover:bg-purple-500', counterMed: 'bg-purple-500 hover:bg-purple-600', counterLow: 'bg-purple-600 hover:bg-purple-700' }
+  cyan: { id: 'cyan', hex: '#0891b2', name: 'سماوي', header: 'bg-cyan-600', tabActive: 'bg-cyan-700', tabBorder: 'border-cyan-300', progress: 'bg-cyan-400 shadow-md shadow-cyan-400/50', icon: 'text-cyan-600 dark:text-cyan-400', taarBtn: 'from-cyan-600 to-cyan-800', cardHeader: 'bg-cyan-50 text-cyan-800 dark:bg-cyan-900/20 dark:text-cyan-300', counterDone: 'bg-cyan-50 border-2 border-cyan-400 text-cyan-700 dark:bg-cyan-900/40 dark:border-cyan-600 dark:text-cyan-300', counterHigh: 'bg-cyan-400 hover:bg-cyan-500', counterMed: 'bg-cyan-500 hover:bg-cyan-600', counterLow: 'bg-cyan-600 hover:bg-cyan-700', blob1: 'bg-cyan-300/40', blob2: 'bg-teal-300/40', blob3: 'bg-blue-300/40', darkBlob1: 'bg-cyan-900/40', darkBlob2: 'bg-teal-900/40', darkBlob3: 'bg-blue-900/40' },
+  green: { id: 'green', hex: '#16a34a', name: 'أخضر', header: 'bg-green-600', tabActive: 'bg-green-700', tabBorder: 'border-green-300', progress: 'bg-green-400 shadow-md shadow-green-400/50', icon: 'text-green-600 dark:text-green-400', taarBtn: 'from-green-600 to-green-800', cardHeader: 'bg-green-50 text-green-800 dark:bg-green-900/20 dark:text-green-300', counterDone: 'bg-green-50 border-2 border-green-400 text-green-700 dark:bg-green-900/40 dark:border-green-600 dark:text-green-300', counterHigh: 'bg-green-500 hover:bg-green-600', counterMed: 'bg-green-600 hover:bg-green-700', counterLow: 'bg-green-700 hover:bg-green-800', blob1: 'bg-green-300/40', blob2: 'bg-emerald-300/40', blob3: 'bg-lime-300/40', darkBlob1: 'bg-green-900/40', darkBlob2: 'bg-emerald-900/40', darkBlob3: 'bg-lime-900/40' },
+  red: { id: 'red', hex: '#991b1b', name: 'خمري', header: 'bg-red-800', tabActive: 'bg-red-900', tabBorder: 'border-red-300', progress: 'bg-red-400 shadow-md shadow-red-400/50', icon: 'text-red-800 dark:text-red-400', taarBtn: 'from-red-700 to-red-900', cardHeader: 'bg-red-50 text-red-900 dark:bg-red-900/20 dark:text-red-300', counterDone: 'bg-red-50 border-2 border-red-400 text-red-800 dark:bg-red-900/40 dark:border-red-600 dark:text-red-300', counterHigh: 'bg-red-600 hover:bg-red-700', counterMed: 'bg-red-700 hover:bg-red-800', counterLow: 'bg-red-800 hover:bg-red-900', blob1: 'bg-red-300/40', blob2: 'bg-rose-300/40', blob3: 'bg-orange-300/40', darkBlob1: 'bg-red-900/40', darkBlob2: 'bg-rose-900/40', darkBlob3: 'bg-orange-900/40' },
+  indigo: { id: 'indigo', hex: '#4f46e5', name: 'نيلي', header: 'bg-indigo-600', tabActive: 'bg-indigo-700', tabBorder: 'border-indigo-300', progress: 'bg-indigo-400 shadow-md shadow-indigo-400/50', icon: 'text-indigo-600 dark:text-indigo-400', taarBtn: 'from-indigo-600 to-indigo-800', cardHeader: 'bg-indigo-50 text-indigo-800 dark:bg-indigo-900/20 dark:text-indigo-300', counterDone: 'bg-indigo-50 border-2 border-indigo-400 text-indigo-700 dark:bg-indigo-900/40 dark:border-indigo-600 dark:text-indigo-300', counterHigh: 'bg-indigo-400 hover:bg-indigo-500', counterMed: 'bg-indigo-500 hover:bg-indigo-600', counterLow: 'bg-indigo-600 hover:bg-indigo-700', blob1: 'bg-indigo-300/40', blob2: 'bg-violet-300/40', blob3: 'bg-purple-300/40', darkBlob1: 'bg-indigo-900/40', darkBlob2: 'bg-violet-900/40', darkBlob3: 'bg-purple-900/40' },
+  blue: { id: 'blue', hex: '#2563eb', name: 'أزرق', header: 'bg-blue-600', tabActive: 'bg-blue-700', tabBorder: 'border-blue-300', progress: 'bg-blue-400 shadow-md shadow-blue-400/50', icon: 'text-blue-600 dark:text-blue-400', taarBtn: 'from-blue-600 to-blue-800', cardHeader: 'bg-blue-50 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300', counterDone: 'bg-blue-50 border-2 border-blue-400 text-blue-700 dark:bg-blue-900/40 dark:border-blue-600 dark:text-blue-300', counterHigh: 'bg-blue-400 hover:bg-blue-500', counterMed: 'bg-blue-500 hover:bg-blue-600', counterLow: 'bg-blue-600 hover:bg-blue-700', blob1: 'bg-blue-300/40', blob2: 'bg-sky-300/40', blob3: 'bg-cyan-300/40', darkBlob1: 'bg-blue-900/40', darkBlob2: 'bg-sky-900/40', darkBlob3: 'bg-cyan-900/40' },
+  teal: { id: 'teal', hex: '#0d9488', name: 'تيل', header: 'bg-teal-600', tabActive: 'bg-teal-700', tabBorder: 'border-teal-300', progress: 'bg-teal-400 shadow-md shadow-teal-400/50', icon: 'text-teal-600 dark:text-teal-400', taarBtn: 'from-teal-600 to-teal-800', cardHeader: 'bg-teal-50 text-teal-800 dark:bg-teal-900/20 dark:text-teal-300', counterDone: 'bg-teal-50 border-2 border-teal-400 text-teal-700 dark:bg-teal-900/40 dark:border-teal-600 dark:text-teal-300', counterHigh: 'bg-teal-400 hover:bg-teal-500', counterMed: 'bg-teal-500 hover:bg-teal-600', counterLow: 'bg-teal-600 hover:bg-teal-700', blob1: 'bg-teal-300/40', blob2: 'bg-emerald-300/40', blob3: 'bg-cyan-300/40', darkBlob1: 'bg-teal-900/40', darkBlob2: 'bg-emerald-900/40', darkBlob3: 'bg-cyan-900/40' },
+  orange: { id: 'orange', hex: '#f97316', name: 'برتقالي', header: 'bg-orange-500', tabActive: 'bg-orange-600', tabBorder: 'border-orange-300', progress: 'bg-orange-400 shadow-md shadow-orange-400/50', icon: 'text-orange-600 dark:text-orange-400', taarBtn: 'from-orange-500 to-orange-700', cardHeader: 'bg-orange-50 text-orange-800 dark:bg-orange-900/20 dark:text-orange-300', counterDone: 'bg-orange-50 border-2 border-orange-400 text-orange-700 dark:bg-orange-900/40 dark:border-orange-600 dark:text-orange-300', counterHigh: 'bg-orange-400 hover:bg-orange-500', counterMed: 'bg-orange-500 hover:bg-orange-600', counterLow: 'bg-orange-600 hover:bg-orange-700', blob1: 'bg-orange-300/40', blob2: 'bg-amber-300/40', blob3: 'bg-yellow-300/40', darkBlob1: 'bg-orange-900/40', darkBlob2: 'bg-amber-900/40', darkBlob3: 'bg-yellow-900/40' },
+  rose: { id: 'rose', hex: '#e11d48', name: 'وردي', header: 'bg-rose-600', tabActive: 'bg-rose-700', tabBorder: 'border-rose-300', progress: 'bg-rose-400 shadow-md shadow-rose-400/50', icon: 'text-rose-600 dark:text-rose-400', taarBtn: 'from-rose-600 to-rose-800', cardHeader: 'bg-rose-50 text-rose-800 dark:bg-rose-900/20 dark:text-rose-300', counterDone: 'bg-rose-50 border-2 border-rose-400 text-rose-700 dark:bg-rose-900/40 dark:border-rose-600 dark:text-rose-300', counterHigh: 'bg-rose-400 hover:bg-rose-500', counterMed: 'bg-rose-500 hover:bg-rose-600', counterLow: 'bg-rose-600 hover:bg-rose-700', blob1: 'bg-rose-300/40', blob2: 'bg-pink-300/40', blob3: 'bg-fuchsia-300/40', darkBlob1: 'bg-rose-900/40', darkBlob2: 'bg-pink-900/40', darkBlob3: 'bg-fuchsia-900/40' },
+  purple: { id: 'purple', hex: '#9333ea', name: 'بنفسجي', header: 'bg-purple-600', tabActive: 'bg-purple-700', tabBorder: 'border-purple-300', progress: 'bg-purple-400 shadow-md shadow-purple-400/50', icon: 'text-purple-600 dark:text-purple-400', taarBtn: 'from-purple-600 to-purple-800', cardHeader: 'bg-purple-50 text-purple-800 dark:bg-purple-900/20 dark:text-purple-300', counterDone: 'bg-purple-50 border-2 border-purple-400 text-purple-700 dark:bg-purple-900/40 dark:border-purple-600 dark:text-purple-300', counterHigh: 'bg-purple-400 hover:bg-purple-500', counterMed: 'bg-purple-500 hover:bg-purple-600', counterLow: 'bg-purple-600 hover:bg-purple-700', blob1: 'bg-purple-300/40', blob2: 'bg-fuchsia-300/40', blob3: 'bg-violet-300/40', darkBlob1: 'bg-purple-900/40', darkBlob2: 'bg-fuchsia-900/40', darkBlob3: 'bg-violet-900/40' }
 };
 
 const defaultThemeColors = { wake: 'cyan', morning: 'teal', evening: 'red', sleep: 'indigo', prayer: 'blue', free: 'orange' };
@@ -643,6 +662,13 @@ export default function App() {
   const [showTakhreej, setShowTakhreej] = useState(true);
   const [showFadl, setShowFadl] = useState(true);
   const [showFawaid, setShowFawaid] = useState(true);
+  
+  // خلفيات تفاعلية
+  const [isInteracting, setIsInteracting] = useState(false);
+  const triggerInteraction = () => {
+    setIsInteracting(true);
+    setTimeout(() => setIsInteracting(false), 300);
+  };
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [fontSizeIndex, setFontSizeIndex] = useState(() => {
     const saved = localStorage.getItem('fontSizeIndex');
@@ -1717,6 +1743,7 @@ export default function App() {
           triggerVibration(50);
           playSound('click');
         }
+        triggerInteraction();
         return { ...prev, [key]: newCount };
       }
       return prev;
@@ -1754,6 +1781,7 @@ export default function App() {
     recordActivity('tasbeeh');
     triggerVibration(50);
     playSound('click');
+    triggerInteraction();
   };
 
   const resetTasbeeh = () => {
@@ -1904,7 +1932,8 @@ export default function App() {
   };
 
   return (
-    <div dir="rtl" className={`min-h-screen font-cairo transition-colors duration-300 ${isDarkMode ? 'dark bg-slate-900 text-slate-100' : 'bg-slate-50 text-slate-900'}`}>
+    <div dir="rtl" className={`min-h-screen relative font-cairo transition-colors duration-300 ${isDarkMode ? 'dark text-slate-100' : 'text-slate-900'}`}>
+      <LiveBackground colorTheme={currentTabTheme} isDarkMode={isDarkMode} isInteracting={isInteracting} />
       <style dangerouslySetInnerHTML={globalStyles} />
 
       {/* --- إشعار تحديث التطبيق (PWA Update Prompt) --- */}

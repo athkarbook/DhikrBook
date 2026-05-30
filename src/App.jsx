@@ -696,26 +696,26 @@ export default function App() {
 
   const [isLocating, setIsLocating] = useState(false);
 
-  const autoFetchLocation = async (manualAddress = null) => {
+  const autoFetchLocation = async (manualCity = null, manualCountry = null) => {
     setIsLocating(true);
     
-    if (manualAddress) {
+    if (manualCity && manualCountry) {
       try {
-        const prayerRes = await fetch(`https://api.aladhan.com/v1/timingsByAddress?address=${encodeURIComponent(manualAddress)}&method=4`);
+        const prayerRes = await fetch(`https://api.aladhan.com/v1/timingsByCity?city=${encodeURIComponent(manualCity)}&country=${encodeURIComponent(manualCountry)}&method=4`);
         const prayerData = await prayerRes.json();
         
         if (prayerData.code === 200 && prayerData.data && prayerData.data.timings) {
-          const loc = { address: manualAddress };
+          const loc = { city: manualCity, country: manualCountry };
           setPrayerTimes(prayerData.data.timings);
           setLocation(loc);
           localStorage.setItem('userLocation', JSON.stringify(loc));
           localStorage.setItem('prayerTimes', JSON.stringify(prayerData.data.timings));
           localStorage.setItem('prayerTimesDate', new Date().toDateString());
         } else {
-          alert('لم نتمكن من العثور على أوقات الصلاة لهذه المدينة. تأكد من التهجئة.');
+          alert('لم نتمكن من العثور على أوقات الصلاة لهذه المدينة. تأكد من التهجئة (مثال: Amman).');
         }
       } catch (e) {
-        alert('حدث خطأ في الاتصال.');
+        alert('حدث خطأ في الاتصال بخادم مواقيت الصلاة.');
       } finally {
         setIsLocating(false);
       }
@@ -773,8 +773,8 @@ export default function App() {
     if (location && !prayerTimes) {
       const fetchSavedPrayerTimes = async () => {
         try {
-          const url = location.address 
-            ? `https://api.aladhan.com/v1/timingsByAddress?address=${encodeURIComponent(location.address)}&method=4`
+          const url = (location.city && location.country)
+            ? `https://api.aladhan.com/v1/timingsByCity?city=${encodeURIComponent(location.city)}&country=${encodeURIComponent(location.country)}&method=4`
             : `https://api.aladhan.com/v1/timings?latitude=${location.lat}&longitude=${location.lng}&method=4`;
           const prayerRes = await fetch(url);
           const prayerData = await prayerRes.json();
@@ -2709,8 +2709,11 @@ export default function App() {
                     قم بتفعيل الأوقات الذكية ليقوم التطبيق بتحديد موقعك <span className="font-bold text-teal-600">عبر الـ GPS</span> لتذكيرك بأذكار الصباح والمساء والصلوات في وقتها الدقيق.
                     <br/><br/>
                     <button onClick={() => {
-                      const addr = window.prompt("أدخل مدينتك ودولتك للبحث يدوياً (مثال: مكة، السعودية):");
-                      if(addr) autoFetchLocation(addr);
+                      const city = window.prompt("الرجاء إدخال مدينتك (مثال: Amman، مكة):");
+                      if(!city) return;
+                      const country = window.prompt("الرجاء إدخال دولتك (مثال: Jordan، السعودية):");
+                      if(!country) return;
+                      autoFetchLocation(city, country);
                     }} className="text-teal-600 hover:underline font-bold cursor-pointer">أو أدخل مدينتك يدوياً بالضغط هنا</button>
                   </p>
                 ) : (
@@ -2730,7 +2733,7 @@ export default function App() {
                       ))}
                     </div>
                     <p className="text-[11px] font-bold text-slate-500 dark:text-slate-400 text-center">
-                      موقعك الحالي: <span className="text-teal-600 dark:text-teal-400">{location?.address ? location.address : 'تحديد تلقائي (GPS)'}</span>
+                      موقعك الحالي: <span className="text-teal-600 dark:text-teal-400">{location?.city ? `${location.city}، ${location.country}` : 'تحديد تلقائي (GPS)'}</span>
                     </p>
                   </div>
                 )}

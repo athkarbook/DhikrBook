@@ -650,7 +650,14 @@ export default function App() {
   const [progress, setProgress] = useState({});
   const [themeColors, setThemeColors] = useState(() => {
     const saved = localStorage.getItem('themeColors');
-    return saved !== null ? JSON.parse(saved) : defaultThemeColors;
+    if (saved !== null) {
+      try {
+        return { ...defaultThemeColors, ...JSON.parse(saved) };
+      } catch (e) {
+        return defaultThemeColors;
+      }
+    }
+    return defaultThemeColors;
   });
 
   // -- الحالات الجديدة للصوت والاهتزاز والمواظبة والاحتفال والإشعارات --
@@ -702,10 +709,10 @@ export default function App() {
   const [activityHistory, setActivityHistory] = useState(() => {
     try {
       const saved = JSON.parse(localStorage.getItem('activityHistory')) || {};
-      // تحويل البيانات القديمة (أرقام) إلى كائنات
+      // تحويل البيانات القديمة (أرقام أو نصوص) إلى كائنات
       for (const date in saved) {
-        if (typeof saved[date] === 'number') {
-          saved[date] = { tasbeeh: saved[date] };
+        if (typeof saved[date] !== 'object' || saved[date] === null) {
+          saved[date] = { tasbeeh: Number(saved[date]) || 0 };
         }
       }
       return saved;
@@ -1524,6 +1531,7 @@ export default function App() {
     if (tabId === 'morning') return 'الصباح';
     if (tabId === 'evening') return 'المساء';
     if (tabId === 'prayer') return 'الصلاة';
+    if (tabId === 'free') return 'المسبحة الحرة';
     return 'النوم';
   };
 
@@ -1797,7 +1805,7 @@ export default function App() {
               </button>
             )}
 
-            <h3 className="text-2xl font-bold mb-8 text-teal-700 dark:text-teal-400 flex items-center gap-2 mt-4">
+            <h3 className={`text-2xl font-bold mb-8 flex items-center gap-2 mt-4 ${(colorMap[themeColors.free] || colorMap.orange).icon}`}>
               <TasbeehIcon className="w-7 h-7" />
               المسبحة الحرة
             </h3>
@@ -1807,10 +1815,10 @@ export default function App() {
 
             {/* زر العداد الضخم مع تأثير النبض */}
             <div className="relative mb-8">
-              <div className="absolute inset-0 bg-teal-400 rounded-full animate-ping opacity-20"></div>
+              <div className={`absolute inset-0 rounded-full animate-ping opacity-20 ${(colorMap[themeColors.free] || colorMap.orange).header.replace('bg-', 'bg-')}`}></div>
               <button
                 onClick={handleTasbeehClick}
-                className="relative z-10 w-48 h-48 md:w-56 md:h-56 bg-gradient-to-br from-teal-400 to-teal-600 hover:from-teal-500 hover:to-teal-700 rounded-full shadow-[0_10px_30px_rgba(20,184,166,0.4)] flex items-center justify-center text-white text-5xl md:text-6xl font-extrabold active:scale-95 transition-all border-4 border-teal-200 dark:border-teal-800 overflow-hidden group"
+                className={`relative z-10 w-48 h-48 md:w-56 md:h-56 bg-gradient-to-br ${(colorMap[themeColors.free] || colorMap.orange).taarBtn} rounded-full shadow-[0_10px_30px_rgba(0,0,0,0.2)] flex items-center justify-center text-white text-5xl md:text-6xl font-extrabold active:scale-95 transition-all border-4 border-white/20 overflow-hidden group`}
               >
                 <span className="relative z-10 group-active:scale-110 transition-transform">{tasbeehCount}</span>
                 <div className="absolute inset-0 bg-white/20 opacity-0 group-active:opacity-100 transition-opacity"></div>
@@ -1829,11 +1837,11 @@ export default function App() {
             <div className="w-full mt-8 bg-slate-50 dark:bg-slate-700/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-600 w-full max-w-xs">
               <div className="flex justify-between items-center mb-2">
                 <span className="font-bold text-slate-700 dark:text-slate-200">التحدي اليومي</span>
-                <span className="text-sm font-bold text-teal-600 dark:text-teal-400">{todayTasbeehs} / {dailyTasbeehGoal}</span>
+                <span className={`text-sm font-bold ${(colorMap[themeColors.free] || colorMap.orange).icon}`}>{todayTasbeehs} / {dailyTasbeehGoal}</span>
               </div>
               <div className="w-full bg-slate-200 dark:bg-slate-600 h-2.5 rounded-full overflow-hidden mb-4">
                 <div
-                  className="bg-teal-500 h-full transition-all duration-500"
+                  className={`${(colorMap[themeColors.free] || colorMap.orange).header} h-full transition-all duration-500`}
                   style={{ width: `${Math.min(100, (todayTasbeehs / dailyTasbeehGoal) * 100)}%` }}
                 ></div>
               </div>

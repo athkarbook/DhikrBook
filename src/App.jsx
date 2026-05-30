@@ -719,7 +719,7 @@ export default function App() {
         } else {
            // الأذكار الطويلة (مثل آية الكرسي، سيد الاستغفار)
            // الذكاء الاصطناعي يواجه صعوبة كبيرة في اللغة العربية الفصحى
-           // لذا سنبحث فقط عن 3 كلمات فريدة ومميزة (ليست من الكلمات العامة) قالها المستخدم وتوجد في الذكر!
+           // لذا سنبحث عن كلمات فريدة ومميزة (ليست من الكلمات العامة)
            const uniqueCardWords = [...new Set(cardWords)];
            const uniqueSpoken = [...new Set(window.voiceState[targetCard.id])];
            
@@ -733,9 +733,18 @@ export default function App() {
                }
            }
            
-           // إذا استطاع المتصفح التعرف على 3 كلمات مميزة فقط من هذا الذكر، فهو بالتأكيد يقرؤه! (وهذا يتغلب كلياً على أخطاء التعرف الصوتي)
+           // الشرط الأول: قراءة 3 كلمات مميزة على الأقل (لضمان أنه يقرأ الذكر الصحيح وتجاوز أخطاء التعرف)
            const requiredMatches = Math.min(3, specificCardWords.length);
-           if (distinctMatches >= requiredMatches) {
+           
+           // الشرط الثاني (الجديد): يجب أن يلتقط كلمة مميزة واحدة على الأقل من آخر 30% من الذكر!
+           // هذا يضمن أن المستخدم قد وصل فعلاً لنهاية الذكر ولم يقرأ بدايته فقط
+           const endIndex = Math.floor(cardWords.length * 0.70);
+           const endWords = cardWords.slice(endIndex);
+           const specificEndWords = [...new Set(endWords)].filter(w => !stopWords.includes(w));
+           
+           const hasReachedEnd = specificEndWords.length === 0 || specificEndWords.some(w => uniqueSpoken.includes(w));
+
+           if (distinctMatches >= requiredMatches && hasReachedEnd) {
               shouldIncrement = true;
            }
         }

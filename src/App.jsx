@@ -803,6 +803,51 @@ export default function App() {
     return () => clearInterval(intervalId);
   }, [prayerTimes]);
 
+  // -- جدولة التنبيهات في الخلفية للمتصفحات المدعومة (بدون الحاجة لفتح المتصفح) --
+  useEffect(() => {
+    if (!prayerTimes || !notificationsEnabled) return;
+    
+    const scheduleOfflineNotifications = async () => {
+      // فحص دعم الميزة التجريبية (تعمل غالباً على أندرويد/كروم)
+      if (!('showTrigger' in Notification.prototype) || !('TimestampTrigger' in window)) return;
+      if (Notification.permission !== 'granted') return;
+      
+      try {
+        const registration = await navigator.serviceWorker.ready;
+        const now = new Date();
+        
+        const prayers = [
+          { name: 'الفجر', time: prayerTimes.Fajr },
+          { name: 'الظهر', time: prayerTimes.Dhuhr },
+          { name: 'العصر', time: prayerTimes.Asr },
+          { name: 'المغرب', time: prayerTimes.Maghrib },
+          { name: 'العشاء', time: prayerTimes.Isha }
+        ];
+
+        for (const p of prayers) {
+          if (!p.time) continue;
+          const [hours, mins] = p.time.split(':').map(Number);
+          const prayerTime = new Date();
+          prayerTime.setHours(hours, mins, 0, 0);
+          
+          // جدولة الإشعارات للمستقبل اليوم فقط
+          if (prayerTime.getTime() > now.getTime()) {
+            registration.showNotification(`حان الآن موعد صلاة ${p.name}`, {
+              body: 'لا تنس أذكار ما بعد الصلاة!',
+              icon: '/dhikr-book/pwa-192x192.png',
+              tag: `prayer-${p.name}-${prayerTime.getDate()}`, 
+              showTrigger: new window.TimestampTrigger(prayerTime.getTime())
+            });
+          }
+        }
+      } catch (e) {
+        console.log('Error scheduling offline notifications:', e);
+      }
+    };
+
+    scheduleOfflineNotifications();
+  }, [prayerTimes, notificationsEnabled]);
+
   // -- القائمة السرية للمطور (لاستعادة البيانات) --
   const [devClickCount, setDevClickCount] = useState(0);
   const [showDevModal, setShowDevModal] = useState(false);

@@ -7,6 +7,7 @@ import { StatsModal } from './components/Modals/StatsModal';
 import { RoadmapModal } from './components/Modals/RoadmapModal';
 import { DevModal } from './components/Modals/DevModal';
 import { FreeAdhkarModal } from './components/Modals/FreeAdhkarModal';
+import { MoodTracker } from './components/MoodTracker';
 import React, { useState, useEffect, useMemo, useRef, Suspense, lazy } from 'react';
 import { useRegisterSW } from 'virtual:pwa-register/react';
 import { Sun, Moon, Settings, Info, BookOpen, CheckCircle, RotateCcw, Clock, Star, X, Plus, Minus, Type, Flame, Volume2, VolumeX, Vibrate, VibrateOff, Target, Sunrise, Sunset, MoonStar, ChevronDown, ChevronUp, Palette, Fingerprint, BarChart2, Edit3, Trash2, Award, Trophy, Bell, BellRing, Shield, Crown, RefreshCw, Share2, Map, Mic, MicOff, Leaf, Heart } from 'lucide-react';
@@ -371,33 +372,7 @@ export default function App() {
     }, 1000);
 
     
-  const props = {
-    showSettingsModal, setShowSettingsModal,
-    showTasbeehModal, setShowTasbeehModal,
-    showStatsModal, setShowStatsModal,
-    showRoadmapModal, setShowRoadmapModal,
-    showDevModal, setShowDevModal,
-    showFreeAdhkarModal, setShowFreeAdhkarModal,
-    soundEnabled, setSoundEnabled,
-    vibrationEnabled, setVibrationEnabled,
-    prayerTimes, isLocating, autoFetchLocation, setPrayerTimes, setLocation, location,
-    testHiddenNotification, notificationsEnabled, setNotificationsEnabled,
-    celebrationEnabled, setCelebrationEnabled,
-    isDarkMode, toggleDarkMode,
-    fontSizeIndex, setFontSizeIndex, fontSizes,
-    themeColors, setThemeColors,
-    showTakhreej, setShowTakhreej,
-    showFadl, setShowFadl,
-    showFawaid, setShowFawaid,
-    getTabLabel,
-    customAdhkar, setCustomAdhkar, progress, setProgress,
-    handleDhikrClick, resetSingleDhikr, deleteCustomDhikr,
-    showAddCustom, setShowAddCustom, newCustomText, setNewCustomText, newCustomTarget, setNewCustomTarget, addCustomDhikr,
-    tasbeehCount, setTasbeehCount, resetTasbeeh, handleTasbeehClick, dailyTasbeehGoal, todayTasbeehs,
-    bestStreak, streak, totalTasbeehsMade, totalAdhkarRead, roadmapDays,
-    badges, exportStatsAsImage, isExporting,
-    devData, setDevData
-  };
+  
 return () => clearInterval(intervalId);
   }, [prayerTimes]);
 
@@ -1455,7 +1430,39 @@ return () => clearInterval(intervalId);
   const shouldShowBeforeMood = ['morning', 'evening', 'sleep', 'wake', 'prayer'].includes(activeTab) && !hasAnsweredBefore;
   const shouldShowAfterMood = ['morning', 'evening', 'sleep', 'wake', 'prayer'].includes(activeTab) && isTabCompleted && hasAnsweredBefore && !hasAnsweredAfter;
 
-  return (
+  
+  const props = {
+    showSettingsModal, setShowSettingsModal,
+    showTasbeehModal, setShowTasbeehModal,
+    showStatsModal, setShowStatsModal,
+    showRoadmapModal, setShowRoadmapModal,
+    showDevModal, setShowDevModal,
+    showFreeAdhkarModal, setShowFreeAdhkarModal,
+    soundEnabled, setSoundEnabled,
+    vibrationEnabled, setVibrationEnabled,
+    prayerTimes, isLocating, autoFetchLocation, setPrayerTimes, setLocation, location,
+    testHiddenNotification, notificationsEnabled, setNotificationsEnabled,
+    celebrationEnabled, setCelebrationEnabled,
+    isDarkMode, toggleDarkMode,
+    fontSizeIndex, setFontSizeIndex, fontSizes,
+    themeColors, setThemeColors,
+    showTakhreej, setShowTakhreej,
+    showFadl, setShowFadl,
+    showFawaid, setShowFawaid,
+    getTabLabel,
+    customAdhkar, setCustomAdhkar, progress, setProgress,
+    handleDhikrClick, resetSingleDhikr, deleteCustomDhikr,
+    showAddCustom, setShowAddCustom, newCustomText, setNewCustomText, newCustomTarget, setNewCustomTarget, addCustomDhikr,
+    tasbeehCount, setTasbeehCount, resetTasbeeh, handleTasbeehClick, dailyTasbeehGoal, todayTasbeehs,
+    bestStreak, streak, totalTasbeehsMade, totalAdhkarRead, roadmapDays,
+    badges, exportStatsAsImage, isExporting,
+    devData, setDevData,
+    currentTabTheme, activeTab, setActiveTab, getTabClass, totalProgressPercentage,
+    speechSupported, toggleVoiceTasbeeh, isListening, currentLevel,
+    currentTabAdhkar
+  };
+
+return (
     <div dir="rtl" className={`min-h-screen relative font-cairo transition-colors duration-300 ${isDarkMode ? 'dark text-slate-100' : 'text-slate-900'}`}>
       <LiveBackground colorTheme={currentTabTheme} isDarkMode={isDarkMode} isInteracting={isInteracting} activeTab={activeTab} />
       <style dangerouslySetInnerHTML={globalStyles} />
@@ -1777,63 +1784,11 @@ return () => clearInterval(intervalId);
             </div>
 
             {/* --- التتبع النفسي (Mood Tracker) --- */}
-            {shouldShowBeforeMood && (
-              <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl rounded-3xl p-6 md:p-8 mb-8 border border-slate-200 dark:border-slate-700 shadow-xl animate-in fade-in slide-in-from-top-4 duration-500">
-                <h3 className="text-xl md:text-2xl font-bold mb-2 flex items-center justify-center gap-2 text-indigo-600 dark:text-indigo-400">
-                  <Heart className="w-6 h-6 animate-[pulse_2s_ease-in-out_infinite]" />
-                  كيف حال قلبك الآن؟
-                </h3>
-                <p className="text-center text-slate-500 dark:text-slate-400 text-sm md:text-base mb-6">قبل أن تبدأ بذكر الله، سجل شعورك الحالي.</p>
-
-                <div className="flex justify-center gap-3 md:gap-8 flex-wrap">
-                  {[
-                    { id: 'sad', icon: '😔', label: 'حزين' },
-                    { id: 'anxious', icon: '😟', label: 'قلق' },
-                    { id: 'tired', icon: '😩', label: 'متعب' },
-                    { id: 'calm', icon: '😌', label: 'هادئ' },
-                    { id: 'peaceful', icon: '🤍', label: 'مطمئن' }
-                  ].map(mood => (
-                    <button
-                      key={mood.id}
-                      onClick={() => handleMoodSelect(mood.id, 'before')}
-                      className="flex flex-col items-center gap-2 p-3 md:p-4 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-2xl transition-all hover:scale-110 active:scale-95"
-                    >
-                      <span className="text-4xl md:text-5xl">{mood.icon}</span>
-                      <span className="text-xs md:text-sm font-bold text-slate-600 dark:text-slate-300">{mood.label}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {shouldShowAfterMood && (
-              <div className="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/30 dark:to-teal-900/30 backdrop-blur-xl rounded-3xl p-6 md:p-8 mb-8 border border-emerald-200 dark:border-emerald-800/50 shadow-2xl animate-in zoom-in duration-500">
-                <h3 className="text-xl md:text-2xl font-bold mb-2 flex items-center justify-center gap-2 text-emerald-600 dark:text-emerald-400">
-                  <Heart className="w-6 h-6 animate-[pulse_2s_ease-in-out_infinite]" />
-                  كيف حال قلبك الآن بعد الذكر؟
-                </h3>
-                <p className="text-center text-emerald-600/80 dark:text-emerald-400/80 text-sm md:text-lg mb-6 font-bold">«أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ»</p>
-
-                <div className="flex justify-center gap-3 md:gap-8 flex-wrap">
-                  {[
-                    { id: 'sad', icon: '😔', label: 'حزين' },
-                    { id: 'anxious', icon: '😟', label: 'قلق' },
-                    { id: 'tired', icon: '😩', label: 'متعب' },
-                    { id: 'calm', icon: '😌', label: 'هادئ' },
-                    { id: 'peaceful', icon: '🤍', label: 'مطمئن' }
-                  ].map(mood => (
-                    <button
-                      key={mood.id}
-                      onClick={() => handleMoodSelect(mood.id, 'after')}
-                      className="flex flex-col items-center gap-2 p-3 md:p-4 hover:bg-white dark:hover:bg-slate-800 rounded-2xl transition-all hover:scale-110 active:scale-95 shadow-sm hover:shadow-md"
-                    >
-                      <span className="text-4xl md:text-5xl">{mood.icon}</span>
-                      <span className="text-xs md:text-sm font-bold text-slate-600 dark:text-slate-300">{mood.label}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
+            <MoodTracker 
+        shouldShowBeforeMood={shouldShowBeforeMood}
+        shouldShowAfterMood={shouldShowAfterMood}
+        handleMoodSelect={handleMoodSelect}
+      />
 
             {/* --- قائمة الأذكار الرئيسية (تتغير حسب التبويب) --- */}
             <div className="space-y-6 md:space-y-8">

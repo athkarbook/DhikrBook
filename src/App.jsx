@@ -696,37 +696,50 @@ export default function App() {
 
   const [isLocating, setIsLocating] = useState(false);
 
-  const autoFetchLocation = async () => {
+  const autoFetchLocation = () => {
     setIsLocating(true);
-    try {
-      // 1. تحديد الموقع تلقائياً عبر الـ IP بدون أي صلاحيات أو إزعاج
-      const geoRes = await fetch('https://get.geojs.io/v1/ip/geo.json');
-      const geoData = await geoRes.json();
-      
-      const loc = { 
-        lat: geoData.latitude, 
-        lng: geoData.longitude,
-        city: geoData.city,
-        country: geoData.country
-      };
-      
-      setLocation(loc);
-      localStorage.setItem('userLocation', JSON.stringify(loc));
-      
-      // 2. جلب أوقات الصلاة بناءً على الإحداثيات
-      const prayerRes = await fetch(`https://api.aladhan.com/v1/timings?latitude=${loc.lat}&longitude=${loc.lng}&method=4`);
-      const prayerData = await prayerRes.json();
-      
-      if (prayerData.code === 200 && prayerData.data && prayerData.data.timings) {
-        setPrayerTimes(prayerData.data.timings);
-        localStorage.setItem('prayerTimes', JSON.stringify(prayerData.data.timings));
-        localStorage.setItem('prayerTimesDate', new Date().toDateString());
-      }
-    } catch (e) {
-      alert('حدث خطأ أثناء تحديد الموقع التلقائي. تأكد من اتصالك بالإنترنت.');
-    } finally {
+    
+    if (!navigator.geolocation) {
+      alert('عذراً، متصفحك لا يدعم تحديد الموقع.');
       setIsLocating(false);
+      return;
     }
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        try {
+          const loc = { 
+            lat: position.coords.latitude, 
+            lng: position.coords.longitude 
+          };
+          
+          // جلب أوقات الصلاة بناءً على الإحداثيات
+          const prayerRes = await fetch(`https://api.aladhan.com/v1/timings?latitude=${loc.lat}&longitude=${loc.lng}&method=4`);
+          const prayerData = await prayerRes.json();
+          
+          if (prayerData.code === 200 && prayerData.data && prayerData.data.timings) {
+            setPrayerTimes(prayerData.data.timings);
+            setLocation(loc);
+            localStorage.setItem('userLocation', JSON.stringify(loc));
+            localStorage.setItem('prayerTimes', JSON.stringify(prayerData.data.timings));
+            localStorage.setItem('prayerTimesDate', new Date().toDateString());
+          }
+        } catch (e) {
+          alert('حدث خطأ أثناء جلب أوقات الصلاة. تأكد من اتصالك بالإنترنت.');
+        } finally {
+          setIsLocating(false);
+        }
+      },
+      (error) => {
+        setIsLocating(false);
+        if (error.code === error.PERMISSION_DENIED) {
+          alert('يرجى السماح للتطبيق بالوصول إلى الموقع (GPS) من إعدادات المتصفح لنتمكن من تحديد أوقات الصلاة بدقة.');
+        } else {
+          alert('لم نتمكن من تحديد موقعك. يرجى التأكد من تفعيل خدمة الموقع (GPS) في هاتفك.');
+        }
+      },
+      { timeout: 15000, enableHighAccuracy: false }
+    );
   };
 
   const notifsEnabledRef = useRef(notificationsEnabled);
@@ -2668,7 +2681,7 @@ export default function App() {
                 
                 {!prayerTimes ? (
                   <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed text-center py-2">
-                    قم بتفعيل الأوقات الذكية ليقوم التطبيق بتحديد موقعك <span className="font-bold text-teal-600">تلقائياً (بدون صلاحيات)</span> لتذكيرك بأذكار الصباح والمساء والصلوات في وقتها الدقيق.
+                    قم بتفعيل الأوقات الذكية ليقوم التطبيق بتحديد موقعك <span className="font-bold text-teal-600">عبر الـ GPS</span> لتذكيرك بأذكار الصباح والمساء والصلوات في وقتها الدقيق.
                   </p>
                 ) : (
                   <div className="flex flex-col gap-3 animate-in fade-in zoom-in-95 duration-300">

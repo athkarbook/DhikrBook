@@ -722,10 +722,15 @@ export default function App() {
   });
 
   const recordActivity = (type, amount = 1) => {
-    const todayStr = new Date().toLocaleDateString('en-CA');
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const dayNum = String(d.getDate()).padStart(2, '0');
+    const todayStr = `${y}-${m}-${dayNum}`;
+    
     setActivityHistory(prev => {
       const todayData = prev[todayStr] || {};
-      const updatedData = { ...todayData, [type]: (todayData[type] || 0) + amount };
+      const updatedData = { ...todayData, [type]: (Number(todayData[type]) || 0) + amount };
       const updated = { ...prev, [todayStr]: updatedData };
       localStorage.setItem('activityHistory', JSON.stringify(updated));
       return updated;
@@ -1543,7 +1548,12 @@ export default function App() {
     return Array.from({length: numDays}).map((_, i) => {
        const d = new Date();
        d.setDate(d.getDate() - (numDays - 1 - i));
-       const dateStr = d.toLocaleDateString('en-CA');
+       
+       const y = d.getFullYear();
+       const m = String(d.getMonth() + 1).padStart(2, '0');
+       const dayNum = String(d.getDate()).padStart(2, '0');
+       const dateStr = `${y}-${m}-${dayNum}`;
+       
        const dayName = d.toLocaleDateString('ar-SA', { weekday: 'short' });
        return {
           date: dateStr,
@@ -1554,7 +1564,12 @@ export default function App() {
     });
   }, [activityHistory, chartFilter]);
 
-  const maxActivity = Math.max(...graphDays.map(d => Object.values(d.data).reduce((a, b) => a + b, 0)), 5);
+  const maxActivity = Math.max(
+    ...graphDays.map(d => 
+      Object.values(d.data).reduce((a, b) => (Number(a) || 0) + (Number(b) || 0), 0)
+    ), 
+    5
+  );
 
   const exportStatsAsImage = async () => {
     setIsExporting(true);
@@ -1670,6 +1685,22 @@ export default function App() {
               إغلاق
             </button>
           </div>
+        </div>
+      )}
+
+      {/* --- إشعار تحديث التطبيق (PWA) --- */}
+      {needRefresh && (
+        <div className="fixed top-0 left-0 w-full z-[100] bg-indigo-600 text-white p-3 flex justify-between items-center shadow-lg">
+          <div className="flex items-center gap-2">
+            <Star className="w-5 h-5 animate-spin-slow" />
+            <span className="font-bold text-sm md:text-base">تحديث جديد متاح! أضفنا ميزات جديدة وحللنا المشاكل.</span>
+          </div>
+          <button 
+            onClick={() => updateServiceWorker(true)}
+            className="bg-white text-indigo-600 px-4 py-1.5 rounded-full font-bold text-sm hover:bg-indigo-50 transition"
+          >
+            تحديث الآن
+          </button>
         </div>
       )}
 
@@ -2001,34 +2032,36 @@ export default function App() {
                 </div>
                 <div className={`flex items-end justify-between ${chartFilter === '7' ? 'gap-1 md:gap-2' : 'gap-[1px] md:gap-[2px]'} h-48 mt-4 px-1 md:px-2`}>
                   {graphDays.map((day, i) => {
-                     const total = Object.values(day.data).reduce((a, b) => a + b, 0);
+                     const total = Object.values(day.data).reduce((a, b) => (Number(a) || 0) + (Number(b) || 0), 0);
                      const isToday = i === graphDays.length - 1;
                      return (
-                       <div key={day.date} className="flex flex-col items-center gap-2 flex-1 group">
+                       <div key={day.date} className="h-full flex flex-col items-center justify-end gap-2 flex-1 group">
                          <div 
-                           className="w-full max-w-[2.5rem] rounded-t-sm transition-all duration-500 relative flex flex-col justify-end cursor-pointer hover:opacity-80 overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
-                           style={{ height: '100%' }}
+                           className="w-full max-w-[2.5rem] flex-1 rounded-t-sm transition-all duration-500 relative flex flex-col justify-end cursor-pointer hover:opacity-80 overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
+                           style={{ minHeight: '0' }}
                          >
-                            <div className="absolute -top-8 bg-black/80 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none font-bold z-10 whitespace-nowrap">
+                            <div className="absolute -top-8 bg-black/80 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none font-bold z-10 whitespace-nowrap z-20">
                                الإجمالي: {total}
                             </div>
                             
                             {/* Stacked bars */}
-                            {['free', 'prayer', 'sleep', 'evening', 'morning', 'wake', 'tasbeeh'].map(cat => {
-                               const val = day.data[cat] || 0;
-                               if (val === 0) return null;
-                               const heightPercent = (val / maxActivity) * 100;
-                               const colors = {
-                                  tasbeeh: '#14b8a6', // teal
-                                  morning: '#f59e0b', // amber
-                                  evening: '#f43f5e', // rose
-                                  sleep: '#6366f1', // indigo
-                                  wake: '#0ea5e9', // sky
-                                  prayer: '#3b82f6', // blue
-                                  free: '#8b5cf6' // violet
-                               };
-                               return <div key={cat} style={{ height: `${heightPercent}%`, backgroundColor: colors[cat] }} className="w-full" title={cat} />
-                            })}
+                            <div className="w-full h-full flex flex-col justify-end">
+                              {['free', 'prayer', 'sleep', 'evening', 'morning', 'wake', 'tasbeeh'].map(cat => {
+                                 const val = Number(day.data[cat]) || 0;
+                                 if (val === 0) return null;
+                                 const heightPercent = (val / maxActivity) * 100;
+                                 const colors = {
+                                    tasbeeh: '#14b8a6', // teal
+                                    morning: '#f59e0b', // amber
+                                    evening: '#f43f5e', // rose
+                                    sleep: '#6366f1', // indigo
+                                    wake: '#0ea5e9', // sky
+                                    prayer: '#3b82f6', // blue
+                                    free: '#8b5cf6' // violet
+                                 };
+                                 return <div key={cat} style={{ height: `${heightPercent}%`, backgroundColor: colors[cat] }} className="w-full shrink-0" title={cat} />
+                              })}
+                            </div>
                          </div>
                          {chartFilter === '7' ? (
                            <span className={`text-[10px] md:text-xs font-bold ${isToday ? 'text-teal-600 dark:text-teal-400' : 'text-slate-500 dark:text-slate-400'}`}>

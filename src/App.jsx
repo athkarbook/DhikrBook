@@ -579,6 +579,14 @@ export default function App() {
   const [isExporting, setIsExporting] = useState(false);
 
   // -- حساب نقاط النور (XP) والمستوى (RPG Leveling) --
+  const [activityHistory, setActivityHistory] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem('activityHistory')) || {};
+    } catch (e) {
+      return {};
+    }
+  });
+
   const userXP = (totalTasbeehsMade * 1) + (totalAdhkarRead * 2) + (bestStreak * 50);
 
   const getLevelInfo = (xp) => {
@@ -1107,6 +1115,14 @@ export default function App() {
 
   useEffect(() => {
     localStorage.setItem('todayTasbeehs', todayTasbeehs.toString());
+    
+    // تحديث سجل النشاط اليومي للرسم البياني الأسبوعي
+    const todayStr = new Date().toLocaleDateString('en-CA');
+    setActivityHistory(prev => {
+      const updated = { ...prev, [todayStr]: todayTasbeehs };
+      localStorage.setItem('activityHistory', JSON.stringify(updated));
+      return updated;
+    });
   }, [todayTasbeehs]);
 
   useEffect(() => {
@@ -1379,6 +1395,23 @@ export default function App() {
 
   const TabIcon = activeTab === 'sleep' ? Moon : activeTab === 'wake' ? Sunrise : activeTab === 'morning' ? Sun : Sunset;
 
+  // توليد بيانات آخر 7 أيام للرسم البياني
+  const last7Days = useMemo(() => {
+    return Array.from({length: 7}).map((_, i) => {
+       const d = new Date();
+       d.setDate(d.getDate() - (6 - i));
+       const dateStr = d.toLocaleDateString('en-CA');
+       const dayName = d.toLocaleDateString('ar-SA', { weekday: 'short' });
+       return {
+          date: dateStr,
+          dayName: dayName,
+          value: activityHistory[dateStr] || 0
+       };
+    });
+  }, [activityHistory]);
+
+  const maxActivity = Math.max(...last7Days.map(d => d.value), 100);
+
   const exportStatsAsImage = async () => {
     setIsExporting(true);
     setTimeout(async () => {
@@ -1400,6 +1433,40 @@ export default function App() {
         setIsExporting(false);
       }
     }, 200);
+  };
+
+  const exportStoryAsImage = async () => {
+    setIsExporting(true);
+    try {
+      const element = document.getElementById('story-export-card');
+      if (!element) return setIsExporting(false);
+      
+      // إظهار العنصر مؤقتاً للتصوير
+      element.style.position = 'absolute';
+      element.style.left = '0';
+      element.style.top = '0';
+      element.style.zIndex = '-1';
+      
+      const canvas = await html2canvas(element, { 
+        backgroundColor: '#0f172a',
+        scale: 1, 
+        useCORS: true
+      });
+      
+      // إعادة إخفاء العنصر
+      element.style.left = '-9999px';
+      
+      const dataURL = canvas.toDataURL('image/jpeg', 0.9);
+      const link = document.createElement('a');
+      link.download = `DhikrBook-Story-${new Date().toISOString().slice(0,10)}.jpg`;
+      link.href = dataURL;
+      link.click();
+    } catch (e) {
+      console.error('Story export failed:', e);
+      alert('حدث خطأ أثناء تصدير الصورة.');
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   return (
@@ -1777,6 +1844,38 @@ export default function App() {
                 </div>
               </div>
 
+              {/* النشاط الأسبوعي */}
+              <div className="w-full mt-8 border-t border-slate-200 dark:border-slate-700 pt-6">
+                <h4 className="text-xl font-bold mb-6 text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                  <BarChart2 className="w-6 h-6 text-indigo-500" />
+                  النشاط الأسبوعي
+                </h4>
+                <div className="flex items-end justify-between gap-1 md:gap-2 h-40 mt-4 px-2">
+                  {last7Days.map((day, i) => {
+                     const heightPercent = Math.max(5, (day.value / maxActivity) * 100);
+                     const isToday = i === 6;
+                     return (
+                       <div key={day.date} className="flex flex-col items-center gap-2 flex-1 group">
+                         <div 
+                           className="w-full max-w-[2.5rem] rounded-t-lg transition-all duration-500 relative flex justify-center cursor-pointer hover:opacity-80"
+                           style={{ 
+                             height: `${heightPercent}%`,
+                             backgroundColor: isToday ? '#14b8a6' : (day.value > 0 ? '#6366f1' : '#cbd5e1')
+                           }}
+                         >
+                            <div className="absolute -top-8 bg-black/80 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none font-bold z-10">
+                               {day.value}
+                            </div>
+                         </div>
+                         <span className={`text-[10px] md:text-xs font-bold ${isToday ? 'text-teal-600 dark:text-teal-400' : 'text-slate-500 dark:text-slate-400'}`}>
+                           {day.dayName}
+                         </span>
+                       </div>
+                     );
+                  })}
+                </div>
+              </div>
+
               {/* قسم الأوسمة */}
               <div className="w-full mt-8 border-t border-slate-200 dark:border-slate-700 pt-6">
                 <h4 className="text-xl font-bold mb-4 text-slate-800 dark:text-slate-100 flex items-center gap-2">
@@ -1810,15 +1909,66 @@ export default function App() {
             </div>
 
             {/* أزرار الإجراءات */}
-            <div className="w-full mt-6 flex gap-3">
+            <div className="w-full mt-6 flex flex-col gap-3">
+              <button
+                onClick={exportStoryAsImage}
+                disabled={isExporting}
+                className="w-full py-4 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-xl font-black text-lg transition shadow-lg active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50"
+              >
+                {isExporting ? <RefreshCw className="w-6 h-6 animate-spin" /> : <Flame className="w-6 h-6" />}
+                شارك إنجازك (Story)
+              </button>
+              
               <button
                 onClick={exportStatsAsImage}
                 disabled={isExporting}
-                className="flex-1 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition shadow-md flex items-center justify-center gap-2 disabled:opacity-50"
+                className="w-full py-3 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 rounded-xl font-bold transition flex items-center justify-center gap-2 disabled:opacity-50"
               >
-                {isExporting ? <RefreshCw className="w-5 h-5 animate-spin" /> : <Share2 className="w-5 h-5" />}
-                شارك إنجازك
+                <Share2 className="w-5 h-5" />
+                حفظ الإحصائيات الكاملة
               </button>
+            </div>
+
+            {/* بطاقة الإنجاز (مخفية، تستخدم للتصدير فقط) */}
+            <div style={{ position: 'absolute', left: '-9999px', top: 0 }}>
+              <div id="story-export-card" className="w-[1080px] h-[1920px] bg-gradient-to-br from-slate-900 via-teal-900 to-slate-900 flex flex-col items-center justify-center p-20 text-white relative overflow-hidden" dir="rtl">
+                {/* زخرفة خلفية عشوائية */}
+                <div className="absolute inset-0 opacity-20 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 20% 30%, rgba(20, 184, 166, 0.4) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(99, 102, 241, 0.4) 0%, transparent 50%)' }}></div>
+                
+                <div className="z-10 bg-white/10 backdrop-blur-2xl p-16 rounded-[4rem] border-4 border-white/20 shadow-2xl w-full max-w-[900px] flex flex-col items-center text-center">
+                  <div className="bg-gradient-to-br from-amber-400 to-orange-500 p-10 rounded-full mb-12 shadow-[0_0_80px_rgba(251,191,36,0.6)]">
+                    <Flame className="w-32 h-32 text-white" />
+                  </div>
+                  
+                  <h1 className="text-7xl font-black mb-8 text-white">إنجاز عظيم!</h1>
+                  <p className="text-5xl leading-snug mb-16 text-white/90 font-bold">
+                    أنا أواظب على أذكاري وتسابيحي لـ
+                    <br />
+                    <span className="text-amber-400 text-[12rem] leading-none font-black block my-12 drop-shadow-lg">{streak}</span>
+                    يوم متتالي بفضل الله
+                  </p>
+                  
+                  <div className="grid grid-cols-2 gap-8 w-full">
+                     <div className="bg-black/30 p-10 rounded-[3rem] border border-white/10 shadow-inner">
+                        <TasbeehIcon className="w-20 h-20 mx-auto mb-6 text-teal-400" />
+                        <div className="text-5xl font-black mb-2">{totalTasbeehsMade}</div>
+                        <div className="text-3xl text-white/70 font-bold">تسبيحة</div>
+                     </div>
+                     <div className="bg-black/30 p-10 rounded-[3rem] border border-white/10 shadow-inner">
+                        <BookOpen className="w-20 h-20 mx-auto mb-6 text-indigo-400" />
+                        <div className="text-5xl font-black mb-2">{totalAdhkarRead}</div>
+                        <div className="text-3xl text-white/70 font-bold">ذكر مقروء</div>
+                     </div>
+                  </div>
+                </div>
+                
+                <div className="absolute bottom-24 flex items-center gap-6 z-10 bg-black/40 backdrop-blur-md px-12 py-6 rounded-full border border-white/10">
+                   <div className="bg-teal-500 p-4 rounded-3xl">
+                      <Moon className="w-10 h-10 text-white" />
+                   </div>
+                   <div className="text-4xl font-bold text-white tracking-wide">تطبيق حصن المسلم - DhikrBook</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

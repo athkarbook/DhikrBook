@@ -443,7 +443,102 @@ const adhkarData = [
     takhreej: 'متفق عليه، رواه البخاري (6313) ومسلم (2710) عن البراء بن عازب رضي الله عنه.',
     fadl: 'فإن مت من ليلتك مت على الفطرة.',
     fawaid: 'يجعله آخر ما يقول قبل نومه.',
-    sleepOnly: true,
+  }
+];
+
+const prayerAdhkar = [
+  {
+    id: 501,
+    target: 1,
+    category: 'أدعية وأذكار',
+    textMorning: 'أَسْتَغْفِرُ اللَّهَ، أَسْتَغْفِرُ اللَّهَ، أَسْتَغْفِرُ اللَّهَ. اللَّهُمَّ أَنْتَ السَّلَامُ، وَمِنْكَ السَّلَامُ، تَبَارَكْتَ يَا ذَا الْجَلَالِ وَالْإِكْرَامِ.',
+    takhreej: 'رواه مسلم',
+  },
+  {
+    id: 502,
+    target: 1,
+    category: 'أدعية وأذكار',
+    textMorning: 'لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ، اللَّهُمَّ لَا مَانِعَ لِمَا أَعْطَيْتَ، وَلَا مُعْطِيَ لِمَا مَنَعْتَ، وَلَا يَنْفَعُ ذَا الْجَدِّ مِنْكَ الْجَدُّ.',
+    takhreej: 'رواه البخاري ومسلم',
+  },
+  {
+    id: 503,
+    target: 1,
+    category: 'أدعية وأذكار',
+    textMorning: 'لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ، لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ، لَا إِلَهَ إِلَّا اللَّهُ، وَلَا نَعْبُدُ إِلَّا إِيَّاهُ، لَهُ النِّعْمَةُ وَلَهُ الْفَضْلُ، وَلَهُ الثَّنَاءُ الْحَسَنُ، لَا إِلَهَ إِلَّا اللَّهُ مُخْلِصِينَ لَهُ الدِّينَ وَلَوْ كَرِهَ الْكَافِرُونَ.',
+    takhreej: 'رواه مسلم',
+  },
+  {
+    id: 504,
+    target: 33,
+    category: 'تسبيح',
+    textMorning: 'سُبْحَانَ اللَّهِ',
+    takhreej: 'رواه مسلم',
+  },
+  {
+    id: 505,
+    target: 33,
+    category: 'تحميد',
+    textMorning: 'الْحَمْدُ لِلَّهِ',
+    takhreej: 'رواه مسلم',
+  },
+  {
+    id: 506,
+    target: 33,
+    category: 'تكبير',
+    textMorning: 'اللَّهُ أَكْبَرُ',
+    takhreej: 'رواه مسلم',
+  },
+  {
+    id: 507,
+    target: 1,
+    category: 'تهليل (تمام المائة)',
+    textMorning: 'لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ.',
+    takhreej: 'رواه مسلم',
+    fadl: 'غُفرت خطاياه وإن كانت مثل زبد البحر.',
+  },
+  {
+    id: 508,
+    target: 1,
+    category: 'أدعية وأذكار',
+    textMorning: 'اللَّهُمَّ أَعِنِّي عَلَى ذِكْرِكَ وَشُكْرِكَ وَحُسْنِ عِبَادَتِكَ.',
+    takhreej: 'رواه أبو داود',
+  },
+  {
+    id: 509,
+    target: 1,
+    category: 'أدعية وأذكار',
+    textMorning: 'اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْجُبْنِ، وَأَعُوذُ بِكَ مِنَ الْبُخْلِ، وَأَعُوذُ بِكَ مِنْ أَنْ أُرَدَّ إِلَى أَرْذَلِ الْعُمُرِ، وَأَعُوذُ بِكَ مِنْ فِتْنَةِ الدُّنْيَا وَعَذَابِ الْقَبْرِ.',
+    takhreej: 'رواه البخاري',
+  },
+  {
+    id: 510,
+    target: 1,
+    category: 'آيات قرآنية',
+    textMorning: 'اللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ لَهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ مَنْ ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلَّا بِإِذْنِهِ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ وَلَا يُحِيطُونَ بِشَيْءٍ مِنْ عِلْمِهِ إِلَّا بِمَا شَاءَ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ وَلَا يَئُودُهُ حِفْظُهُمَا وَهُوَ الْعَلِيُّ الْعَظِيمُ.',
+    takhreej: 'آية الكرسي - سورة البقرة',
+    fadl: 'لم يمنعه من دخول الجنة إلا الموت.',
+  },
+  {
+    id: 511,
+    target: 1,
+    category: 'آيات قرآنية (المعوذات)',
+    textMorning: 'قُلْ هُوَ اللَّهُ أَحَدٌ ۝ اللَّهُ الصَّمَدُ ۝ لَمْ يَلِدْ وَلَمْ يُولَدْ ۝ وَلَمْ يَكُنْ لَهُ كُفُوًا أَحَدٌ.',
+    takhreej: 'سورة الإخلاص',
+  },
+  {
+    id: 512,
+    target: 1,
+    category: 'آيات قرآنية (المعوذات)',
+    textMorning: 'قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ ۝ مِنْ شَرِّ مَا خَلَقَ ۝ وَمِنْ شَرِّ غَاسِقٍ إِذَا وَقَبَ ۝ وَمِنْ شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ ۝ وَمِنْ شَرِّ حَاسِدٍ إِذَا حَسَدَ.',
+    takhreej: 'سورة الفلق',
+  },
+  {
+    id: 513,
+    target: 1,
+    category: 'آيات قرآنية (المعوذات)',
+    textMorning: 'قُلْ أَعُوذُ بِرَبِّ النَّاسِ ۝ مَلِكِ النَّاسِ ۝ إِلَهِ النَّاسِ ۝ مِنْ شَرِّ الْوَسْوَاسِ الْخَنَّاسِ ۝ الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ ۝ مِنَ الْجِنَّةِ وَالنَّاسِ.',
+    takhreej: 'سورة الناس',
   }
 ];
 
@@ -497,7 +592,7 @@ const colorMap = {
   purple: { id: 'purple', hex: '#9333ea', name: 'بنفسجي', header: 'bg-purple-600', tabActive: 'bg-purple-700', tabBorder: 'border-purple-300', progress: 'bg-purple-400 shadow-md shadow-purple-400/50', icon: 'text-purple-600 dark:text-purple-400', taarBtn: 'from-purple-600 to-purple-800', cardHeader: 'bg-purple-50 text-purple-800 dark:bg-purple-900/20 dark:text-purple-300', counterDone: 'bg-purple-50 border-2 border-purple-400 text-purple-700 dark:bg-purple-900/40 dark:border-purple-600 dark:text-purple-300', counterHigh: 'bg-purple-400 hover:bg-purple-500', counterMed: 'bg-purple-500 hover:bg-purple-600', counterLow: 'bg-purple-600 hover:bg-purple-700' }
 };
 
-const defaultThemeColors = { wake: 'cyan', morning: 'teal', evening: 'red', sleep: 'indigo', free: 'orange' };
+const defaultThemeColors = { wake: 'cyan', morning: 'teal', evening: 'red', sleep: 'indigo', prayer: 'blue', free: 'orange' };
 
 export default function App() {
   // -- نظام التحديثات (PWA Update) --
@@ -1240,6 +1335,7 @@ export default function App() {
   // فلترة الأذكار حسب التبويب النشط (بدون أذكار التعار)
   const currentTabAdhkar = useMemo(() => {
     if (activeTab === 'free') return customAdhkar;
+    if (activeTab === 'prayer') return prayerAdhkar;
     return adhkarData.filter(dhikr => {
       if (activeTab === 'wake') return dhikr.wakeOnly && !dhikr.isTaar;
       if (activeTab === 'morning') return !dhikr.eveningOnly && !dhikr.sleepOnly && !dhikr.wakeOnly;
@@ -1390,10 +1486,11 @@ export default function App() {
     if (tabId === 'wake') return 'الاستيقاظ';
     if (tabId === 'morning') return 'الصباح';
     if (tabId === 'evening') return 'المساء';
+    if (tabId === 'prayer') return 'الصلاة';
     return 'النوم';
   };
 
-  const TabIcon = activeTab === 'sleep' ? Moon : activeTab === 'wake' ? Sunrise : activeTab === 'morning' ? Sun : Sunset;
+  const TabIcon = activeTab === 'sleep' ? Moon : activeTab === 'wake' ? Sunrise : activeTab === 'morning' ? Sun : activeTab === 'prayer' ? Clock : Sunset;
 
   // توليد بيانات آخر 7 أيام للرسم البياني
   const last7Days = useMemo(() => {
@@ -1619,6 +1716,7 @@ export default function App() {
           <button onClick={() => setActiveTab('wake')} className={getTabClass('wake')}>الاستيقاظ</button>
           <button onClick={() => setActiveTab('morning')} className={getTabClass('morning')}>الصباح</button>
           <button onClick={() => setActiveTab('evening')} className={getTabClass('evening')}>المساء</button>
+          <button onClick={() => setActiveTab('prayer')} className={getTabClass('prayer')}>الصلاة</button>
           <button onClick={() => setActiveTab('sleep')} className={getTabClass('sleep')}>النوم</button>
         </div>
 
@@ -2416,7 +2514,7 @@ export default function App() {
             <TabIcon className={`w-6 h-6 ${currentTabTheme.icon} shrink-0 mt-1`} />
             <div>
               <h2 className="text-lg font-bold text-slate-800 dark:text-slate-200 mb-2">
-                {activeTab === 'sleep' ? 'سنن وآداب النوم' : activeTab === 'wake' ? 'عند الاستيقاظ والتعار من الليل' : 'وقت الأذكار المفضل'}
+                {activeTab === 'sleep' ? 'سنن وآداب النوم' : activeTab === 'wake' ? 'عند الاستيقاظ والتعار من الليل' : activeTab === 'prayer' ? 'أذكار ما بعد الصلاة المفروضة' : 'وقت الأذكار المفضل'}
               </h2>
               <p className="text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
                 {activeTab === 'sleep' ? (
@@ -2426,6 +2524,10 @@ export default function App() {
                 ) : activeTab === 'wake' ? (
                   <span>
                     يُستحب للمسلم أول ما يستيقظ من نومه أن <strong className={currentTabTheme.icon}>يمسح النوم عن وجهه</strong> بيده، ثم يأتي بأذكار الاستيقاظ. ولمن استيقظ من الليل وتَقَلَّب أن يأتي بذكر <strong className={currentTabTheme.icon}>التعار من الليل</strong> فدعوته مستجابة.
+                  </span>
+                ) : activeTab === 'prayer' ? (
+                  <span>
+                    تُقرأ هذه الأذكار دبر كل <strong className={currentTabTheme.icon}>صلاة مكتوبة (مفروضة)</strong>، ويُسنّ للمسلم أن لا يبرح مكانه حتى ينهيها لينال أجرها العظيم.
                   </span>
                 ) : activeTab === 'morning' ? (
                   <span>
@@ -2512,6 +2614,7 @@ export default function App() {
             {activeTab === 'evening' && 'أذكار المساء'}
             {activeTab === 'sleep' && 'أذكار النوم'}
             {activeTab === 'wake' && 'أذكار الاستيقاظ'}
+            {activeTab === 'prayer' && 'أذكار بعد الصلاة'}
           </h2>
           <button
             onClick={resetAllProgress}

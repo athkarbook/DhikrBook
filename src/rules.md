@@ -22,5 +22,5 @@
 - Keep the aesthetic "premium" and engaging with animations, glassmorphism, and responsive design.
 
 ## 5. Performance
-- Use `React.lazy` and `Suspense` for heavy components (like `Garden3D.jsx`) to avoid blocking the initial bundle load.
+- Use `React.lazy` and `Suspense` for heavy components (like `Garden2D.jsx`) to avoid blocking the initial bundle load.
 - Optimize images, textures, and 3D objects using low-poly design.

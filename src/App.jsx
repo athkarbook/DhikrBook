@@ -15,7 +15,7 @@ import { StoryExportCard } from './components/Cards/StoryExportCard';
 import React, { useState, Suspense, lazy } from 'react';
 import { BookOpen, Star, Info, CheckCircle, RotateCcw, Clock, Target, ChevronDown, ChevronUp, MoonStar, RefreshCw, Flame, Moon } from 'lucide-react';
 
-const Garden3D = lazy(() => import('./components/Garden/Garden3D'));
+const Garden2D = lazy(() => import('./components/Garden/Garden2D'));
 
 const fontSizes = [
   'text-lg md:text-xl',
@@ -57,7 +57,7 @@ export default function App() {
     showFreeAdhkarModal, setShowFreeAdhkarModal,
     isDarkMode, fontSizeIndex, showTakhreej, showFadl, showFawaid,
     progress, handleDhikrClick, resetSingleDhikr, resetAllProgress,
-    totalTasbeehsMade, totalAdhkarRead, streak, currentTabTheme, activeTab,
+    totalTasbeehsMade, totalAdhkarRead, streak, currentTabTheme, activeTab, userXP,
     currentTabAdhkar, showConfetti, setShowConfetti, isInteracting,
     shouldShowBeforeMood, shouldShowAfterMood, handleMoodSelect
   } = appLogic;
@@ -227,7 +227,7 @@ export default function App() {
         {activeTab === 'garden' && (
           <div className="w-full flex justify-center animate-in fade-in zoom-in-95 duration-500">
             <Suspense fallback={<div className="text-center p-20 text-slate-500 font-bold">جاري تحميل البستان...</div>}>
-              <Garden3D totalTasbeehs={totalTasbeehsMade + totalAdhkarRead} />
+              <Garden2D xp={userXP} />
             </Suspense>
           </div>
         )}

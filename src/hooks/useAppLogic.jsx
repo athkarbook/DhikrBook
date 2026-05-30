@@ -5,6 +5,7 @@ import { useImageExport } from './useImageExport';
 import { Flame, Shield, Target, Trophy, Crown, CheckCircle, Star, MoonStar, Award, Sunrise, BookOpen, Sun, Edit3, Moon, Clock, Leaf, Sunset } from 'lucide-react';
 import { TasbeehIcon } from '../components/UI/Icons';
 import { useState, useEffect, useMemo, useRef } from 'react';
+import { usePersistedState } from './usePersistedState';
 import { useRegisterSW } from 'virtual:pwa-register/react';
 import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
 import { adhkarData, prayerAdhkar } from '../data/adhkar';
@@ -170,17 +171,19 @@ export function useAppLogic() {
 
   // -- المسبحة الحرة --
   const [showTasbeehModal, setShowTasbeehModal] = useState(false);
-  const [tasbeehCount, setTasbeehCount] = useState(0);
+  const [tasbeehCount, setTasbeehCount] = usePersistedState('tasbeehCount', 0);
 
   // -- الإحصاءات والأذكار الحرة --
   const [showStatsModal, setShowStatsModal] = useState(false);
-  const [totalAdhkarRead, setTotalAdhkarRead] = useState(0);
-  const [totalTasbeehsMade, setTotalTasbeehsMade] = useState(0);
+  // Lazy-init from storage so the "persist on change" effects below don't clobber
+  // saved totals with 0 on the first render (which reset XP/garden growth on reload).
+  const [totalAdhkarRead, setTotalAdhkarRead] = usePersistedState('totalAdhkarRead', 0);
+  const [totalTasbeehsMade, setTotalTasbeehsMade] = usePersistedState('totalTasbeehsMade', 0);
   const [bestStreak, setBestStreak] = useState(0);
 
   // -- نظام التحدي اليومي للتسبيح --
-  const [todayTasbeehs, setTodayTasbeehs] = useState(0);
-  const [dailyTasbeehGoal, setDailyTasbeehGoal] = useState(1000);
+  const [todayTasbeehs, setTodayTasbeehs] = usePersistedState('todayTasbeehs', 0);
+  const [dailyTasbeehGoal, setDailyTasbeehGoal] = usePersistedState('dailyTasbeehGoal', 1000);
 
   // -- تصدير الصورة --
   const [isExporting, setIsExporting] = useState(false);
@@ -231,7 +234,7 @@ export function useAppLogic() {
   const { title: currentLevel, minXP, maxXP, color: levelColor, bg: levelBg } = getLevelInfo(userXP);
   const levelProgressPercent = Math.min(100, ((userXP - minXP) / (maxXP - minXP)) * 100);
 
-  const [customAdhkar, setCustomAdhkar] = useState([]);
+  const [customAdhkar, setCustomAdhkar] = usePersistedState('customAdhkar', []);
   const [newCustomText, setNewCustomText] = useState('');
   const [newCustomTarget, setNewCustomTarget] = useState(1);
   const [showAddCustom, setShowAddCustom] = useState(false);
@@ -363,30 +366,18 @@ export function useAppLogic() {
         const asrMins = timeToMins(timings.Asr);
         const ishaMins = timeToMins(timings.Isha);
 
-        // حفظ مواقيت الفجر والعصر في الـ State لاستخدامها في الإشعارات
-        const [fajrH, fajrM] = timings.Fajr.split(':').map(Number);
-        const [asrH, asrM] = timings.Asr.split(':').map(Number);
-        setPrayerTimes({
-          fajr: { h: fajrH, m: fajrM },
-          asr: { h: asrH, m: asrM }
-        });
+        // Save the full timings in the canonical string shape consumed by
+        // SettingsModal and the offline-notifications effect. The older code
+        // used a different shape here ({fajr:{h,m}, asr:{h,m}}) which silently
+        // broke every other consumer.
+        setPrayerTimes(timings);
 
+        // تقسيم الفترات: استيقاظ (قبل الفجر) → صباح (الفجر→العصر)
+        // → مساء (العصر→بعد العشاء بساعة ونصف) → نوم
         let accuratePeriod = 'sleep';
-
-        // تقسيم الفترات بناءً على أوقات الصلاة:
-        // الاستيقاظ: من منتصف الليل إلى الفجر
-        // الصباح: من الفجر إلى العصر
-        // المساء: من العصر إلى ما بعد العشاء بساعة ونصف
-        // النوم: بعد العشاء بساعة ونصف إلى منتصف الليل
-        if (nowMins >= 0 && nowMins < fajrMins) {
-          accuratePeriod = 'wake';
-        } else if (nowMins >= fajrMins && nowMins < asrMins) {
-          accuratePeriod = 'morning';
-        } else if (nowMins >= asrMins && nowMins < (ishaMins + 90)) {
-          accuratePeriod = 'evening';
-        } else {
-          accuratePeriod = 'sleep';
-        }
+        if (nowMins < fajrMins) accuratePeriod = 'wake';
+        else if (nowMins < asrMins) accuratePeriod = 'morning';
+        else if (nowMins < (ishaMins + 90)) accuratePeriod = 'evening';
 
         if (accuratePeriod !== initialPeriod) {
           applyPeriod(accuratePeriod);
@@ -432,28 +423,53 @@ export function useAppLogic() {
     }
     setBestStreak(cBestStreak);
 
-    // استرجاع الإحصاءات والمسبحة والأذكار الحرة
-    const savedTasbeehCount = localStorage.getItem('tasbeehCount');
-    if (savedTasbeehCount) setTasbeehCount(parseInt(savedTasbeehCount, 10));
-
-    const savedTodayTasbeehs = localStorage.getItem('todayTasbeehs');
-    if (savedTodayTasbeehs && lastActive === todayStr) {
-      setTodayTasbeehs(parseInt(savedTodayTasbeehs, 10));
-    }
-
-    const savedDailyGoal = localStorage.getItem('dailyTasbeehGoal');
-    if (savedDailyGoal) setDailyTasbeehGoal(parseInt(savedDailyGoal, 10));
-
-    const savedTotalAdhkar = localStorage.getItem('totalAdhkarRead');
-    if (savedTotalAdhkar) setTotalAdhkarRead(parseInt(savedTotalAdhkar, 10));
-
-    const savedTotalTasbeehs = localStorage.getItem('totalTasbeehsMade');
-    if (savedTotalTasbeehs) setTotalTasbeehsMade(parseInt(savedTotalTasbeehs, 10));
-
-    const savedCustomAdhkar = localStorage.getItem('customAdhkar');
-    if (savedCustomAdhkar) setCustomAdhkar(JSON.parse(savedCustomAdhkar));
+    // tasbeehCount / todayTasbeehs / dailyTasbeehGoal / totalAdhkarRead /
+    // totalTasbeehsMade / customAdhkar now self-hydrate via usePersistedState.
+    // The new-day reset for todayTasbeehs is handled above (setTodayTasbeehs(0)
+    // inside the streak branch when lastActive !== todayStr).
 
   }, []);
+
+  // Keep the active tab in sync with the user's clock as prayer-time milestones
+  // pass (Fajr → morning, Asr → evening, Isha+90m → sleep). Acts only when the
+  // computed period CHANGES, so it doesn't yank the user away from a tab they
+  // deliberately opened — manual selection persists until a real boundary.
+  const lastAutoPeriodRef = useRef(null);
+  useEffect(() => {
+    if (!prayerTimes || !prayerTimes.Fajr || !prayerTimes.Asr || !prayerTimes.Isha) return;
+
+    const timeToMins = (t) => {
+      const [h, m] = t.split(':').map(Number);
+      return h * 60 + m;
+    };
+    const fajrMins = timeToMins(prayerTimes.Fajr);
+    const asrMins = timeToMins(prayerTimes.Asr);
+    const ishaMins = timeToMins(prayerTimes.Isha);
+
+    const tick = () => {
+      const now = new Date();
+      const nowMins = now.getHours() * 60 + now.getMinutes();
+      let desired;
+      if (nowMins < fajrMins) desired = 'wake';
+      else if (nowMins < asrMins) desired = 'morning';
+      else if (nowMins < ishaMins + 90) desired = 'evening';
+      else desired = 'sleep';
+
+      if (desired === lastAutoPeriodRef.current) return;
+      lastAutoPeriodRef.current = desired;
+      setActiveTab(desired);
+      const lastPeriod = localStorage.getItem('lastSavedPeriod');
+      if (lastPeriod && lastPeriod !== desired) {
+        localStorage.removeItem('adhkarProgress');
+        setProgress({});
+      }
+      localStorage.setItem('lastSavedPeriod', desired);
+    };
+
+    tick();
+    const id = setInterval(tick, 60000);
+    return () => clearInterval(id);
+  }, [prayerTimes]);
 
   // حفظ التغييرات 
   useEffect(() => {
@@ -480,29 +496,8 @@ export function useAppLogic() {
     localStorage.setItem('notificationsEnabled', notificationsEnabled.toString());
   }, [notificationsEnabled]);
 
-  useEffect(() => {
-    localStorage.setItem('tasbeehCount', tasbeehCount.toString());
-  }, [tasbeehCount]);
-
-  useEffect(() => {
-    localStorage.setItem('todayTasbeehs', todayTasbeehs.toString());
-  }, [todayTasbeehs]);
-
-  useEffect(() => {
-    localStorage.setItem('dailyTasbeehGoal', dailyTasbeehGoal.toString());
-  }, [dailyTasbeehGoal]);
-
-  useEffect(() => {
-    localStorage.setItem('totalAdhkarRead', totalAdhkarRead.toString());
-  }, [totalAdhkarRead]);
-
-  useEffect(() => {
-    localStorage.setItem('totalTasbeehsMade', totalTasbeehsMade.toString());
-  }, [totalTasbeehsMade]);
-
-  useEffect(() => {
-    localStorage.setItem('customAdhkar', JSON.stringify(customAdhkar));
-  }, [customAdhkar]);
+  // (persist for tasbeehCount, todayTasbeehs, dailyTasbeehGoal, totalAdhkarRead,
+  // totalTasbeehsMade and customAdhkar is co-located inside usePersistedState.)
 
   useEffect(() => {
     localStorage.setItem('darkMode', isDarkMode);
@@ -532,15 +527,14 @@ export function useAppLogic() {
         const h = now.getHours();
         const m = now.getMinutes();
 
-        // استخدام أوقات الصلاة الدقيقة لو تم جلبها، وإلا 5 الفجر و4 العصر كافتراضي
+        // استخدام أوقات الصلاة الدقيقة لو تم جلبها، وإلا 5 الفجر و4 العصر كافتراضي.
+        // prayerTimes is the canonical { Fajr, Dhuhr, Asr, Maghrib, Isha } string shape.
         let fajrH = 5, fajrM = 0;
         let asrH = 16, asrM = 0;
 
-        if (prayerTimes) {
-          fajrH = prayerTimes.fajr.h;
-          fajrM = prayerTimes.fajr.m;
-          asrH = prayerTimes.asr.h;
-          asrM = prayerTimes.asr.m;
+        if (prayerTimes && prayerTimes.Fajr && prayerTimes.Asr) {
+          [fajrH, fajrM] = prayerTimes.Fajr.split(':').map(Number);
+          [asrH, asrM] = prayerTimes.Asr.split(':').map(Number);
         }
 
         // إشعار الصباح وقت الفجر

@@ -86,12 +86,12 @@ export function useVoiceTasbeeh() {
             .trim();
         };
 
-        const spokenWords = normalizeArabic(transcript).split(/\\s+/).filter(w => w.length >= 2);
+        const spokenWords = normalizeArabic(transcript).split(/\s+/).filter(w => w.length >= 2);
         window.voiceState[targetCard.id].push(...spokenWords);
 
         const pElem = targetCard.querySelector('p');
         const cardText = pElem ? pElem.innerText : '';
-        const cardWords = normalizeArabic(cardText).split(/\\s+/).filter(w => w.length >= 2);
+        const cardWords = normalizeArabic(cardText).split(/\s+/).filter(w => w.length >= 2);
 
         if (cardWords.length === 0) return;
 

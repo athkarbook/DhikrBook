@@ -740,11 +740,16 @@ export default function App() {
            const requiredMatches = Math.max(3, Math.floor(specificCardWords.length * 0.25));
            
            // الشرط الثاني: يجب أن يلتقط كلمة مميزة (أو كلمتين للختام الطويل) من آخر 30% من الذكر
+           // يجب التأكد أن هذه الكلمات الختامية لم تظهر أبداً في الجزء الأول من الذكر لضمان عدم الخداع!
            const endIndex = Math.floor(cardWords.length * 0.70);
+           const startWords = cardWords.slice(0, endIndex);
            const endWords = cardWords.slice(endIndex);
-           const specificEndWords = [...new Set(endWords)].filter(w => !stopWords.includes(w));
            
-           const requiredEndMatches = specificEndWords.length > 5 ? 2 : 1;
+           const specificEndWords = [...new Set(endWords)].filter(w => 
+               !stopWords.includes(w) && !startWords.includes(w)
+           );
+           
+           const requiredEndMatches = specificEndWords.length >= 3 ? 2 : (specificEndWords.length > 0 ? 1 : 0);
            const endMatches = specificEndWords.filter(w => uniqueSpoken.includes(w)).length;
            
            const hasReachedEnd = specificEndWords.length === 0 || endMatches >= requiredEndMatches;

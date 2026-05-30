@@ -1,10 +1,11 @@
 import React from 'react';
 import { Flame, BookOpen, Moon } from 'lucide-react';
-import { TasbeehIcon } from './Icons';
+import { TasbeehIcon } from '../UI/Icons';
 
 export function StoryExportCard({ streak, totalTasbeehsMade, totalAdhkarRead }) {
   return (
-    {/* بطاقة الإنجاز (مخفية، تستخدم للتصدير فقط) موجودة في جذر التطبيق لتفادي مشاكل القص */}
+    <>
+      {/* بطاقة الإنجاز (مخفية، تستخدم للتصدير فقط) موجودة في جذر التطبيق لتفادي مشاكل القص */}
       <div style={{ position: 'fixed', left: '-9999px', top: '0', zIndex: -100 }}>
         <div id="story-export-card" className="w-[1080px] h-[1920px] bg-gradient-to-br from-slate-900 via-teal-900 to-slate-900 flex flex-col items-center justify-center p-20 text-white relative overflow-hidden" dir="rtl">
           {/* زخرفة خلفية عشوائية */}
@@ -44,6 +45,7 @@ export function StoryExportCard({ streak, totalTasbeehsMade, totalAdhkarRead }) 
             <div className="text-4xl font-bold text-white tracking-wide">تطبيق حصن المسلم - DhikrBook</div>
           </div>
         </div>
-      
+      </div>
+    </>
   );
 }

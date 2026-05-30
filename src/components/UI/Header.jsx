@@ -1,5 +1,5 @@
 import React from 'react';
-import { BookOpen, Settings, Medal, RefreshCw } from 'lucide-react';
+import { BookOpen, Settings, Medal, RefreshCw, Target, Map, Flame, Mic, MicOff, Crown } from 'lucide-react';
 import { TasbeehIcon } from './Icons';
 
 export function Header({ props }) {
@@ -10,13 +10,7 @@ export function Header({ props }) {
     toggleVoiceTasbeeh, isListening, currentLevel, setActiveTab, getTabClass,
     totalProgressPercentage
   } = props;
-  const {
-    currentTabTheme, activeTab, dailyTasbeehGoal, todayTasbeehs, tasbeehCount,
-    handleTasbeehClick, resetTasbeeh, setShowSettingsModal, setShowStatsModal,
-    setShowTasbeehModal, setShowRoadmapModal, streak, speechSupported,
-    toggleVoiceTasbeeh, isListening, currentLevel, setActiveTab, getTabClass,
-    totalProgressPercentage
-  } = props;
+  
   return (
     <header className={`fixed top-0 left-0 right-0 z-40 shadow-md transition-colors duration-500 ${currentTabTheme.header} dark:bg-slate-800 text-white`}>
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">

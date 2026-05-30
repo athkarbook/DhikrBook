@@ -43,8 +43,8 @@ const CelestialElements = ({ activeTab }) => {
           <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
         </svg>
         {[...Array(15)].map((_, i) => (
-          <div 
-            key={i} 
+          <div
+            key={i}
             className="absolute bg-white rounded-full animate-pulse"
             style={{
               top: `${Math.random() * 80}%`,
@@ -60,7 +60,7 @@ const CelestialElements = ({ activeTab }) => {
       </div>
     );
   }
-  
+
   if (activeTab === 'morning' || activeTab === 'wake') {
     // شمس مشرقة
     return (
@@ -81,7 +81,7 @@ const CelestialElements = ({ activeTab }) => {
           <path d="M6.5 17.5A3.5 3.5 0 013 14a3.5 3.5 0 012.71-3.41 5.5 5.5 0 0110.58-1.59 4.5 4.5 0 013.71 4.5 4.5 0 01-4.5 4.5H6.5z" />
         </svg>
         <svg className="absolute top-[30%] left-[-5%] w-32 h-32 text-orange-300/30 drop-shadow-md animate-blob2" viewBox="0 0 24 24" fill="currentColor">
-           <path d="M6.5 17.5A3.5 3.5 0 013 14a3.5 3.5 0 012.71-3.41 5.5 5.5 0 0110.58-1.59 4.5 4.5 0 013.71 4.5 4.5 0 01-4.5 4.5H6.5z" />
+          <path d="M6.5 17.5A3.5 3.5 0 013 14a3.5 3.5 0 012.71-3.41 5.5 5.5 0 0110.58-1.59 4.5 4.5 0 013.71 4.5 4.5 0 01-4.5 4.5H6.5z" />
         </svg>
       </div>
     );
@@ -111,7 +111,7 @@ const getTreeColors = (lvl) => {
 // مكون الشجرة الفردية بمستوياتها (نسخة محسنة الأداء مع 15 مستوى)
 const TreeSVG = ({ level, scale = 1 }) => {
   if (level === 0) return null;
-  
+
   const { trunk, l1, l2 } = getTreeColors(level);
   const isGlowing = level >= 5;
 
@@ -120,7 +120,7 @@ const TreeSVG = ({ level, scale = 1 }) => {
       <svg viewBox="0 0 100 120" className="overflow-visible" style={{ width: `${40 * scale}px`, height: `${48 * scale}px` }}>
         {/* الجذع */}
         {level >= 2 && <path d="M45 120 Q 50 80 50 60 Q 50 80 55 120 Z" fill={trunk} />}
-        
+
         {/* الأوراق (للشجرة الكاملة) */}
         {level >= 3 && (
           <g>
@@ -130,17 +130,17 @@ const TreeSVG = ({ level, scale = 1 }) => {
             <circle cx="50" cy="20" r="25" fill={l1} opacity="0.98" />
           </g>
         )}
-        
+
         {/* الفسيلة / الشجرة الصغيرة (مستوى 1 و 2) */}
         {level === 1 && <circle cx="50" cy="110" r="8" fill={l1} />}
         {level === 2 && (
-           <g>
-             <circle cx="50" cy="80" r="15" fill={l1} />
-             <circle cx="42" cy="88" r="10" fill={l2} />
-             <circle cx="58" cy="88" r="10" fill={l2} />
-           </g>
+          <g>
+            <circle cx="50" cy="80" r="15" fill={l1} />
+            <circle cx="42" cy="88" r="10" fill={l2} />
+            <circle cx="58" cy="88" r="10" fill={l2} />
+          </g>
         )}
-        
+
         {/* الثمار المضيئة / التأثيرات للمستويات العالية */}
         {isGlowing && (
           <g>
@@ -156,18 +156,18 @@ const TreeSVG = ({ level, scale = 1 }) => {
 
 const JannahGarden = ({ totalTasbeehs }) => {
   const TOTAL_TREES = 30; // تقليل عدد الأشجار من 50 إلى 30 لمنع التعليق
-  
+
   // توليد مواقع ثابتة للأشجار في البستان لتبدو كغابة عميقة
   const treePositions = useMemo(() => {
     const pos = [];
-    for(let i = 0; i < TOTAL_TREES; i++) {
+    for (let i = 0; i < TOTAL_TREES; i++) {
       // استخدام دوال جيبية كبديل للعشوائية للحفاظ على ثبات المواقع
       const x = Math.abs(Math.sin(i * 12.34)) * 90 + 5; // 5% to 95% left
       const y = Math.abs(Math.cos(i * 43.21)) * 60 + 5; // 5% to 65% bottom
-      
+
       // الأشجار الأقرب (y أقل) تبدو أكبر
       const scale = 0.6 + (65 - y) / 35; // 0.6 to ~2.3
-      
+
       pos.push({ id: i, left: x, bottom: y, scale, zIndex: Math.floor(100 - y) });
     }
     // ترتيب الأشجار حسب zIndex بحيث تُطبع الأشجار الخلفية أولاً
@@ -205,21 +205,21 @@ const JannahGarden = ({ totalTasbeehs }) => {
     <div className="w-full flex flex-col items-center justify-center min-h-[70vh] p-4 md:p-8 bg-gradient-to-b from-teal-950 via-emerald-900 to-slate-900 rounded-[3rem] border border-white/10 shadow-2xl relative overflow-hidden transition-colors duration-1000 mb-8">
       {/* سماء البستان */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-         {[...Array(12)].map((_, i) => (
-            <div 
-              key={i}
-              className="absolute bg-white/30 rounded-full animate-pulse"
-              style={{
-                top: `${Math.random() * 80}%`,
-                left: `${Math.random() * 100}%`,
-                width: `${Math.random() * 3 + 1}px`,
-                height: `${Math.random() * 3 + 1}px`,
-                animationDelay: `${Math.random() * 5}s`,
-                animationDuration: `${Math.random() * 3 + 2}s`
-              }}
-            />
-         ))}
-         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[150%] h-[50%] bg-gradient-to-b from-emerald-400/10 to-transparent blur-3xl"></div>
+        {[...Array(12)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute bg-white/30 rounded-full animate-pulse"
+            style={{
+              top: `${Math.random() * 80}%`,
+              left: `${Math.random() * 100}%`,
+              width: `${Math.random() * 3 + 1}px`,
+              height: `${Math.random() * 3 + 1}px`,
+              animationDelay: `${Math.random() * 5}s`,
+              animationDuration: `${Math.random() * 3 + 2}s`
+            }}
+          />
+        ))}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[150%] h-[50%] bg-gradient-to-b from-emerald-400/10 to-transparent blur-3xl"></div>
       </div>
 
       <div className="text-center z-20 mb-auto mt-4 md:mt-8">
@@ -236,15 +236,15 @@ const JannahGarden = ({ totalTasbeehs }) => {
       <div className="relative w-full max-w-3xl h-[40vh] md:h-[50vh] mt-8 z-10 flex-shrink-0 perspective-1000">
         {/* الأرضية السفلية الممتدة */}
         <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[150%] h-1/3 bg-gradient-to-t from-emerald-950/80 to-transparent blur-md rounded-[100%]"></div>
-        
+
         {/* عرض الأشجار بناءً على عدد التسبيحات */}
         {treePositions.map((pos) => {
           const treeLevel = fullLoops + (pos.id < remainder ? 1 : 0);
           const visualLevel = Math.min(treeLevel, 15); // زيادة أقصى مستوى بصري إلى 15
-          
+
           return (
-            <div 
-              key={pos.id} 
+            <div
+              key={pos.id}
               className="absolute will-change-transform"
               style={{
                 left: `${pos.left}%`,
@@ -254,9 +254,9 @@ const JannahGarden = ({ totalTasbeehs }) => {
             >
               {/* ظل الشجرة المخفف */}
               {visualLevel > 0 && (
-                <div 
-                   className="absolute bottom-[-2px] left-1/2 -translate-x-1/2 bg-black/30 rounded-[100%] blur-sm transition-transform duration-700"
-                   style={{ width: `${15 * pos.scale}px`, height: `${4 * pos.scale}px` }}
+                <div
+                  className="absolute bottom-[-2px] left-1/2 -translate-x-1/2 bg-black/30 rounded-[100%] blur-sm transition-transform duration-700"
+                  style={{ width: `${15 * pos.scale}px`, height: `${4 * pos.scale}px` }}
                 ></div>
               )}
               <TreeSVG level={visualLevel} scale={pos.scale} />
@@ -264,10 +264,10 @@ const JannahGarden = ({ totalTasbeehs }) => {
           );
         })}
       </div>
-      
+
       {/* تأثير ضوئي كثيف عند المراحل المتقدمة (مخفف لتجنب التعليق) */}
       {fullLoops >= 3 && (
-         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] h-[150%] bg-yellow-400/5 filter blur-3xl rounded-full pointer-events-none z-0"></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] h-[150%] bg-yellow-400/5 filter blur-3xl rounded-full pointer-events-none z-0"></div>
       )}
 
       {/* لوحة التحكم والإحصاءات للبستان */}
@@ -283,14 +283,14 @@ const JannahGarden = ({ totalTasbeehs }) => {
               <span className="block text-emerald-300/80 text-[10px] font-bold mt-1">شجرة مغروسة</span>
             </div>
           </div>
-          
+
           <div className="mt-4">
             <div className="flex justify-between text-[10px] md:text-xs text-emerald-200/80 mb-2 font-bold">
               <span>الترقية الشاملة القادمة للأشجار</span>
               <span>{nextStageThreshold - totalTasbeehs} شجرة متبقية</span>
             </div>
             <div className="w-full bg-black/50 h-3 md:h-4 rounded-full overflow-hidden border border-white/5 shadow-inner">
-              <div 
+              <div
                 className="h-full bg-gradient-to-r from-emerald-600 via-emerald-400 to-green-300 transition-all duration-700 ease-out relative"
                 style={{ width: `${progressToNext}%` }}
               >
@@ -310,13 +310,13 @@ const LiveBackground = ({ colorTheme, isDarkMode, isInteracting, activeTab }) =>
   const b1 = isDarkMode ? colorTheme.darkBlob1 : colorTheme.blob1;
   const b2 = isDarkMode ? colorTheme.darkBlob2 : colorTheme.blob2;
   const b3 = isDarkMode ? colorTheme.darkBlob3 : colorTheme.blob3;
-  
+
   // تقليل العبء على المعالج الرسومي بإزالة تغييرات الـ blur المتحركة
   const interactionClass = isInteracting ? 'scale-[1.05] opacity-50' : 'scale-100 opacity-30';
 
   return (
     <div className="fixed inset-0 overflow-hidden pointer-events-none z-[-1] transition-colors duration-1000 bg-slate-50 dark:bg-slate-900">
-      
+
       {/* Blob 1 */}
       <div className={`absolute top-[-10%] left-[-10%] w-[70vw] h-[70vw] md:w-[45vw] md:h-[45vw] rounded-full transition-transform duration-700 ease-out animate-blob1 blur-3xl will-change-transform ${b1} ${interactionClass}`}></div>
       {/* Blob 2 */}
@@ -744,6 +744,8 @@ const adhkarData = [
     takhreej: 'متفق عليه، رواه البخاري (6313) ومسلم (2710) عن البراء بن عازب رضي الله عنه.',
     fadl: 'فإن مت من ليلتك مت على الفطرة.',
     fawaid: 'يجعله آخر ما يقول قبل نومه.',
+    sleepOnly: true,
+
   }
 ];
 
@@ -943,7 +945,7 @@ export default function App() {
   const [showTakhreej, setShowTakhreej] = useState(true);
   const [showFadl, setShowFadl] = useState(true);
   const [showFawaid, setShowFawaid] = useState(true);
-  
+
   // خلفيات تفاعلية
   const [isInteracting, setIsInteracting] = useState(false);
   const triggerInteraction = () => {
@@ -986,7 +988,7 @@ export default function App() {
     return saved !== null ? saved === 'true' : false;
   });
   const [streak, setStreak] = useState(0);
-  
+
   // -- الموقع وأوقات الصلاة --
   const [location, setLocation] = useState(() => {
     const saved = localStorage.getItem('userLocation');
@@ -1010,7 +1012,7 @@ export default function App() {
         return;
       }
     }
-    
+
     try {
       const registration = await navigator.serviceWorker.ready;
       if ('showTrigger' in Notification.prototype && 'TimestampTrigger' in window) {
@@ -1042,11 +1044,11 @@ export default function App() {
     const params = CalculationMethod.Egyptian();
     const date = new Date();
     const times = new PrayerTimes(coordinates, date, params);
-    
+
     const formatTime = (dateObj) => {
       return dateObj.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
     };
-    
+
     return {
       Fajr: formatTime(times.fajr),
       Dhuhr: formatTime(times.dhuhr),
@@ -1058,19 +1060,19 @@ export default function App() {
 
   const autoFetchLocation = async (manualCity = null, manualCountry = null) => {
     setIsLocating(true);
-    
+
     if (manualCity && manualCountry) {
       try {
         const query = `${manualCity}, ${manualCountry}`;
         const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1`);
         const data = await res.json();
-        
+
         if (data && data.length > 0) {
           const lat = parseFloat(data[0].lat);
           const lng = parseFloat(data[0].lon);
           const times = calculatePrayerTimesLocally(lat, lng);
           const loc = { city: manualCity, country: manualCountry, lat, lng };
-          
+
           setPrayerTimes(times);
           setLocation(loc);
           localStorage.setItem('userLocation', JSON.stringify(loc));
@@ -1099,7 +1101,7 @@ export default function App() {
         const lng = position.coords.longitude;
         const times = calculatePrayerTimesLocally(lat, lng);
         const loc = { lat, lng };
-        
+
         setPrayerTimes(times);
         setLocation(loc);
         localStorage.setItem('userLocation', JSON.stringify(loc));
@@ -1157,7 +1159,7 @@ export default function App() {
     const isha = parseTime(prayerTimes.Isha);
 
     let suggestedTab = 'morning';
-    
+
     if (currentMins >= fajr - 60 && currentMins < fajr) suggestedTab = 'wake';
     else if (currentMins >= fajr && currentMins < sunrise + 120) suggestedTab = 'morning';
     else if (currentMins >= asr && currentMins < maghrib + 60) suggestedTab = 'evening';
@@ -1171,14 +1173,14 @@ export default function App() {
       suggestedTab = 'prayer';
     }
     else if (currentMins >= isha + 120 || currentMins < fajr - 60) suggestedTab = 'sleep';
-    
+
     setActiveTab(suggestedTab);
 
     // فحص التنبيهات كل ثانية لمطابقة أوقات الصلاة
     const intervalId = setInterval(() => {
       const nowTime = new Date();
       const timeStr = `${nowTime.getHours().toString().padStart(2, '0')}:${nowTime.getMinutes().toString().padStart(2, '0')}`;
-      
+
       const prayers = [
         { name: 'الفجر', time: prayerTimes.Fajr },
         { name: 'الظهر', time: prayerTimes.Dhuhr },
@@ -1191,10 +1193,10 @@ export default function App() {
         if (p.time && p.time === timeStr && nowTime.getSeconds() === 0) {
           // حان وقت الصلاة!
           if (notifsEnabledRef.current && Notification.permission === 'granted') {
-             new Notification(`حان الآن موعد صلاة ${p.name}`, {
-               body: 'لا تنس أذكار ما بعد الصلاة!',
-               icon: '/dhikr-book/pwa-192x192.png'
-             });
+            new Notification(`حان الآن موعد صلاة ${p.name}`, {
+              body: 'لا تنس أذكار ما بعد الصلاة!',
+              icon: '/dhikr-book/pwa-192x192.png'
+            });
           }
           // التحويل التلقائي لتبويب أذكار الصلاة
           setActiveTab('prayer');
@@ -1208,16 +1210,16 @@ export default function App() {
   // -- جدولة التنبيهات في الخلفية للمتصفحات المدعومة (بدون الحاجة لفتح المتصفح) --
   useEffect(() => {
     if (!prayerTimes || !notificationsEnabled) return;
-    
+
     const scheduleOfflineNotifications = async () => {
       // فحص دعم الميزة التجريبية (تعمل غالباً على أندرويد/كروم)
       if (!('showTrigger' in Notification.prototype) || !('TimestampTrigger' in window)) return;
       if (Notification.permission !== 'granted') return;
-      
+
       try {
         const registration = await navigator.serviceWorker.ready;
         const now = new Date();
-        
+
         const prayers = [
           { name: 'الفجر', time: prayerTimes.Fajr },
           { name: 'الظهر', time: prayerTimes.Dhuhr },
@@ -1231,13 +1233,13 @@ export default function App() {
           const [hours, mins] = p.time.split(':').map(Number);
           const prayerTime = new Date();
           prayerTime.setHours(hours, mins, 0, 0);
-          
+
           // جدولة الإشعارات للمستقبل اليوم فقط
           if (prayerTime.getTime() > now.getTime()) {
             registration.showNotification(`حان الآن موعد صلاة ${p.name}`, {
               body: 'لا تنس أذكار ما بعد الصلاة!',
               icon: '/dhikr-book/pwa-192x192.png',
-              tag: `prayer-${p.name}-${prayerTime.getDate()}`, 
+              tag: `prayer-${p.name}-${prayerTime.getDate()}`,
               showTrigger: new window.TimestampTrigger(prayerTime.getTime())
             });
           }
@@ -1297,7 +1299,7 @@ export default function App() {
     const m = String(d.getMonth() + 1).padStart(2, '0');
     const dayNum = String(d.getDate()).padStart(2, '0');
     const todayStr = `${y}-${m}-${dayNum}`;
-    
+
     setActivityHistory(prev => {
       const todayData = prev[todayStr] || {};
       const updatedData = { ...todayData, [type]: (Number(todayData[type]) || 0) + amount };
@@ -1332,9 +1334,9 @@ export default function App() {
 
   // -- التتبع النفسي (Mood Tracker) --
   const [moodLog, setMoodLog] = useState(() => {
-    try { return JSON.parse(localStorage.getItem('moodLog')) || {}; } catch(e) { return {}; }
+    try { return JSON.parse(localStorage.getItem('moodLog')) || {}; } catch (e) { return {}; }
   });
-  
+
   const [pendingMoods, setPendingMoods] = useState({});
 
   useEffect(() => {
@@ -1344,7 +1346,7 @@ export default function App() {
   const handleMoodSelect = (mood, type) => {
     const d = new Date();
     const todayStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-    
+
     if (type === 'before') {
       setPendingMoods(prev => ({ ...prev, [activeTab]: mood }));
     } else {
@@ -2147,8 +2149,8 @@ export default function App() {
     const tabTheme = colorMap[themeColors[tabId]] || colorMap.teal;
 
     return `flex-1 py-3 text-center font-bold text-xs sm:text-sm md:text-xl transition-colors ${isActive
-        ? `${tabTheme.tabActive} dark:bg-slate-700 text-white border-b-4 ${tabTheme.tabBorder}`
-        : 'text-white/70 hover:bg-white/10 dark:hover:bg-slate-600'
+      ? `${tabTheme.tabActive} dark:bg-slate-700 text-white border-b-4 ${tabTheme.tabBorder}`
+      : 'text-white/70 hover:bg-white/10 dark:hover:bg-slate-600'
       }`;
   };
 
@@ -2167,29 +2169,29 @@ export default function App() {
   // توليد بيانات الرسم البياني
   const graphDays = useMemo(() => {
     const numDays = parseInt(chartFilter, 10);
-    return Array.from({length: numDays}).map((_, i) => {
-       const d = new Date();
-       d.setDate(d.getDate() - (numDays - 1 - i));
-       
-       const y = d.getFullYear();
-       const m = String(d.getMonth() + 1).padStart(2, '0');
-       const dayNum = String(d.getDate()).padStart(2, '0');
-       const dateStr = `${y}-${m}-${dayNum}`;
-       
-       const dayName = d.toLocaleDateString('ar-SA', { weekday: 'short' });
-       return {
-          date: dateStr,
-          dayName: dayName,
-          dayOfMonth: d.getDate(),
-          data: activityHistory[dateStr] || {}
-       };
+    return Array.from({ length: numDays }).map((_, i) => {
+      const d = new Date();
+      d.setDate(d.getDate() - (numDays - 1 - i));
+
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const dayNum = String(d.getDate()).padStart(2, '0');
+      const dateStr = `${y}-${m}-${dayNum}`;
+
+      const dayName = d.toLocaleDateString('ar-SA', { weekday: 'short' });
+      return {
+        date: dateStr,
+        dayName: dayName,
+        dayOfMonth: d.getDate(),
+        data: activityHistory[dateStr] || {}
+      };
     });
   }, [activityHistory, chartFilter]);
 
   const maxActivity = Math.max(
-    ...graphDays.map(d => 
+    ...graphDays.map(d =>
       Object.values(d.data).reduce((a, b) => (Number(a) || 0) + (Number(b) || 0), 0)
-    ), 
+    ),
     5
   );
 
@@ -2222,22 +2224,22 @@ export default function App() {
       const element = document.getElementById('story-export-card');
       const parent = element.parentElement;
       if (!element || !parent) return setIsExporting(false);
-      
+
       // إظهار العنصر مؤقتاً للتصوير
       parent.style.left = '0';
-      
-      const canvas = await html2canvas(element, { 
+
+      const canvas = await html2canvas(element, {
         backgroundColor: '#0f172a',
-        scale: 1, 
+        scale: 1,
         useCORS: true
       });
-      
+
       // إعادة إخفاء العنصر
       parent.style.left = '-9999px';
-      
+
       const dataURL = canvas.toDataURL('image/jpeg', 0.9);
       const link = document.createElement('a');
-      link.download = `DhikrBook-Story-${new Date().toISOString().slice(0,10)}.jpg`;
+      link.download = `DhikrBook-Story-${new Date().toISOString().slice(0, 10)}.jpg`;
       link.href = dataURL;
       link.click();
     } catch (e) {
@@ -2250,7 +2252,7 @@ export default function App() {
 
   // --- منطق التتبع النفسي (Mood Tracker) ---
   const isTabCompleted = currentTabAdhkar.length > 0 && currentTabAdhkar.every(dhikr => (progress[`${activeTab}-${dhikr.id}`] || 0) >= dhikr.target);
-  
+
   const moodDateObj = new Date();
   const todayStr = `${moodDateObj.getFullYear()}-${String(moodDateObj.getMonth() + 1).padStart(2, '0')}-${String(moodDateObj.getDate()).padStart(2, '0')}`;
   const todayMoodData = moodLog[todayStr]?.[activeTab] || {};
@@ -2653,59 +2655,59 @@ export default function App() {
                 </div>
                 <div className={`flex items-end justify-between ${chartFilter === '7' ? 'gap-1 md:gap-2' : 'gap-[1px] md:gap-[2px]'} h-48 mt-4 px-1 md:px-2`}>
                   {graphDays.map((day, i) => {
-                     const total = Object.values(day.data).reduce((a, b) => (Number(a) || 0) + (Number(b) || 0), 0);
-                     const isToday = i === graphDays.length - 1;
-                     return (
-                       <div key={day.date} className="h-full flex flex-col items-center justify-end gap-2 flex-1 group">
-                         <div 
-                           className="w-full max-w-[2.5rem] flex-1 rounded-t-sm transition-all duration-500 relative flex flex-col justify-end cursor-pointer hover:opacity-80 overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
-                           style={{ minHeight: '0' }}
-                         >
-                            <div className="absolute -top-8 bg-black/80 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none font-bold z-10 whitespace-nowrap z-20">
-                               الإجمالي: {total}
-                            </div>
-                            
-                            {/* Stacked bars */}
-                            <div className="w-full h-full flex flex-col justify-end">
-                              {['free', 'prayer', 'sleep', 'evening', 'morning', 'wake', 'tasbeeh'].map(cat => {
-                                 const val = Number(day.data[cat]) || 0;
-                                 if (val === 0) return null;
-                                 const heightPercent = (val / maxActivity) * 100;
-                                 const colors = {
-                                    tasbeeh: '#14b8a6', // teal
-                                    morning: '#f59e0b', // amber
-                                    evening: '#f43f5e', // rose
-                                    sleep: '#6366f1', // indigo
-                                    wake: '#0ea5e9', // sky
-                                    prayer: '#3b82f6', // blue
-                                    free: '#8b5cf6' // violet
-                                 };
-                                 return <div key={cat} style={{ height: `${heightPercent}%`, backgroundColor: colors[cat] }} className="w-full shrink-0" title={cat} />
-                              })}
-                            </div>
-                         </div>
-                         {chartFilter === '7' ? (
-                           <span className={`text-[10px] md:text-xs font-bold ${isToday ? 'text-teal-600 dark:text-teal-400' : 'text-slate-500 dark:text-slate-400'}`}>
-                             {day.dayName}
-                           </span>
-                         ) : (
-                           <span className={`text-[8px] md:text-[10px] font-bold ${isToday ? 'text-teal-600 dark:text-teal-400' : 'text-slate-400 dark:text-slate-500'}`}>
-                             {day.dayOfMonth}
-                           </span>
-                         )}
-                       </div>
-                     );
+                    const total = Object.values(day.data).reduce((a, b) => (Number(a) || 0) + (Number(b) || 0), 0);
+                    const isToday = i === graphDays.length - 1;
+                    return (
+                      <div key={day.date} className="h-full flex flex-col items-center justify-end gap-2 flex-1 group">
+                        <div
+                          className="w-full max-w-[2.5rem] flex-1 rounded-t-sm transition-all duration-500 relative flex flex-col justify-end cursor-pointer hover:opacity-80 overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
+                          style={{ minHeight: '0' }}
+                        >
+                          <div className="absolute -top-8 bg-black/80 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none font-bold z-10 whitespace-nowrap z-20">
+                            الإجمالي: {total}
+                          </div>
+
+                          {/* Stacked bars */}
+                          <div className="w-full h-full flex flex-col justify-end">
+                            {['free', 'prayer', 'sleep', 'evening', 'morning', 'wake', 'tasbeeh'].map(cat => {
+                              const val = Number(day.data[cat]) || 0;
+                              if (val === 0) return null;
+                              const heightPercent = (val / maxActivity) * 100;
+                              const colors = {
+                                tasbeeh: '#14b8a6', // teal
+                                morning: '#f59e0b', // amber
+                                evening: '#f43f5e', // rose
+                                sleep: '#6366f1', // indigo
+                                wake: '#0ea5e9', // sky
+                                prayer: '#3b82f6', // blue
+                                free: '#8b5cf6' // violet
+                              };
+                              return <div key={cat} style={{ height: `${heightPercent}%`, backgroundColor: colors[cat] }} className="w-full shrink-0" title={cat} />
+                            })}
+                          </div>
+                        </div>
+                        {chartFilter === '7' ? (
+                          <span className={`text-[10px] md:text-xs font-bold ${isToday ? 'text-teal-600 dark:text-teal-400' : 'text-slate-500 dark:text-slate-400'}`}>
+                            {day.dayName}
+                          </span>
+                        ) : (
+                          <span className={`text-[8px] md:text-[10px] font-bold ${isToday ? 'text-teal-600 dark:text-teal-400' : 'text-slate-400 dark:text-slate-500'}`}>
+                            {day.dayOfMonth}
+                          </span>
+                        )}
+                      </div>
+                    );
                   })}
                 </div>
                 {/* Legend */}
                 <div className="flex flex-wrap justify-center gap-3 mt-4 text-[10px] md:text-xs font-bold">
-                   <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-[#14b8a6]"></div>تسابيح</div>
-                   <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-[#f59e0b]"></div>صباح</div>
-                   <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-[#f43f5e]"></div>مساء</div>
-                   <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-[#6366f1]"></div>نوم</div>
-                   <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-[#0ea5e9]"></div>استيقاظ</div>
-                   <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-[#3b82f6]"></div>صلاة</div>
-                   <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-[#8b5cf6]"></div>حر</div>
+                  <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-[#14b8a6]"></div>تسابيح</div>
+                  <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-[#f59e0b]"></div>صباح</div>
+                  <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-[#f43f5e]"></div>مساء</div>
+                  <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-[#6366f1]"></div>نوم</div>
+                  <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-[#0ea5e9]"></div>استيقاظ</div>
+                  <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-[#3b82f6]"></div>صلاة</div>
+                  <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-[#8b5cf6]"></div>حر</div>
                 </div>
               </div>
               {/* التتبع النفسي للذكر */}
@@ -2715,58 +2717,58 @@ export default function App() {
                   أثر الذكر على قلبك
                 </h4>
                 <div className="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-2xl p-4 md:p-6 border border-emerald-200 dark:border-emerald-800/50 shadow-sm relative overflow-hidden">
-                   <Heart className="absolute -left-4 -top-4 w-24 h-24 text-emerald-500 opacity-5" />
-                   <p className="text-center font-bold text-emerald-700 dark:text-emerald-400 text-sm md:text-base mb-6 leading-relaxed">
-                     «أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ»
-                   </p>
-                   {(() => {
-                      let totalLogged = 0;
-                      let improvedCount = 0;
-                      const negativeMoods = ['sad', 'anxious', 'tired'];
-                      const positiveMoods = ['calm', 'peaceful'];
-                      
-                      Object.values(moodLog).forEach(day => {
-                         Object.values(day).forEach(session => {
-                            if (session.before && session.after) {
-                               totalLogged++;
-                               if (negativeMoods.includes(session.before) && positiveMoods.includes(session.after)) {
-                                  improvedCount++;
-                               } else if (session.before === 'calm' && session.after === 'peaceful') {
-                                  improvedCount++;
-                               } else if (positiveMoods.includes(session.before) && positiveMoods.includes(session.after)) {
-                                  improvedCount++; // Maintained good mood
-                               }
-                            }
-                         });
+                  <Heart className="absolute -left-4 -top-4 w-24 h-24 text-emerald-500 opacity-5" />
+                  <p className="text-center font-bold text-emerald-700 dark:text-emerald-400 text-sm md:text-base mb-6 leading-relaxed">
+                    «أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ»
+                  </p>
+                  {(() => {
+                    let totalLogged = 0;
+                    let improvedCount = 0;
+                    const negativeMoods = ['sad', 'anxious', 'tired'];
+                    const positiveMoods = ['calm', 'peaceful'];
+
+                    Object.values(moodLog).forEach(day => {
+                      Object.values(day).forEach(session => {
+                        if (session.before && session.after) {
+                          totalLogged++;
+                          if (negativeMoods.includes(session.before) && positiveMoods.includes(session.after)) {
+                            improvedCount++;
+                          } else if (session.before === 'calm' && session.after === 'peaceful') {
+                            improvedCount++;
+                          } else if (positiveMoods.includes(session.before) && positiveMoods.includes(session.after)) {
+                            improvedCount++; // Maintained good mood
+                          }
+                        }
                       });
+                    });
 
-                      if (totalLogged === 0) {
-                        return <p className="text-center text-slate-500 dark:text-slate-400 text-xs font-bold">سجل شعورك قبل وبعد الأذكار لترى أثرها الطاهر على قلبك هنا.</p>;
-                      }
+                    if (totalLogged === 0) {
+                      return <p className="text-center text-slate-500 dark:text-slate-400 text-xs font-bold">سجل شعورك قبل وبعد الأذكار لترى أثرها الطاهر على قلبك هنا.</p>;
+                    }
 
-                      const improvementRate = Math.round((improvedCount / totalLogged) * 100);
+                    const improvementRate = Math.round((improvedCount / totalLogged) * 100);
 
-                      return (
-                        <div className="text-center relative z-10">
-                          <p className="text-sm md:text-base text-slate-700 dark:text-slate-300 mb-3 font-bold">
-                            بناءً على تتبع مشاعرك، تحسنت واطمأنت حالتك النفسية بعد الذكر بنسبة:
-                          </p>
-                          <div className="flex justify-center items-end gap-2 text-emerald-600 dark:text-emerald-400 mb-2">
-                             <span className="text-5xl md:text-6xl font-black drop-shadow-sm">{improvementRate}%</span>
-                          </div>
-                          <div className="w-full bg-slate-200 dark:bg-slate-700 h-3 rounded-full overflow-hidden mt-4 max-w-[250px] mx-auto shadow-inner">
-                            <div className="bg-gradient-to-r from-emerald-400 to-teal-500 h-full transition-all duration-1000 relative" style={{ width: `${improvementRate}%` }}>
-                               <div className="absolute top-0 right-0 bottom-0 w-4 bg-white/30 animate-pulse"></div>
-                            </div>
-                          </div>
-                          {improvementRate > 70 && (
-                            <p className="mt-4 text-xs font-bold text-teal-600 dark:text-teal-400">
-                              ما شاء الله! هذا مصداق وعد الله للمستغفرين والذاكرين.
-                            </p>
-                          )}
+                    return (
+                      <div className="text-center relative z-10">
+                        <p className="text-sm md:text-base text-slate-700 dark:text-slate-300 mb-3 font-bold">
+                          بناءً على تتبع مشاعرك، تحسنت واطمأنت حالتك النفسية بعد الذكر بنسبة:
+                        </p>
+                        <div className="flex justify-center items-end gap-2 text-emerald-600 dark:text-emerald-400 mb-2">
+                          <span className="text-5xl md:text-6xl font-black drop-shadow-sm">{improvementRate}%</span>
                         </div>
-                      );
-                   })()}
+                        <div className="w-full bg-slate-200 dark:bg-slate-700 h-3 rounded-full overflow-hidden mt-4 max-w-[250px] mx-auto shadow-inner">
+                          <div className="bg-gradient-to-r from-emerald-400 to-teal-500 h-full transition-all duration-1000 relative" style={{ width: `${improvementRate}%` }}>
+                            <div className="absolute top-0 right-0 bottom-0 w-4 bg-white/30 animate-pulse"></div>
+                          </div>
+                        </div>
+                        {improvementRate > 70 && (
+                          <p className="mt-4 text-xs font-bold text-teal-600 dark:text-teal-400">
+                            ما شاء الله! هذا مصداق وعد الله للمستغفرين والذاكرين.
+                          </p>
+                        )}
+                      </div>
+                    );
+                  })()}
                 </div>
               </div>
 
@@ -2781,8 +2783,8 @@ export default function App() {
                     <div
                       key={badge.id}
                       className={`p-3 md:p-4 rounded-2xl flex flex-col items-center text-center transition-all duration-300 border ${badge.unlocked
-                          ? 'bg-gradient-to-br from-yellow-50 to-amber-100 dark:from-yellow-900/20 dark:to-amber-900/30 border-yellow-200 dark:border-yellow-700/50 shadow-sm'
-                          : 'bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 opacity-60 grayscale'
+                        ? 'bg-gradient-to-br from-yellow-50 to-amber-100 dark:from-yellow-900/20 dark:to-amber-900/30 border-yellow-200 dark:border-yellow-700/50 shadow-sm'
+                        : 'bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 opacity-60 grayscale'
                         }`}
                     >
                       <div className={`p-2 rounded-full mb-2 ${badge.unlocked ? 'bg-yellow-200 text-yellow-600 dark:bg-yellow-800 dark:text-yellow-300' : 'bg-slate-200 text-slate-400 dark:bg-slate-700 dark:text-slate-500'}`}>
@@ -2812,7 +2814,7 @@ export default function App() {
                 {isExporting ? <RefreshCw className="w-6 h-6 animate-spin" /> : <Flame className="w-6 h-6" />}
                 شارك إنجازك (Story)
               </button>
-              
+
               <button
                 onClick={exportStatsAsImage}
                 disabled={isExporting}
@@ -3060,8 +3062,8 @@ export default function App() {
                           onClick={() => handleDhikrClick(dhikr.id, dhikr.target)}
                           disabled={isCompleted}
                           className={`w-14 h-14 rounded-full font-black text-lg flex items-center justify-center transition-all ${isCompleted
-                              ? 'bg-orange-100 dark:bg-orange-950/20 text-orange-600 border-2 border-orange-400 dark:border-orange-800'
-                              : 'bg-orange-500 hover:bg-orange-600 text-white shadow-lg active:scale-95'
+                            ? 'bg-orange-100 dark:bg-orange-950/20 text-orange-600 border-2 border-orange-400 dark:border-orange-800'
+                            : 'bg-orange-500 hover:bg-orange-600 text-white shadow-lg active:scale-95'
                             }`}
                         >
                           {currentCount}
@@ -3132,8 +3134,8 @@ export default function App() {
               {/* إعدادات الموقع وأوقات الصلاة */}
               <div className="flex flex-col gap-3 p-4 rounded-xl bg-slate-50 dark:bg-slate-700/50 border border-slate-100 dark:border-slate-700">
                 <div className="flex items-center justify-between mb-2 border-b border-slate-200 dark:border-slate-600 pb-3">
-                  <div 
-                    className="flex items-center gap-2 cursor-pointer" 
+                  <div
+                    className="flex items-center gap-2 cursor-pointer"
                     onDoubleClick={testHiddenNotification}
                     title="انقر نقراً مزدوجاً لاختبار التنبيهات المخفية"
                   >
@@ -3163,16 +3165,16 @@ export default function App() {
                     </button>
                   )}
                 </div>
-                
+
                 {!prayerTimes ? (
                   <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed text-center py-2">
                     قم بتفعيل الأوقات الذكية ليقوم التطبيق بتحديد موقعك <span className="font-bold text-teal-600">عبر الـ GPS</span> لتذكيرك بأذكار الصباح والمساء والصلوات في وقتها الدقيق.
-                    <br/><br/>
+                    <br /><br />
                     <button onClick={() => {
                       const city = window.prompt("الرجاء إدخال مدينتك (مثال: Amman، مكة):");
-                      if(!city) return;
+                      if (!city) return;
                       const country = window.prompt("الرجاء إدخال دولتك (مثال: Jordan، السعودية):");
-                      if(!country) return;
+                      if (!country) return;
                       autoFetchLocation(city, country);
                     }} className="text-teal-600 hover:underline font-bold cursor-pointer">أو أدخل مدينتك يدوياً بالضغط هنا</button>
                   </p>
@@ -3468,7 +3470,7 @@ export default function App() {
                   كيف حال قلبك الآن؟
                 </h3>
                 <p className="text-center text-slate-500 dark:text-slate-400 text-sm md:text-base mb-6">قبل أن تبدأ بذكر الله، سجل شعورك الحالي.</p>
-                
+
                 <div className="flex justify-center gap-3 md:gap-8 flex-wrap">
                   {[
                     { id: 'sad', icon: '😔', label: 'حزين' },
@@ -3497,7 +3499,7 @@ export default function App() {
                   كيف حال قلبك الآن بعد الذكر؟
                 </h3>
                 <p className="text-center text-emerald-600/80 dark:text-emerald-400/80 text-sm md:text-lg mb-6 font-bold">«أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ»</p>
-                
+
                 <div className="flex justify-center gap-3 md:gap-8 flex-wrap">
                   {[
                     { id: 'sad', icon: '😔', label: 'حزين' },
@@ -3521,96 +3523,96 @@ export default function App() {
 
             {/* --- قائمة الأذكار الرئيسية (تتغير حسب التبويب) --- */}
             <div className="space-y-6 md:space-y-8">
-          {currentTabAdhkar.map((dhikr) => {
-            const currentCount = progress[`${activeTab}-${dhikr.id}`] || 0;
-            const isCompleted = currentCount >= dhikr.target;
-            const percentage = dhikr.target > 1 ? (currentCount / dhikr.target) : (currentCount > 0 ? 1 : 0);
+              {currentTabAdhkar.map((dhikr) => {
+                const currentCount = progress[`${activeTab}-${dhikr.id}`] || 0;
+                const isCompleted = currentCount >= dhikr.target;
+                const percentage = dhikr.target > 1 ? (currentCount / dhikr.target) : (currentCount > 0 ? 1 : 0);
 
-            const displayText = (activeTab === 'evening' && dhikr.textEvening) ? dhikr.textEvening : dhikr.textMorning;
+                const displayText = (activeTab === 'evening' && dhikr.textEvening) ? dhikr.textEvening : dhikr.textMorning;
 
-            let counterBgClass = isCompleted
-              ? currentTabTheme.counterDone + " cursor-default shadow-none"
-              : percentage > 0.6 ? `${currentTabTheme.counterHigh} text-white shadow-lg dark:shadow-none`
-                : percentage > 0.3 ? `${currentTabTheme.counterMed} text-white shadow-lg dark:shadow-none`
-                  : `${currentTabTheme.counterLow} text-white shadow-lg dark:shadow-none`;
+                let counterBgClass = isCompleted
+                  ? currentTabTheme.counterDone + " cursor-default shadow-none"
+                  : percentage > 0.6 ? `${currentTabTheme.counterHigh} text-white shadow-lg dark:shadow-none`
+                    : percentage > 0.3 ? `${currentTabTheme.counterMed} text-white shadow-lg dark:shadow-none`
+                      : `${currentTabTheme.counterLow} text-white shadow-lg dark:shadow-none`;
 
-            return (
-              <div
-                key={dhikr.id}
-                id={`dhikr-${dhikr.id}`}
-                className={`dhikr-card ${isCompleted ? 'completed' : ''} card-hover group relative bg-white dark:bg-slate-800 rounded-3xl shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border ${isCompleted ? 'border-slate-200 dark:border-slate-700 opacity-90' : 'border-slate-200 dark:border-slate-700'} overflow-hidden scroll-mt-24`}
-              >
-                <div className={`py-3 px-6 text-sm md:text-base font-bold border-b border-slate-200 dark:border-slate-700 flex justify-between items-center ${currentTabTheme.cardHeader}`}>
-                  <span>{dhikr.category}</span>
-                </div>
+                return (
+                  <div
+                    key={dhikr.id}
+                    id={`dhikr-${dhikr.id}`}
+                    className={`dhikr-card ${isCompleted ? 'completed' : ''} card-hover group relative bg-white dark:bg-slate-800 rounded-3xl shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border ${isCompleted ? 'border-slate-200 dark:border-slate-700 opacity-90' : 'border-slate-200 dark:border-slate-700'} overflow-hidden scroll-mt-24`}
+                  >
+                    <div className={`py-3 px-6 text-sm md:text-base font-bold border-b border-slate-200 dark:border-slate-700 flex justify-between items-center ${currentTabTheme.cardHeader}`}>
+                      <span>{dhikr.category}</span>
+                    </div>
 
-                <div className="p-6 md:p-8">
-                  <p className={`font-cairo font-semibold leading-[2.4] md:leading-[2.6] text-slate-800 dark:text-slate-100 mb-8 whitespace-pre-line text-justify md:text-right ${fontSizes[fontSizeIndex]}`}>
-                    {displayText}
-                  </p>
+                    <div className="p-6 md:p-8">
+                      <p className={`font-cairo font-semibold leading-[2.4] md:leading-[2.6] text-slate-800 dark:text-slate-100 mb-8 whitespace-pre-line text-justify md:text-right ${fontSizes[fontSizeIndex]}`}>
+                        {displayText}
+                      </p>
 
-                  <div className="space-y-3 mb-8">
-                    {showTakhreej && dhikr.takhreej && (
-                      <div className="flex items-start gap-3 text-sm md:text-base text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-800">
-                        <BookOpen className="w-5 h-5 shrink-0 mt-0.5 text-slate-400" />
-                        <span><strong className="text-slate-700 dark:text-slate-300">التخريج:</strong> {dhikr.takhreej}</span>
+                      <div className="space-y-3 mb-8">
+                        {showTakhreej && dhikr.takhreej && (
+                          <div className="flex items-start gap-3 text-sm md:text-base text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-800">
+                            <BookOpen className="w-5 h-5 shrink-0 mt-0.5 text-slate-400" />
+                            <span><strong className="text-slate-700 dark:text-slate-300">التخريج:</strong> {dhikr.takhreej}</span>
+                          </div>
+                        )}
+                        {showFadl && dhikr.fadl && (
+                          <div className="flex items-start gap-3 text-sm md:text-base text-rose-700 dark:text-rose-400 bg-rose-50 dark:bg-rose-900/10 p-4 rounded-xl border border-rose-100 dark:border-rose-900/20">
+                            <Star className="w-5 h-5 shrink-0 mt-0.5" />
+                            <span><strong>فضل الذكر:</strong> {dhikr.fadl}</span>
+                          </div>
+                        )}
+                        {showFawaid && dhikr.fawaid && (
+                          <div className="flex items-start gap-3 text-sm md:text-base text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/10 p-4 rounded-xl border border-blue-100 dark:border-blue-900/20">
+                            <Info className="w-5 h-5 shrink-0 mt-0.5" />
+                            <span><strong>فائدة:</strong> {dhikr.fawaid}</span>
+                          </div>
+                        )}
                       </div>
-                    )}
-                    {showFadl && dhikr.fadl && (
-                      <div className="flex items-start gap-3 text-sm md:text-base text-rose-700 dark:text-rose-400 bg-rose-50 dark:bg-rose-900/10 p-4 rounded-xl border border-rose-100 dark:border-rose-900/20">
-                        <Star className="w-5 h-5 shrink-0 mt-0.5" />
-                        <span><strong>فضل الذكر:</strong> {dhikr.fadl}</span>
+
+                      <div className="flex flex-row-reverse gap-3 items-stretch justify-center w-full md:w-5/6 mx-auto">
+                        <button
+                          onClick={() => resetSingleDhikr(dhikr.id)}
+                          className="px-5 md:px-8 rounded-3xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-500 hover:text-slate-700 dark:text-slate-300 transition-all flex justify-center items-center active:scale-95 border border-slate-200 dark:border-slate-600"
+                          title="إعادة تصفير هذا الذكر"
+                        >
+                          <RotateCcw className="w-7 h-7 md:w-8 md:h-8" />
+                        </button>
+
+                        <button
+                          onClick={() => handleDhikrClick(dhikr.id, dhikr.target)}
+                          disabled={isCompleted}
+                          className={`dhikr-increment-btn flex-1 relative overflow-hidden h-[120px] md:h-[140px] rounded-3xl font-bold text-2xl md:text-4xl transition-all duration-300 flex justify-center items-center gap-4 active:scale-95 ${counterBgClass}`}
+                        >
+                          {isCompleted ? (
+                            <>
+                              <CheckCircle className="w-8 h-8 md:w-10 md:h-10" />
+                              <span>تم الانتهاء</span>
+                            </>
+                          ) : (
+                            <>
+                              <span className="bg-black/10 dark:bg-white/10 px-5 py-2 rounded-2xl text-3xl md:text-5xl font-extrabold tracking-wider z-10">
+                                {currentCount} <span className="text-xl md:text-2xl text-white/70">/ {dhikr.target}</span>
+                              </span>
+                              <span className="hidden md:inline text-white/90 z-10 font-semibold">اضغط للعد</span>
+                            </>
+                          )}
+
+                          {!isCompleted && dhikr.target > 1 && currentCount > 0 && (
+                            <div
+                              className="absolute top-0 right-0 h-full bg-black/10 z-0 transition-all duration-300"
+                              style={{ width: `${percentage * 100}%` }}
+                            />
+                          )}
+                        </button>
                       </div>
-                    )}
-                    {showFawaid && dhikr.fawaid && (
-                      <div className="flex items-start gap-3 text-sm md:text-base text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/10 p-4 rounded-xl border border-blue-100 dark:border-blue-900/20">
-                        <Info className="w-5 h-5 shrink-0 mt-0.5" />
-                        <span><strong>فائدة:</strong> {dhikr.fawaid}</span>
-                      </div>
-                    )}
+                    </div>
                   </div>
-
-                  <div className="flex flex-row-reverse gap-3 items-stretch justify-center w-full md:w-5/6 mx-auto">
-                    <button
-                      onClick={() => resetSingleDhikr(dhikr.id)}
-                      className="px-5 md:px-8 rounded-3xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-500 hover:text-slate-700 dark:text-slate-300 transition-all flex justify-center items-center active:scale-95 border border-slate-200 dark:border-slate-600"
-                      title="إعادة تصفير هذا الذكر"
-                    >
-                      <RotateCcw className="w-7 h-7 md:w-8 md:h-8" />
-                    </button>
-
-                    <button
-                      onClick={() => handleDhikrClick(dhikr.id, dhikr.target)}
-                      disabled={isCompleted}
-                      className={`dhikr-increment-btn flex-1 relative overflow-hidden h-[120px] md:h-[140px] rounded-3xl font-bold text-2xl md:text-4xl transition-all duration-300 flex justify-center items-center gap-4 active:scale-95 ${counterBgClass}`}
-                    >
-                      {isCompleted ? (
-                        <>
-                          <CheckCircle className="w-8 h-8 md:w-10 md:h-10" />
-                          <span>تم الانتهاء</span>
-                        </>
-                      ) : (
-                        <>
-                          <span className="bg-black/10 dark:bg-white/10 px-5 py-2 rounded-2xl text-3xl md:text-5xl font-extrabold tracking-wider z-10">
-                            {currentCount} <span className="text-xl md:text-2xl text-white/70">/ {dhikr.target}</span>
-                          </span>
-                          <span className="hidden md:inline text-white/90 z-10 font-semibold">اضغط للعد</span>
-                        </>
-                      )}
-
-                      {!isCompleted && dhikr.target > 1 && currentCount > 0 && (
-                        <div
-                          className="absolute top-0 right-0 h-full bg-black/10 z-0 transition-all duration-300"
-                          style={{ width: `${percentage * 100}%` }}
-                        />
-                      )}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-          </div>
+                );
+              })}
+            </div>
           </>
         )}
       </main>
@@ -3625,12 +3627,12 @@ export default function App() {
         <div id="story-export-card" className="w-[1080px] h-[1920px] bg-gradient-to-br from-slate-900 via-teal-900 to-slate-900 flex flex-col items-center justify-center p-20 text-white relative overflow-hidden" dir="rtl">
           {/* زخرفة خلفية عشوائية */}
           <div className="absolute inset-0 opacity-20 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 20% 30%, rgba(20, 184, 166, 0.4) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(99, 102, 241, 0.4) 0%, transparent 50%)' }}></div>
-          
+
           <div className="z-10 bg-white/10 backdrop-blur-2xl p-16 rounded-[4rem] border-4 border-white/20 shadow-2xl w-full max-w-[900px] flex flex-col items-center text-center">
             <div className="bg-gradient-to-br from-amber-400 to-orange-500 p-10 rounded-full mb-12 shadow-[0_0_80px_rgba(251,191,36,0.6)]">
               <Flame className="w-32 h-32 text-white" />
             </div>
-            
+
             <h1 className="text-7xl font-black mb-8 text-white">إنجاز عظيم!</h1>
             <p className="text-5xl leading-snug mb-16 text-white/90 font-bold">
               أنا أواظب على أذكاري وتسابيحي لـ
@@ -3638,26 +3640,26 @@ export default function App() {
               <span className="text-amber-400 text-[12rem] leading-none font-black block my-12 drop-shadow-lg">{streak}</span>
               يوم متتالي بفضل الله
             </p>
-            
+
             <div className="grid grid-cols-2 gap-8 w-full">
-                <div className="bg-black/30 p-10 rounded-[3rem] border border-white/10 shadow-inner">
-                  <TasbeehIcon className="w-20 h-20 mx-auto mb-6 text-teal-400" />
-                  <div className="text-5xl font-black mb-2">{totalTasbeehsMade}</div>
-                  <div className="text-3xl text-white/70 font-bold">تسبيحة</div>
-                </div>
-                <div className="bg-black/30 p-10 rounded-[3rem] border border-white/10 shadow-inner">
-                  <BookOpen className="w-20 h-20 mx-auto mb-6 text-indigo-400" />
-                  <div className="text-5xl font-black mb-2">{totalAdhkarRead}</div>
-                  <div className="text-3xl text-white/70 font-bold">ذكر مقروء</div>
-                </div>
+              <div className="bg-black/30 p-10 rounded-[3rem] border border-white/10 shadow-inner">
+                <TasbeehIcon className="w-20 h-20 mx-auto mb-6 text-teal-400" />
+                <div className="text-5xl font-black mb-2">{totalTasbeehsMade}</div>
+                <div className="text-3xl text-white/70 font-bold">تسبيحة</div>
+              </div>
+              <div className="bg-black/30 p-10 rounded-[3rem] border border-white/10 shadow-inner">
+                <BookOpen className="w-20 h-20 mx-auto mb-6 text-indigo-400" />
+                <div className="text-5xl font-black mb-2">{totalAdhkarRead}</div>
+                <div className="text-3xl text-white/70 font-bold">ذكر مقروء</div>
+              </div>
             </div>
           </div>
-          
+
           <div className="absolute bottom-24 flex items-center gap-6 z-10 bg-black/40 backdrop-blur-md px-12 py-6 rounded-full border border-white/10">
-              <div className="bg-teal-500 p-4 rounded-3xl">
-                <Moon className="w-10 h-10 text-white" />
-              </div>
-              <div className="text-4xl font-bold text-white tracking-wide">تطبيق حصن المسلم - DhikrBook</div>
+            <div className="bg-teal-500 p-4 rounded-3xl">
+              <Moon className="w-10 h-10 text-white" />
+            </div>
+            <div className="text-4xl font-bold text-white tracking-wide">تطبيق حصن المسلم - DhikrBook</div>
           </div>
         </div>
       </div>

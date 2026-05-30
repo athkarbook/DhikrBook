@@ -4,6 +4,7 @@ import { colorMap, defaultThemeColors } from './utils/theme';
 import { LiveBackground } from './components/UI/LiveBackground';
 import { SettingsModal } from './components/Modals/SettingsModal';
 import { SplashScreen } from './components/UI/SplashScreen';
+import { TutorialModal } from './components/Modals/TutorialModal';
 import { TasbeehModal } from './components/Modals/TasbeehModal';
 import { StatsModal } from './components/Modals/StatsModal';
 import { RoadmapModal } from './components/Modals/RoadmapModal';
@@ -67,6 +68,19 @@ export default function App() {
   props.fontSizes = fontSizes;
 
   const [showSplash, setShowSplash] = useState(true);
+  const [showTutorial, setShowTutorial] = useState(false);
+
+  React.useEffect(() => {
+    if (!localStorage.getItem('tutorialSeen_v2')) {
+      // Delay showing tutorial slightly after splash
+      setTimeout(() => setShowTutorial(true), 3500);
+    }
+  }, []);
+
+  const closeTutorial = () => {
+    localStorage.setItem('tutorialSeen_v2', 'true');
+    setShowTutorial(false);
+  };
 
   const [showTaarSection, setShowTaarSection] = useState(false);
   const taarAdhkar = adhkarData.filter(d => d.category === 'الذكر الوارد إذا تعار من الليل (التقلب والانتباه)');
@@ -144,6 +158,7 @@ export default function App() {
       {showDevModal && <DevModal props={props} />}
       {showFreeAdhkarModal && <FreeAdhkarModal props={props} />}
       {showSettingsModal && <SettingsModal props={props} />}
+        {showTutorial && <TutorialModal props={props} onClose={closeTutorial} />}
 
       <main className="container mx-auto px-4 py-6 md:py-8 max-w-4xl pt-[130px] md:pt-[140px]">
         {activeTab !== 'garden' && (

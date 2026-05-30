@@ -22,7 +22,7 @@ export function Header({ props }) {
 
             {/* مؤشر الهدف اليومي للمسبحة */}
             <div
-              className="hidden sm:flex items-center gap-1 bg-white/20 text-white px-2 py-1 rounded-full text-xs md:text-base font-bold border border-white/30 cursor-pointer hover:bg-white/30 transition"
+              className="hidden sm:flex items-center gap-1 bg-white/20 text-white px-2 py-1 rounded-full text-xs md:text-base font-bold border border-white/30 cursor-pointer hover:bg-white/40 hover:shadow-lg active:scale-90 transition-all"
               title="الهدف اليومي للتسبيح"
               onClick={() => setShowTasbeehModal(true)}
             >
@@ -44,7 +44,7 @@ export function Header({ props }) {
             {/* شعلة المواظبة اليومية */}
             {streak > 0 && (
               <div
-                className="flex items-center gap-1 bg-yellow-400/20 text-yellow-100 px-2 py-1 rounded-full text-xs md:text-base font-bold border border-yellow-400/30 cursor-pointer hover:bg-yellow-400/30 transition"
+                className="flex items-center gap-1 bg-yellow-400/20 text-yellow-100 px-2 py-1 rounded-full text-xs md:text-base font-bold border border-yellow-400/30 cursor-pointer hover:bg-yellow-400/40 hover:shadow-lg active:scale-90 transition-all"
                 title="أيام المواظبة المتتالية"
                 onClick={() => setShowStatsModal(true)}
               >
@@ -53,27 +53,21 @@ export function Header({ props }) {
               </div>
             )}
 
-            {/* المسبحة الصوتية الذكية */}
+            {/* المسبحة الصوتية العامة */}
             {speechSupported && (
               <button
                 onClick={toggleVoiceTasbeeh}
-                className={`px-2 md:px-3 py-1.5 md:py-2 rounded-full transition-all relative flex items-center justify-center gap-2 shadow-sm ${isListening ? 'bg-red-500 hover:bg-red-600 text-white animate-pulse' : 'bg-black/20 hover:bg-black/30 dark:bg-slate-700/50 dark:hover:bg-slate-700'}`}
+                className={`p-1.5 md:p-2 rounded-full transition relative flex items-center justify-center shadow-sm ${isListening ? 'bg-red-500 hover:bg-red-600 text-white animate-pulse ring-2 ring-red-300 shadow-lg' : 'bg-emerald-500/80 hover:bg-emerald-600 text-white shadow-md ring-1 ring-white/50 animate-pulse'} active:scale-90`}
                 title="المسبحة الصوتية (العد التلقائي بالصوت)"
               >
-                {isListening ? (
-                  <>
-                    <Mic className="w-4 h-4 md:w-5 md:h-5" />
-                    <span className="text-xs md:text-sm font-bold animate-pulse">يستمع.. اقرأ لينتقل</span>
-                  </>
-                ) : (
-                  <MicOff className="w-4 h-4 md:w-5 md:h-5" />
-                )}
+                {isListening ? <Mic className="w-4 h-4 md:w-5 md:h-5" /> : <MicOff className="w-4 h-4 md:w-5 md:h-5" />}
+                <span className="text-[10px] sm:text-xs font-bold mr-1 leading-none hidden sm:inline-block">تلاوة ذكية</span>
               </button>
             )}
 
             {/* المستوى الحالي (RPG) */}
             <div
-              className="flex items-center gap-1 bg-white/20 text-white px-2 py-1 rounded-full text-[10px] md:text-sm font-bold border border-white/30 cursor-pointer hover:bg-white/30 transition"
+              className="flex items-center gap-1 bg-white/20 text-white px-2 py-1 rounded-full text-[10px] md:text-sm font-bold border border-white/30 cursor-pointer hover:bg-white/40 hover:shadow-lg active:scale-90 transition-all"
               title={`المستوى الحالي: ${currentLevel}`}
               onClick={() => setShowStatsModal(true)}
             >
